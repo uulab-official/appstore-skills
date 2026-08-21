@@ -8,6 +8,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 import re
 
+from validate_review_adapter_specs import adapter_records, validate as validate_adapter_registry
+
 
 ALLOWED_ASSIGNMENT_STATUSES = {"pending", "in_review", "approved", "blocked"}
 ALLOWED_REVIEWER_STATUSES = {"pending", "in_review", "approved", "blocked", "not_applicable"}
@@ -103,7 +105,11 @@ def valid_timestamp(value: str) -> bool:
     return True
 
 
-def validate(path: Path) -> list[str]:
+def validate(
+    path: Path,
+    adapter_file: Path | None = None,
+    selected_adapters: list[str] | None = None,
+) -> list[str]:
     if not path.is_file():
         return [f"review assignment file does not exist: {path}"]
     text = path.read_text(encoding="utf-8")
@@ -203,6 +209,26 @@ def validate(path: Path) -> list[str]:
             if previous_timestamp is not None and current_timestamp < previous_timestamp:
                 errors.append(f"{path}: history timestamps must be chronological")
             previous_timestamp = current_timestamp
+    if adapter_file is not None:
+        registry_errors = validate_adapter_registry(adapter_file)
+        errors.extend(registry_errors)
+        if not registry_errors:
+            records = adapter_records(adapter_file.read_text(encoding="utf-8"))
+            known_ids = {str(record.get("id", "")) for record in records}
+            coverage_ids = {
+                str(item)
+                for reviewer in reviewers
+                for item in reviewer.get("coverage", [])
+                if isinstance(reviewer.get("coverage", []), list)
+            }
+            for coverage_id in sorted(coverage_ids - known_ids):
+                errors.append(f"{path}: coverage references unknown review adapter: {coverage_id}")
+            requested = selected_adapters or []
+            for adapter_id in requested:
+                if adapter_id not in known_ids:
+                    errors.append(f"{path}: selected review adapter is not declared in registry: {adapter_id}")
+                elif adapter_id not in coverage_ids:
+                    errors.append(f"{path}: selected review adapter has no reviewer coverage: {adapter_id}")
     return errors
 
 
@@ -303,11 +329,15 @@ def compare_assignments(current_path: Path, previous_path: Path) -> tuple[list[d
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("paths", nargs="+", type=Path, help="Reviewer assignment records")
+    parser.add_argument("--adapter-file", type=Path, help="Review adapter registry for coverage cross-validation")
+    parser.add_argument("--adapter", action="append", default=[], help="Selected adapter ID that must have reviewer coverage")
     args = parser.parse_args()
     errors: list[str] = []
+    if args.adapter and args.adapter_file is None:
+        errors.append("--adapter-file is required when --adapter is provided")
     for path in args.paths:
         try:
-            errors.extend(validate(path))
+            errors.extend(validate(path, adapter_file=args.adapter_file, selected_adapters=args.adapter))
         except (OSError, UnicodeDecodeError) as error:
             errors.append(f"{path}: {error}")
     if errors:

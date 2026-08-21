@@ -187,7 +187,11 @@ python scripts/generate_review_handoff.py \
 python scripts/validate_review_adapter_specs.py \
   skills/release-check/references/review-adapters.yml
 python scripts/validate_review_assignments.py \
-  ./store-assets/review-assignment.yml
+  --adapter-file ./skills/release-check/references/review-adapters.yml \
+  ./store-assets/review-assignment.yml \
+  --adapter policy-review \
+  --adapter accessibility-review \
+  --adapter privacy-review
 python scripts/prepare_release_handoff.py \
   --project-root ./my-app \
   --output-root ./my-app/store-assets \

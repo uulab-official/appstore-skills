@@ -7,6 +7,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts/validate_review_assignments.py"
+REGISTRY = ROOT / "skills/release-check/references/review-adapters.yml"
 DEMO = ROOT / "examples/demo-store-assets/review-assignment.yml"
 
 
@@ -19,10 +20,71 @@ class ReviewAssignmentTests(unittest.TestCase):
             text=True,
         )
 
+    def run_validator_with_registry(self, path: Path, *adapters: str) -> subprocess.CompletedProcess[str]:
+        command = [
+            sys.executable,
+            str(SCRIPT),
+            str(path),
+            "--adapter-file",
+            str(REGISTRY),
+        ]
+        for adapter in adapters:
+            command.extend(["--adapter", adapter])
+        return subprocess.run(command, check=False, capture_output=True, text=True)
+
     def test_demo_assignment_passes_and_stays_pending(self) -> None:
         result = self.run_validator(DEMO)
 
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_selected_registry_adapters_require_coverage(self) -> None:
+        result = self.run_validator_with_registry(
+            DEMO,
+            "policy-review",
+            "accessibility-review",
+            "privacy-review",
+        )
+
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_unknown_coverage_id_is_rejected(self) -> None:
+        with TemporaryDirectory() as directory:
+            path = Path(directory) / "review-assignment.yml"
+            path.write_text(
+                DEMO.read_text(encoding="utf-8").replace(
+                    "coverage: [policy-review]",
+                    "coverage: [legal-review]",
+                    1,
+                ),
+                encoding="utf-8",
+            )
+
+            result = self.run_validator_with_registry(path, "policy-review")
+
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("coverage references unknown review adapter: legal-review", result.stdout)
+
+    def test_selected_adapter_without_coverage_is_rejected(self) -> None:
+        with TemporaryDirectory() as directory:
+            path = Path(directory) / "review-assignment.yml"
+            path.write_text(
+                DEMO.read_text(encoding="utf-8").replace(
+                    "coverage: [accessibility-review]",
+                    "coverage: [locale-review]",
+                    1,
+                ),
+                encoding="utf-8",
+            )
+
+            result = self.run_validator_with_registry(
+                path,
+                "policy-review",
+                "accessibility-review",
+                "privacy-review",
+            )
+
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("selected review adapter has no reviewer coverage: accessibility-review", result.stdout)
 
     def test_approved_reviewer_requires_decision_evidence(self) -> None:
         with TemporaryDirectory() as directory:

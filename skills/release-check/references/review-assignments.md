@@ -29,8 +29,16 @@ Validate one or more records with:
 
 ```bash
 python scripts/validate_review_assignments.py \
-  ./store-assets/review-assignment.yml
+  --adapter-file ./skills/release-check/references/review-adapters.yml \
+  ./store-assets/review-assignment.yml \
+  --adapter policy-review \
+  --adapter accessibility-review \
+  --adapter privacy-review
 ```
+
+The adapter options are optional. When supplied, every selected adapter must
+be declared in the registry and covered by at least one reviewer; unknown
+coverage IDs also fail validation.
 
 The handoff generator automatically reads `review-assignment.yml` from the
 package root when it exists and renders the assignment state, reviewer rows,
