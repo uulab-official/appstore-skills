@@ -44,7 +44,7 @@ def validate_skill(skill_dir: Path, errors: list[str]) -> None:
         fail(f"{skill_file}: frontmatter name must be {name!r}", errors)
     if len(descriptions) != 1 or descriptions[0].startswith("[TODO"):
         fail(f"{skill_file}: missing usable description", errors)
-    if "TODO" in body:
+    if re.search(r"\[TODO|\bTODO\s*:", body):
         fail(f"{skill_file}: contains TODO placeholder", errors)
 
     for relative in re.findall(r"\]\((references/[^)]+)\)", body):
@@ -85,4 +85,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-

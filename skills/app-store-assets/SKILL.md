@@ -98,6 +98,12 @@ social-preview conventions. For a Google Play-only run, prefer
 [`../play-store-assets/SKILL.md`](../play-store-assets/SKILL.md) so Android
 screens, adaptive-icon sources, and Play-specific QA remain explicit.
 
+For listing text, read [`../store-copy/SKILL.md`](../store-copy/SKILL.md). For
+additional locales, read [`../localization/SKILL.md`](../localization/SKILL.md)
+after the source-locale assets are approved. Run
+[`../release-check/SKILL.md`](../release-check/SKILL.md) over the final output
+before calling the package ready for human submission review.
+
 ### 6. Verify platform rules and package outputs
 
 Check current official Apple and Google documentation for every platform and

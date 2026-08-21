@@ -1,0 +1,4 @@
+interface:
+  display_name: "Localization"
+  short_description: "Adapt store assets for locales"
+  default_prompt: "Localize this app's store copy and visual assets for the requested locales while preserving product meaning, UI fidelity, and QA status."

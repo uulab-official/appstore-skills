@@ -1,0 +1,4 @@
+interface:
+  display_name: "Release Check"
+  short_description: "Audit store assets before submission"
+  default_prompt: "Audit this store asset package for integrity, product fidelity, platform requirements, localization, and blockers; write a release report without submitting it."

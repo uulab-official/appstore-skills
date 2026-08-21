@@ -1,0 +1,4 @@
+interface:
+  display_name: "Store Copy"
+  short_description: "Draft evidence-backed store copy"
+  default_prompt: "Analyze this app project and draft factual App Store and Google Play listing copy with evidence, field mapping, and QA."

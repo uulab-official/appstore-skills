@@ -57,6 +57,9 @@ store-assets/
 ├── web-assets/
 │   └── favicon/
 ├── metadata/
+│   └── store-copy.en-US.yml
+├── locales/
+├── release-report.md
 └── QA.md
 ```
 

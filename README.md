@@ -19,6 +19,9 @@ generation, platform adaptation, and QA.
 | [`play-store-assets`](skills/play-store-assets/SKILL.md) | Prepare a Google Play-focused package with Android-specific outputs and QA. |
 | [`favicon`](skills/favicon/SKILL.md) | Create a compact browser, bookmark, and touch-icon family for web projects. |
 | [`og-image`](skills/og-image/SKILL.md) | Create branded link-preview images with grounded page metadata. |
+| [`store-copy`](skills/store-copy/SKILL.md) | Draft evidence-backed App Store and Google Play listing copy. |
+| [`localization`](skills/localization/SKILL.md) | Adapt copy and visual assets for target locales. |
+| [`release-check`](skills/release-check/SKILL.md) | Audit a store asset package before human submission review. |
 
 The skills share a `brand-context.yml` contract so the icon, screenshots, and
 other store assets feel like one product.
@@ -41,6 +44,12 @@ $play-store-assets
 $favicon
 
 $og-image
+
+$store-copy
+
+$localization
+
+$release-check
 ```
 
 The agent should inspect the app project before proposing a direction. Provide
@@ -85,6 +94,9 @@ store-assets/
 │   ├── favicon/
 │   └── og/
 ├── metadata/
+│   └── store-copy.en-US.yml
+├── locales/
+├── release-report.md
 └── QA.md
 ```
 
@@ -99,7 +111,7 @@ guarantee store approval, or replace legal and accessibility review.
 
 ## Status
 
-The current public milestone is `v0.2.0`:
+The current public milestone is `v0.3.0`:
 
 - app icon generation workflow
 - App Store and Google Play screenshot workflow
@@ -108,12 +120,16 @@ The current public milestone is `v0.2.0`:
 - Google Play-focused asset workflow
 - favicon generation and optional web integration
 - OG image generation and optional metadata integration
+- store listing copy workflow
+- localization workflow for copy and visual assets
+- pre-submission release-readiness audit
 
-The next roadmap milestone is `v0.3.0`:
+The next roadmap milestone focuses on operational maturity:
 
-- store copy and listing metadata
-- localization workflow
-- automated store-readiness checks
+- deterministic image and metadata validators
+- richer promotional and feature-graphic templates
+- release report integrations for CI and pull requests
+- more platform-specific adapters
 
 Later candidates include richer promotional assets, release checklists, and
 platform-specific automation where the target agent can safely support it.
