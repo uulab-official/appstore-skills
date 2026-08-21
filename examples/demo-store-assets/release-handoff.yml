@@ -6,6 +6,11 @@ handoff:
   project_root: .
   output_root: examples/demo-store-assets
   source_revision: fixture-not-applicable
+  provider_mode: opt-in-read-only
+  provider_file: skills/app-store-assets/references/evidence-providers.yml
+  providers:
+    - build-record
+    - simulator-source-captures
   approval_file: examples/demo-store-assets/release-approval.yml
   platforms:
     - apple
@@ -21,10 +26,10 @@ handoff:
       details: no real app build configuration is included
     - id: build-identity
       status: blocked
-      details: no real build revision or artifact identity is available
+      details: provider build-record: missing evidence/build.yml
     - id: simulator-captures
       status: blocked
-      details: no real iOS or Android source captures are available
+      details: provider simulator-source-captures: missing evidence/captures.yml
     - id: store-output
       status: pass
       details: required package files exist
@@ -37,4 +42,5 @@ handoff:
   next_actions:
     - Provide the real app project and inspected build revision.
     - Capture real iOS/Android screens under screenshots/source/.
+    - Record evidence/captures.yml with device, locale, timestamp, and provenance metadata.
     - Record an explicit product-owner decision in release-approval.yml.

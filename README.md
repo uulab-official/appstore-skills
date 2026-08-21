@@ -124,7 +124,7 @@ guarantee store approval, or replace legal and accessibility review.
 
 ## Status
 
-The current public milestone is `v0.7.0` (in progress) with operational
+The current public milestone is `v0.7.0` with operational
 validation tooling:
 
 - app icon generation workflow
@@ -146,6 +146,7 @@ validation tooling:
 - project, build, simulator, and release evidence adapter maps
 - safe dry-run release handoff reports with publish disabled
 - explicit approval records and approval-gated handoff states
+- opt-in, read-only build and simulator evidence providers
 
 The repository also includes deterministic, dependency-free checks for skill
 metadata and generated output manifests:
@@ -160,11 +161,16 @@ python scripts/validate_adapter_specs.py \
   skills/app-store-assets/references/platform-adapters.yml
 python scripts/validate_evidence_specs.py \
   skills/app-store-assets/references/evidence-adapters.yml
+python scripts/validate_provider_specs.py \
+  skills/app-store-assets/references/evidence-providers.yml
 python scripts/validate_release_approval.py \
   skills/app-store-assets/references/release-approval.yml
 python scripts/prepare_release_handoff.py \
   --project-root ./my-app \
   --output-root ./my-app/store-assets \
+  --provider-file ./skills/app-store-assets/references/evidence-providers.yml \
+  --provider build-record \
+  --provider simulator-source-captures \
   --approval-file ./my-app/store-assets/release-approval.yml \
   --format summary
 python -m unittest discover -s tests

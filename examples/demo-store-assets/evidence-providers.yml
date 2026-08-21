@@ -1,0 +1,27 @@
+schema_version: 1
+provider_set:
+  id: appstore-evidence-providers-v1
+  status: review
+  mode: read-only
+  execution: opt-in
+  source_of_truth: evidence-adapters.yml
+providers:
+  - id: build-record
+    kind: build
+    status: review
+    enabled_by_default: false
+    evidence_path: evidence/build.yml
+    required_fields: [revision, artifact, platform, inspected_at, source]
+    proves: The inspected build identity and source revision are recorded without running a build.
+    side_effects: none
+    required_checks: [file-exists, required-fields, timestamp, revision-recorded]
+  - id: simulator-source-captures
+    kind: simulator
+    status: blocked
+    enabled_by_default: false
+    evidence_path: evidence/captures.yml
+    capture_root: screenshots/source
+    required_fields: [path, platform, device_family, locale, captured_at, provenance]
+    proves: Source images are real capture artifacts with named platform, device family, locale, and provenance.
+    side_effects: none
+    required_checks: [manifest-exists, paths-contained, image-signature, metadata, timestamp]

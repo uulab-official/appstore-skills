@@ -18,6 +18,8 @@ screen captures.
   execution-time documentation checks
 - a project/build/simulator/release evidence map that keeps missing real-app
   evidence blocked
+- an opt-in, read-only evidence provider registry that keeps missing build and
+  capture manifests blocked
 - a pending human-approval record and dry-run release handoff report with
   publishing permanently marked `not-run`
 - evidence-backed English store-copy draft

@@ -28,6 +28,17 @@ jobs:
           python scripts/validate_evidence_specs.py
           skills/app-store-assets/references/evidence-adapters.yml
       - run: >-
+          python scripts/validate_provider_specs.py
+          skills/app-store-assets/references/evidence-providers.yml
+      - run: >-
+          python scripts/inspect_evidence_providers.py
+          --project-root .
+          --output-root examples/demo-store-assets
+          --provider-file skills/app-store-assets/references/evidence-providers.yml
+          --provider build-record
+          --provider simulator-source-captures
+          --format summary
+      - run: >-
           python scripts/validate_release_approval.py
           skills/app-store-assets/references/release-approval.yml
           examples/demo-store-assets/release-approval.yml
@@ -35,6 +46,9 @@ jobs:
           python scripts/prepare_release_handoff.py
           --project-root .
           --output-root examples/demo-store-assets
+          --provider-file skills/app-store-assets/references/evidence-providers.yml
+          --provider build-record
+          --provider simulator-source-captures
           --approval-file examples/demo-store-assets/release-approval.yml
           --format summary
       - run: python -m unittest discover -s tests

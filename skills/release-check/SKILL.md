@@ -100,7 +100,10 @@ and [the approval-gated handoff](../app-store-assets/references/approval-gated-h
 before using it. A technically complete package without an explicit approval
 record remains `pending_approval`. It must remain a dry-run and must never be
 treated as a submission record. Use `--fail-on-pending-approval` only when the
-workflow intentionally requires the human decision.
+workflow intentionally requires the human decision. When build or source
+capture evidence files already exist, select the opt-in providers described in
+[`evidence-providers.yml`](../app-store-assets/references/evidence-providers.yml);
+they only inspect files and do not execute the app project.
 
 ## Non-goals
 

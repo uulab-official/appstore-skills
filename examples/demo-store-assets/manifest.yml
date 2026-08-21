@@ -395,6 +395,12 @@ assets:
     status: review
     source: project sources, build identity, simulator captures, and release review
     checks: [facts-separated, build-identity, capture-fidelity, blocker-state]
+  - path: evidence-providers.yml
+    kind: evidence-provider-registry
+    platform: shared
+    status: review
+    source: evidence-adapters.yml
+    checks: [opt-in, read-only, build-fields, capture-manifest, side-effects-none]
   - path: release-handoff.yml
     kind: release-handoff-report
     platform: shared

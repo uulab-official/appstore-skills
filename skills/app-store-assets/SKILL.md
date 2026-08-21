@@ -29,6 +29,11 @@ assumptions. Use
 separate project, build, simulator, and release evidence. Read
 [`references/evidence-adapters.md`](references/evidence-adapters.md) and keep
 an adapter `blocked` when the app, build, or real screen capture is missing.
+When existing build or capture evidence is available, use the opt-in,
+read-only providers in
+[`references/evidence-providers.yml`](references/evidence-providers.yml).
+Providers inspect recorded evidence; they never run a build, launch a
+simulator, or capture a screen.
 
 ### 2. Create shared brand context
 
@@ -121,6 +126,9 @@ complete, require an explicit decision record based on
 [`references/release-approval.yml`](references/release-approval.yml) and the
 approval-gated handoff guidance in
 [`references/approval-gated-handoff.md`](references/approval-gated-handoff.md).
+For provider-backed checks, select only the providers that are in scope and
+keep their registry in review until the evidence fields and source fidelity
+have been checked.
 
 ### 6. Verify platform rules and package outputs
 

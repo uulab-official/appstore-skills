@@ -89,7 +89,8 @@ changes.
   still blocked.
 - If a release handoff is generated, confirm it is `dry-run`, keeps
   `publish_status: not-run`, and reports missing build or simulator evidence
-  instead of hiding it.
+  instead of hiding it. Any selected evidence provider must be explicitly
+  opt-in, read-only, and backed by a registry with `side_effects: none`.
 
 ## Skill acceptance criteria
 

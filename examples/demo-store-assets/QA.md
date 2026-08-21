@@ -39,6 +39,9 @@
 - The evidence adapter map separates project facts, build identity, simulator
   captures, and release review; unavailable build and simulator evidence stays
   `blocked`.
+- The evidence provider registry is explicitly opt-in and read-only; its build
+  and simulator providers report missing evidence without running a project
+  command.
 - The release handoff was exercised in dry-run mode; it reports blockers and
   never runs a build, simulator, upload, or publish action.
 - The release approval record is explicit and remains `pending`; technical
@@ -65,6 +68,8 @@
   the approval record is completed.
 - The release approval record has no owner, decision, decision time, or
   evidence because this fixture intentionally has no approving human.
+- The provider registry snapshot is kept in the demo package so the exact
+  read-only checks used by the handoff are inspectable.
 - Store copy is a draft and has not passed product, policy, or platform field
   review.
 

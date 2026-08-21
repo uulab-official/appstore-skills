@@ -42,6 +42,13 @@ reviewable commits.
 - Optional dry-run handoff with build, simulator, and release evidence
 - Publish-disabled handoff reports and explicit blocker gates
 
+### v0.7.0 — Approval-gated handoff
+
+- Explicit human approval records and `blocked` → `pending_approval` →
+  `ready_for_handoff` states without automatic publishing
+- Opt-in, read-only build and simulator capture evidence providers with field,
+  path, timestamp, and image-signature checks
+
 ### Operational tooling
 
 - Dependency-free Skill metadata validator
@@ -56,16 +63,11 @@ reviewable commits.
 
 ## Next
 
-### v0.7.0 — Approval-gated handoff (in progress)
-
-- Explicit human approval records and `blocked` → `pending_approval` →
-  `ready_for_handoff` states without automatic publishing (implemented)
-- Build and simulator capture providers that remain opt-in and read-only
-
 ## Longer term
 
 - More localization and terminology tooling
 - Store-copy experiments with approval history
+- Provider integrations for project-specific, user-approved evidence sources
 
 ## Scope rule
 

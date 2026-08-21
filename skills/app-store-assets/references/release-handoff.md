@@ -19,6 +19,11 @@ evidence; it does not build, launch a simulator, upload, submit, or publish.
 - `human-approval` requires a valid explicit decision record. Missing approval
   is `pending`, while invalid, rejected, or expired approval is `blocked`.
 
+Provider-backed checks are opt-in. Use `build-record` for a recorded build
+identity and `simulator-source-captures` for a capture manifest plus real image
+files. The providers only read existing files; they never invoke a build,
+simulator, upload, or publish command.
+
 The handoff is `blocked` when build identity or simulator evidence is missing,
 or when the approval record is invalid, rejected, or expired. If technical
 checks pass but approval is not recorded, the status is `pending_approval`.
@@ -34,6 +39,9 @@ python scripts/prepare_release_handoff.py \
   --output-root ./my-app/store-assets \
   --platform apple \
   --platform google-play \
+  --provider-file ./skills/app-store-assets/references/evidence-providers.yml \
+  --provider build-record \
+  --provider simulator-source-captures \
   --approval-file ./my-app/store-assets/release-approval.yml \
   --format summary
 ```
@@ -42,4 +50,5 @@ Use `--output` to write a new handoff report. Existing files are never replaced
 unless `--overwrite` is explicit. The report always records
 `publish_status: not-run`. Use `--fail-on-blocked` for technical or terminal
 approval blockers and `--fail-on-pending-approval` when a CI job must have an
-explicit approval before it succeeds.
+explicit approval before it succeeds. Provider checks are informational unless
+`--fail-on-blocked` is explicitly supplied.

@@ -72,6 +72,11 @@ separate project facts, build identity, real screen captures, and release
 approvals. Missing build or simulator evidence is a blocker for claims that
 depend on it.
 
+For existing build and source-capture evidence, optionally select the
+read-only providers in [`evidence-providers.yml`](evidence-providers.yml).
+Their registry is `opt-in` and `enabled_by_default: false`; a provider may
+validate evidence but must never execute a project command.
+
 Optionally preserve the read-only handoff result as `release-handoff.yml`.
 Keep `mode: dry-run` and `publish_status: not-run`; a handoff report is a
 review aid, not a submission or upload record.

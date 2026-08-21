@@ -10,6 +10,7 @@ from pathlib import Path
 import subprocess
 import sys
 
+from inspect_evidence_providers import inspect_provider
 from validate_release_approval import parse_approval, validate as validate_approval
 
 
@@ -32,6 +33,10 @@ REQUIRED_OUTPUT_FILES = (
     "manifest.yml",
     "QA.md",
     "release-report.md",
+)
+DEFAULT_PROVIDER_FILE = (
+    Path(__file__).resolve().parents[1]
+    / "skills/app-store-assets/references/evidence-providers.yml"
 )
 
 
@@ -155,6 +160,8 @@ def prepare_handoff(
     output_root: Path,
     platforms: list[str],
     approval_file: Path | None = None,
+    provider_file: Path | None = None,
+    providers: list[str] | None = None,
 ) -> dict[str, object]:
     project_root = project_root.resolve()
     output_root = output_root.resolve()
@@ -164,6 +171,17 @@ def prepare_handoff(
         output_root,
         ("evidence/build.yml", "evidence/build.json", "build-evidence.yml", "build.yml"),
     )
+    selected_providers = providers or []
+    provider_results: dict[str, dict[str, object]] = {}
+    if selected_providers:
+        selected_provider_file = provider_file or DEFAULT_PROVIDER_FILE
+        for provider_id in selected_providers:
+            provider_results[provider_id] = inspect_provider(
+                provider_id,
+                project_root,
+                output_root,
+                selected_provider_file,
+            )
     checks: list[dict[str, str]] = []
 
     if project_root.is_dir():
@@ -178,7 +196,16 @@ def prepare_handoff(
     else:
         checks.append(check("build-config", "blocked", "no supported build signal found"))
 
-    if build_evidence:
+    build_provider = provider_results.get("build-record")
+    if build_provider is not None:
+        checks.append(
+            check(
+                "build-identity",
+                "pass" if build_provider["status"] == "pass" else "blocked",
+                f"provider build-record: {build_provider['details']}",
+            )
+        )
+    elif build_evidence:
         checks.append(check("build-identity", "pass", build_evidence))
     else:
         checks.append(
@@ -189,7 +216,16 @@ def prepare_handoff(
             )
         )
 
-    if captures:
+    simulator_provider = provider_results.get("simulator-source-captures")
+    if simulator_provider is not None:
+        checks.append(
+            check(
+                "simulator-captures",
+                "pass" if simulator_provider["status"] == "pass" else "blocked",
+                f"provider simulator-source-captures: {simulator_provider['details']}",
+            )
+        )
+    elif captures:
         checks.append(
             check("simulator-captures", "pass", f"found {len(captures)} image capture(s)")
         )
@@ -218,6 +254,15 @@ def prepare_handoff(
 
     approval_check, approval_path = human_approval_check(approval_file)
     checks.append(approval_check)
+    for provider_id, provider_result in provider_results.items():
+        if provider_result["kind"] == "unknown":
+            checks.append(
+                check(
+                    f"evidence-provider:{provider_id}",
+                    "blocked",
+                    str(provider_result["details"]),
+                )
+            )
     blocked = any(item["status"] == "blocked" for item in checks)
     pending_approval = any(item["status"] == "pending" for item in checks)
     next_actions: list[str] = []
@@ -234,6 +279,8 @@ def prepare_handoff(
             next_actions.append("Record the product-owner decision in the supplied approval file.")
     elif approval_check["status"] == "blocked":
         next_actions.append("Fix or replace the release approval record before handoff.")
+    if any(item["status"] == "blocked" for item in provider_results.values()):
+        next_actions.append("Resolve blocked opt-in evidence provider checks before handoff.")
     if not next_actions:
         next_actions.append("Handoff is approved for read-only execution review; publishing remains disabled.")
 
@@ -254,6 +301,11 @@ def prepare_handoff(
             "output_root": str(output_root),
             "source_revision": git_revision(project_root) if project_root.is_dir() else "unavailable",
             "platforms": platforms,
+            "provider_mode": "opt-in-read-only",
+            "provider_file": str((provider_file or DEFAULT_PROVIDER_FILE).resolve())
+            if selected_providers
+            else "not-supplied",
+            "providers": selected_providers,
             "approval_file": approval_path,
             "publish_status": "not-run",
             "checks": checks,
@@ -273,6 +325,8 @@ def render_yaml(report: dict[str, object]) -> str:
         "project_root",
         "output_root",
         "source_revision",
+        "provider_mode",
+        "provider_file",
         "approval_file",
         "publish_status",
     )
@@ -282,6 +336,11 @@ def render_yaml(report: dict[str, object]) -> str:
     lines.append("  platforms:")
     for platform in platforms:
         lines.append(f"    - {quote(str(platform))}")
+    lines.append(f"  provider_mode: {quote(str(handoff['provider_mode']))}")
+    lines.append(f"  provider_file: {quote(str(handoff['provider_file']))}")
+    lines.append("  providers:")
+    for provider in handoff["providers"]:
+        lines.append(f"    - {quote(str(provider))}")
     lines.append("  checks:")
     for item in handoff["checks"]:
         lines.append(f"    - id: {quote(item['id'])}")
@@ -301,6 +360,7 @@ def render_summary(report: dict[str, object]) -> str:
         f"Mode: {handoff['mode']}",
         f"Publish: {handoff['publish_status']}",
         f"Source revision: {handoff['source_revision']}",
+        f"Evidence providers: {', '.join(handoff['providers']) or 'none selected'}",
         f"Approval file: {handoff['approval_file']}",
         "Checks:",
     ]
@@ -319,6 +379,8 @@ def main() -> int:
     parser.add_argument("--format", choices=("yaml", "summary"), default="yaml")
     parser.add_argument("--output", type=Path)
     parser.add_argument("--overwrite", action="store_true")
+    parser.add_argument("--provider-file", type=Path)
+    parser.add_argument("--provider", action="append", default=[])
     parser.add_argument("--approval-file", type=Path)
     parser.add_argument("--fail-on-blocked", action="store_true")
     parser.add_argument("--fail-on-pending-approval", action="store_true")
@@ -336,6 +398,8 @@ def main() -> int:
         args.output_root,
         args.platform,
         approval_file=args.approval_file,
+        provider_file=args.provider_file,
+        providers=args.provider,
     )
     rendered = render_yaml(report) if args.format == "yaml" else render_summary(report)
     if args.output:

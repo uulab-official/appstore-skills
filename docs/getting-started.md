@@ -79,10 +79,14 @@ python scripts/validate_store_output.py ./store-assets
 python scripts/annotate_release_report.py ./store-assets/release-report.md
 python scripts/validate_adapter_specs.py ./store-assets/platform-adapters.yml
 python scripts/validate_evidence_specs.py ./store-assets/evidence-adapters.yml
+python scripts/validate_provider_specs.py ./store-assets/evidence-providers.yml
 python scripts/validate_release_approval.py ./store-assets/release-approval.yml
 python scripts/prepare_release_handoff.py \
   --project-root ./my-app \
   --output-root ./store-assets \
+  --provider-file ./store-assets/evidence-providers.yml \
+  --provider build-record \
+  --provider simulator-source-captures \
   --approval-file ./store-assets/release-approval.yml \
   --format summary
 ```

@@ -29,4 +29,7 @@ label.
 
 Pass the same evidence paths into `brand-context.yml`, `manifest.yml`,
 `QA.md`, and `release-report.md`. The adapters define what must be proven;
-they do not replace current platform documentation or human approval.
+they do not replace current platform documentation or human approval. For
+existing build and capture records, use the opt-in readers in
+[`evidence-providers.yml`](evidence-providers.yml); they add field and file
+integrity checks without executing project commands.

@@ -11,6 +11,7 @@ warnings:
   - The feature-graphic working artboard has not been checked against current Play Console requirements.
   - The platform adapter map is a review plan; Apple and Android source captures are missing.
   - Build and simulator evidence adapters are blocked because no real app project or device captures are present.
+  - Opt-in build and simulator evidence providers are blocked because their source evidence files are absent.
   - Amazon Appstore and Samsung Galaxy Store profiles are documentation-linked concepts, not verified submissions.
   - The release handoff is a dry-run report only; no build, simulator, upload, or publish action ran.
   - The release approval record is pending; no human decision is inferred from structural checks.
