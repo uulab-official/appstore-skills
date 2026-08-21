@@ -30,8 +30,11 @@
   <g transform="translate(92 92)">
     <rect width="78" height="78" rx="22" fill="url(#iconBg)"/>
     <g transform="translate(7 7) scale(.25)">
-      <path fill="url(#iconCoral)" d="M 103 105 C 111 83 136 75 156 86 C 178 99 181 126 172 148 C 164 169 145 181 126 174 C 105 167 96 143 98 124 C 99 116 100 110 103 105 Z"/>
-      <path fill="url(#iconCobalt)" d="M 72 187 C 51 171 49 142 54 113 C 61 74 89 51 124 53 C 158 55 186 77 198 102 C 203 114 198 126 188 129 C 177 132 169 124 163 112 C 153 92 139 81 123 80 C 103 78 91 91 87 112 C 83 133 86 151 98 163 C 108 175 126 178 145 172 C 156 169 166 173 169 182 C 173 192 167 201 157 204 C 125 213 94 204 72 187 Z"/>
+      <path fill="url(#iconCobalt)" d="M 64 200 C 42 178 38 132 48 85 C 58 42 94 25 137 34 C 178 43 207 75 214 112 C 217 128 207 139 195 141 C 184 143 177 135 173 123 C 166 97 150 79 130 73 C 106 67 88 79 81 102 C 74 127 78 152 94 169 C 110 185 132 188 155 180 L 173 208 C 135 224 93 222 64 200 Z"/>
+      <path fill="#10172F" d="M 82 101 C 91 74 117 62 143 69 C 171 76 190 98 195 125 C 197 137 190 145 180 146 L 93 146 C 82 140 78 121 82 101 Z"/>
+      <rect x="82" y="101" width="102" height="52" rx="26" fill="url(#iconCoral)"/>
+      <rect x="112" y="113" width="49" height="28" rx="14" fill="#FF9F94" opacity=".62"/>
+      <rect x="174" y="116" width="31" height="20" rx="10" fill="url(#iconCoral)"/>
     </g>
   </g>
   <text x="92" y="238" fill="#315CFF" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" letter-spacing="2">EXAMPLE APP</text>
@@ -41,8 +44,11 @@
   <g transform="translate(874 220)" filter="url(#shadow)">
     <rect width="206" height="206" rx="54" fill="url(#iconBg)"/>
     <g transform="scale(.8046875)">
-      <path fill="url(#iconCoral)" d="M 103 105 C 111 83 136 75 156 86 C 178 99 181 126 172 148 C 164 169 145 181 126 174 C 105 167 96 143 98 124 C 99 116 100 110 103 105 Z"/>
-      <path fill="url(#iconCobalt)" d="M 72 187 C 51 171 49 142 54 113 C 61 74 89 51 124 53 C 158 55 186 77 198 102 C 203 114 198 126 188 129 C 177 132 169 124 163 112 C 153 92 139 81 123 80 C 103 78 91 91 87 112 C 83 133 86 151 98 163 C 108 175 126 178 145 172 C 156 169 166 173 169 182 C 173 192 167 201 157 204 C 125 213 94 204 72 187 Z"/>
+      <path fill="url(#iconCobalt)" d="M 64 200 C 42 178 38 132 48 85 C 58 42 94 25 137 34 C 178 43 207 75 214 112 C 217 128 207 139 195 141 C 184 143 177 135 173 123 C 166 97 150 79 130 73 C 106 67 88 79 81 102 C 74 127 78 152 94 169 C 110 185 132 188 155 180 L 173 208 C 135 224 93 222 64 200 Z"/>
+      <path fill="#10172F" d="M 82 101 C 91 74 117 62 143 69 C 171 76 190 98 195 125 C 197 137 190 145 180 146 L 93 146 C 82 140 78 121 82 101 Z"/>
+      <rect x="82" y="101" width="102" height="52" rx="26" fill="url(#iconCoral)"/>
+      <rect x="112" y="113" width="49" height="28" rx="14" fill="#FF9F94" opacity=".62"/>
+      <rect x="174" y="116" width="31" height="20" rx="10" fill="url(#iconCoral)"/>
     </g>
   </g>
   <text x="96" y="568" fill="#7B86A2" font-family="Arial, Helvetica, sans-serif" font-size="16" letter-spacing="1">DEMO CONCEPT — NOT A PRODUCTION LISTING</text>

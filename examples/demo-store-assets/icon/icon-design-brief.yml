@@ -1,5 +1,10 @@
 schema_version: 1
-status: draft
+status: review
+
+user_input:
+  requested_finish: dimensional 3D
+  requested_quality: high-detail, app-store-grade visual design
+  requested_component_rule: Components must be intentional and product-relevant, not decorative filler.
 
 product:
   name: Example App
@@ -16,9 +21,9 @@ direction:
   composition: Centered, upright, dominant silhouette with a generous safe area.
   background: Deep indigo #121A3A with a quiet vignette.
   components:
-    primary: Asymmetric cobalt portal loop.
-    secondary: Coral rounded core fully held inside the opening.
-    supporting_cue: One subtle ambient halo that separates the silhouette from the background.
+    primary: Layered asymmetric cobalt portal shell with a visible recessed cavity.
+    secondary: Coral priority core seated inside the cavity with a designed rim and material transition.
+    supporting_cue: One small task-capture tab or hinge detail that remains subordinate to the core.
 
 palette:
   primary: "#315CFF"
@@ -27,9 +32,10 @@ palette:
 
 constraints:
   must_include:
-    - Open asymmetric portal silhouette.
-    - Coral core visible at 32px and 180px.
-    - Premium dimensional material with controlled lighting.
+    - Open asymmetric portal silhouette with visible front-to-back depth.
+    - Coral priority core visible at 32px and 180px.
+    - At least one meaningful secondary construction detail at 180px.
+    - Premium dimensional material with controlled lighting and bevels.
   must_avoid:
     - Checkmarks, bells, locks, eyes, documents, card stacks, and generic rings.
     - Faces, text, UI, device frames, floor props, and noisy texture.
@@ -45,4 +51,6 @@ assumptions:
 
 decisions:
   - decision: Generate a dimensional candidate batch from this draft brief.
+    status: completed
+  - decision: Refine A1 v4 after rejecting shield, ring, and device-like candidates.
     status: review

@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
   <title id="title">Example App favicon</title>
-  <desc id="desc">A cobalt sculptural portal cradling a coral core.</desc>
+  <desc id="desc">A layered cobalt portal holding a coral priority capsule.</desc>
   <defs>
     <radialGradient id="bg" cx="50%" cy="38%" r="78%">
       <stop offset="0" stop-color="#1B2B69"/>
@@ -21,7 +21,9 @@
     </filter>
   </defs>
   <rect width="256" height="256" rx="52" fill="url(#bg)"/>
-  <ellipse cx="128" cy="202" rx="67" ry="13" fill="#315CFF" opacity=".28" filter="url(#soft)"/>
-  <path fill="url(#coral)" d="M 103 105 C 111 83 136 75 156 86 C 178 99 181 126 172 148 C 164 169 145 181 126 174 C 105 167 96 143 98 124 C 99 116 100 110 103 105 Z"/>
-  <path fill="url(#cobalt)" d="M 72 187 C 51 171 49 142 54 113 C 61 74 89 51 124 53 C 158 55 186 77 198 102 C 203 114 198 126 188 129 C 177 132 169 124 163 112 C 153 92 139 81 123 80 C 103 78 91 91 87 112 C 83 133 86 151 98 163 C 108 175 126 178 145 172 C 156 169 166 173 169 182 C 173 192 167 201 157 204 C 125 213 94 204 72 187 Z"/>
+  <path fill="url(#cobalt)" d="M 64 200 C 42 178 38 132 48 85 C 58 42 94 25 137 34 C 178 43 207 75 214 112 C 217 128 207 139 195 141 C 184 143 177 135 173 123 C 166 97 150 79 130 73 C 106 67 88 79 81 102 C 74 127 78 152 94 169 C 110 185 132 188 155 180 L 173 208 C 135 224 93 222 64 200 Z"/>
+  <path fill="#10172F" d="M 82 101 C 91 74 117 62 143 69 C 171 76 190 98 195 125 C 197 137 190 145 180 146 L 93 146 C 82 140 78 121 82 101 Z"/>
+  <rect x="82" y="101" width="102" height="52" rx="26" fill="url(#coral)"/>
+  <rect x="112" y="113" width="49" height="28" rx="14" fill="#FF9F94" opacity=".62"/>
+  <rect x="174" y="116" width="31" height="20" rx="10" fill="url(#coral)"/>
 </svg>

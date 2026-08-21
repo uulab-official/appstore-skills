@@ -6,8 +6,8 @@ blockers:
   - Real app or emulator screenshots are missing.
   - Product and platform approvals are missing.
 warnings:
-  - A1 v3 is a refined demo concept and not a production-approved mark.
-  - The icon design brief is still draft because no product-owner input is recorded.
+  - A1 v4 is a refined demo concept and not a production-approved mark.
+  - The icon design brief is still in review because product-owner approval is missing.
   - Platform requirements were not checked for a live submission.
 platform_docs_checked: []
 human_review_required: true

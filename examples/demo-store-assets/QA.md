@@ -10,16 +10,18 @@
 
 ## Passed
 
-- Three six-candidate icon batches were preserved for comparison.
+- Four six-candidate icon batches were preserved for comparison.
 - The icon design brief records the hero object, secondary component, material,
-  palette, and avoid list; it remains `draft` because no product owner input
-  exists for this fictional fixture.
-- The third batch was screened for generic category symbols and compared at
+  palette, and avoid list; it remains `review` because product-owner approval
+  does not exist for this fictional fixture.
+- The fourth batch was screened for generic category symbols, product-family
+  resemblance, and component hierarchy at
   180×180 and 32×32.
-- A1 was selected because its asymmetric portal and coral core remain legible
-  without a checkmark, card stack, or tiny character detail.
-- A1 was refined once for centering, material consistency, and controlled
-  lighting before raster exports were produced.
+- A1 v4 was selected because its shell, recessed cavity, coral priority
+  capsule, inset panel, and capture tab remain legible without becoming a
+  generic ring, shield, or device.
+- A1 v4 was refined once to remove the cylindrical hinge and preserve the
+  requested task-capture tab before raster exports were produced.
 - The selected icon is square, centered, text-free, and visually consistent
   with the example brand context.
 - Icon exports were resized from one selected master.
