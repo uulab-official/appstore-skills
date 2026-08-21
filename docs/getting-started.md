@@ -131,6 +131,9 @@ defined cadence; this gate is opt-in.
 The same option can be passed to the provider-backed release handoff to block
 stale project, build, or simulator evidence; without it, timestamp checks
 remain format-only.
+Add `--max-reviewer-decision-age-days` when terminal reviewer decisions must be
+refreshed on a defined cadence; future or stale `decided_at` values then block
+the review handoff. This reviewer-decision gate is opt-in.
 Add `--require-current-revision` when the build evidence must correspond to
 the current Git checkout; this strict source binding is also opt-in.
 Add `--locale` when source captures must correspond to a specific localized

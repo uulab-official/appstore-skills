@@ -106,7 +106,11 @@ def release_report_data(package_root: Path) -> tuple[str, list[str], list[str]]:
     return status, [message for _, message in lists["blockers"]], [message for _, message in lists["warnings"]]
 
 
-def review_assignment_data(package_root: Path, assignment_file: Path | None = None) -> dict[str, object]:
+def review_assignment_data(
+    package_root: Path,
+    assignment_file: Path | None = None,
+    max_terminal_decision_age_days: int | None = None,
+) -> dict[str, object]:
     path = assignment_file or package_root / "review-assignment.yml"
     if not path.is_file():
         return {
@@ -116,7 +120,7 @@ def review_assignment_data(package_root: Path, assignment_file: Path | None = No
             "reviewers": [],
             "history_events": 0,
         }
-    result = summarize_assignment(path)
+    result = summarize_assignment(path, max_terminal_decision_age_days=max_terminal_decision_age_days)
     result["path"] = str(path)
     return result
 
@@ -194,6 +198,7 @@ def build_summary(
     assignment_file: Path | None = None,
     previous_assignment_file: Path | None = None,
     max_evidence_age_days: int | None = None,
+    max_terminal_decision_age_days: int | None = None,
 ) -> dict[str, object]:
     manifest_path = package_root / "manifest.yml"
     blockers: list[str] = []
@@ -243,7 +248,11 @@ def build_summary(
             elif adapter["status"] == "pending":
                 warnings.append(f"{adapter['id']} review adapter is pending: {adapter['details']}")
 
-    review_assignment = review_assignment_data(package_root, assignment_file)
+    review_assignment = review_assignment_data(
+        package_root,
+        assignment_file,
+        max_terminal_decision_age_days=max_terminal_decision_age_days,
+    )
     review_assignment_diff = review_assignment_diff_data(
         package_root,
         previous_package_root,
@@ -316,6 +325,7 @@ def build_summary(
         "approval_detail": approval_detail,
         "publish_status": "not-run",
         "evidence_max_age_days": max_evidence_age_days,
+        "reviewer_decision_max_age_days": max_terminal_decision_age_days,
         "asset_counts": dict(sorted(status_counts.items())),
         "assets_total": len(current_records),
         "changes": changes,
@@ -400,6 +410,11 @@ def render_markdown(summary: dict[str, object]) -> str:
     lines.append(f"- Status: `{assignment['status']}`")
     lines.append(f"- Owner: `{assignment.get('owner', 'not assigned')}`")
     lines.append(f"- History events: `{assignment.get('history_events', 0)}`")
+    if summary.get("reviewer_decision_max_age_days") is not None:
+        lines.append(
+            "- Terminal decision max age: "
+            f"`{summary['reviewer_decision_max_age_days']} days`"
+        )
     if assignment["status"] == "not-supplied":
         lines.append("- No review-assignment.yml was supplied.")
     elif assignment["status"] == "invalid":
@@ -491,6 +506,11 @@ def main() -> int:
         type=int,
         help="Optionally block selected terminal adapter evidence older than this many days.",
     )
+    parser.add_argument(
+        "--max-reviewer-decision-age-days",
+        type=int,
+        help="Optionally block terminal reviewer decisions older than this many days.",
+    )
     parser.add_argument("--format", choices=("markdown", "json"), default="markdown")
     parser.add_argument("--output", type=Path)
     parser.add_argument("--overwrite", action="store_true")
@@ -508,6 +528,9 @@ def main() -> int:
     if args.max_evidence_age_days is not None and args.max_evidence_age_days < 0:
         print("--max-evidence-age-days must be zero or greater", file=sys.stderr)
         return 2
+    if args.max_reviewer_decision_age_days is not None and args.max_reviewer_decision_age_days < 0:
+        print("--max-reviewer-decision-age-days must be zero or greater", file=sys.stderr)
+        return 2
     summary = build_summary(
         args.package_root.resolve(),
         args.previous_package_root.resolve() if args.previous_package_root else None,
@@ -516,6 +539,7 @@ def main() -> int:
         assignment_file=args.assignment_file.resolve() if args.assignment_file else None,
         previous_assignment_file=args.previous_assignment_file.resolve() if args.previous_assignment_file else None,
         max_evidence_age_days=args.max_evidence_age_days,
+        max_terminal_decision_age_days=args.max_reviewer_decision_age_days,
     )
     rendered = render_markdown(summary) if args.format == "markdown" else json.dumps(summary, indent=2, ensure_ascii=False)
     rendered += "\n" if not rendered.endswith("\n") else ""

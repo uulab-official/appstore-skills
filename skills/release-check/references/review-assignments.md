@@ -38,12 +38,18 @@ python scripts/validate_review_assignments.py \
   ./store-assets/review-assignment.yml \
   --adapter policy-review \
   --adapter accessibility-review \
-  --adapter privacy-review
+  --adapter privacy-review \
+  --max-terminal-decision-age-days 30
 ```
 
 The adapter options are optional. When supplied, every selected adapter must
 be declared in the registry and covered by at least one reviewer; unknown
 coverage IDs also fail validation.
+
+`--max-terminal-decision-age-days` is an opt-in freshness gate for terminal
+reviewer decisions. It rejects decisions older than the configured age and
+future `decided_at` timestamps. Without the flag, timestamps remain
+format-checked only.
 
 The handoff generator automatically reads `review-assignment.yml` from the
 package root when it exists and renders the assignment state, reviewer rows,

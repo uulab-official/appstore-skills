@@ -93,6 +93,64 @@ review:
         self.assertEqual(result.returncode, 2)
         self.assertIn("must be zero or greater", result.stderr)
 
+    def test_reviewer_decision_age_gate_is_forwarded_to_assignment(self) -> None:
+        with TemporaryDirectory() as directory:
+            package = Path(directory) / "package"
+            package.mkdir()
+            (package / "manifest.yml").write_text(
+                "schema_version: 1\nassets:\n  - path: icon.png\n    status: review\n    kind: app-icon\n",
+                encoding="utf-8",
+            )
+            (package / "review-assignment.yml").write_text(
+                """schema_version: 1
+review_assignment:
+  id: example
+  package: example
+  status: approved
+  owner: Product owner
+  reviewers:
+    - id: owner
+      role: product
+      required: true
+      status: approved
+      scope: [claims]
+      coverage: [policy-review]
+      assigned_to: Product owner
+      assigned_at: 2000-01-01T10:00:00Z
+      decision: approved
+      decided_at: 2000-01-01T11:00:00Z
+      evidence: [ticket-1]
+      notes: decision recorded
+  history:
+    - at: 2000-01-01T10:00:00Z
+      action: decided
+      actor: Product owner
+      reviewer: owner
+      note: decision recorded
+""",
+                encoding="utf-8",
+            )
+
+            result = self.run_script(
+                "--package-root", str(package),
+                "--max-reviewer-decision-age-days", "30",
+                "--format", "json",
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            summary = json.loads(result.stdout)
+            self.assertEqual(summary["reviewer_decision_max_age_days"], 30)
+            self.assertTrue(any("decided_at is older than max age (30 days)" in blocker for blocker in summary["blockers"]))
+
+    def test_negative_reviewer_decision_age_is_rejected(self) -> None:
+        result = self.run_script(
+            "--package-root", str(DEMO),
+            "--max-reviewer-decision-age-days", "-1",
+        )
+
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("must be zero or greater", result.stderr)
+
     def test_previous_manifest_reports_added_removed_and_changed(self) -> None:
         with TemporaryDirectory() as directory:
             root = Path(directory)

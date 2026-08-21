@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 import argparse
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 import re
 
@@ -98,11 +98,17 @@ def parse_assignment(text: str) -> tuple[dict[str, str], list[dict[str, object]]
 
 
 def valid_timestamp(value: str) -> bool:
+    return timestamp_value(value) is not None
+
+
+def timestamp_value(value: str) -> datetime | None:
     try:
-        datetime.fromisoformat(value.strip().replace("Z", "+00:00"))
+        timestamp = datetime.fromisoformat(value.strip().replace("Z", "+00:00"))
     except ValueError:
-        return False
-    return True
+        return None
+    if timestamp.tzinfo is None:
+        timestamp = timestamp.replace(tzinfo=timezone.utc)
+    return timestamp
 
 
 def derived_assignment_status(reviewers: list[dict[str, object]]) -> str:
@@ -124,11 +130,14 @@ def validate(
     path: Path,
     adapter_file: Path | None = None,
     selected_adapters: list[str] | None = None,
+    max_terminal_decision_age_days: int | None = None,
 ) -> list[str]:
     if not path.is_file():
         return [f"review assignment file does not exist: {path}"]
     text = path.read_text(encoding="utf-8")
     errors: list[str] = []
+    if max_terminal_decision_age_days is not None and max_terminal_decision_age_days < 0:
+        errors.append("max_terminal_decision_age_days must be zero or greater")
     if not re.search(r"^schema_version:\s*1\s*$", text, re.MULTILINE):
         errors.append(f"{path}: must declare schema_version: 1")
     if re.search(r"^\s{2,}(commands?|shell|exec):", text, re.MULTILINE):
@@ -190,6 +199,18 @@ def validate(
                 errors.append(f"{prefix}: terminal reviewer decision requires ISO-8601 decided_at")
             if not isinstance(evidence, list) or not evidence:
                 errors.append(f"{prefix}: terminal reviewer decision requires evidence")
+            if max_terminal_decision_age_days is not None:
+                decided_at = timestamp_value(str(reviewer.get("decided_at", "")))
+                if decided_at is not None:
+                    now = datetime.now(timezone.utc)
+                    if decided_at > now:
+                        errors.append(
+                            f"{prefix}: decided_at cannot be in the future when the terminal decision age gate is enabled"
+                        )
+                    elif now - decided_at > timedelta(days=max_terminal_decision_age_days):
+                        errors.append(
+                            f"{prefix}: decided_at is older than max age ({max_terminal_decision_age_days} days)"
+                        )
         elif status == "in_review" and not str(reviewer.get("assigned_to", "")).strip():
             errors.append(f"{prefix}: in_review requires assigned_to")
 
@@ -248,8 +269,8 @@ def validate(
     return errors
 
 
-def summarize(path: Path) -> dict[str, object]:
-    errors = validate(path)
+def summarize(path: Path, max_terminal_decision_age_days: int | None = None) -> dict[str, object]:
+    errors = validate(path, max_terminal_decision_age_days=max_terminal_decision_age_days)
     if errors:
         return {"status": "invalid", "details": "; ".join(errors), "reviewers": [], "history_events": 0}
     fields, reviewers, history = parse_assignment(path.read_text(encoding="utf-8"))
@@ -339,13 +360,27 @@ def main() -> int:
     parser.add_argument("paths", nargs="+", type=Path, help="Reviewer assignment records")
     parser.add_argument("--adapter-file", type=Path, help="Review adapter registry for coverage cross-validation")
     parser.add_argument("--adapter", action="append", default=[], help="Selected adapter ID that must have reviewer coverage")
+    parser.add_argument(
+        "--max-terminal-decision-age-days",
+        type=int,
+        help="Optionally reject terminal reviewer decisions older than this many days.",
+    )
     args = parser.parse_args()
     errors: list[str] = []
     if args.adapter and args.adapter_file is None:
         errors.append("--adapter-file is required when --adapter is provided")
+    if args.max_terminal_decision_age_days is not None and args.max_terminal_decision_age_days < 0:
+        errors.append("--max-terminal-decision-age-days must be zero or greater")
     for path in args.paths:
         try:
-            errors.extend(validate(path, adapter_file=args.adapter_file, selected_adapters=args.adapter))
+            errors.extend(
+                validate(
+                    path,
+                    adapter_file=args.adapter_file,
+                    selected_adapters=args.adapter,
+                    max_terminal_decision_age_days=args.max_terminal_decision_age_days,
+                )
+            )
         except (OSError, UnicodeDecodeError) as error:
             errors.append(f"{path}: {error}")
     if errors:

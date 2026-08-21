@@ -28,6 +28,9 @@ missing owner is a visible warning and never an inferred pass.
 Use `--max-evidence-age-days` to opt into freshness enforcement for terminal
 adapter evidence. Stale or future-dated terminal records become blockers in
 the handoff; pending records remain pending and the default is unchanged.
+Use `--max-reviewer-decision-age-days` to apply the same opt-in freshness gate
+to terminal reviewer decisions in `review-assignment.yml`; stale or future
+`decided_at` values become reviewer-assignment blockers.
 
 The generator never rewrites the source manifest or release report. It refuses
 to overwrite an existing summary unless `--overwrite` is explicit.

@@ -167,6 +167,7 @@ validation tooling:
 - opt-in policy, accessibility, and privacy review adapters with pending-visible states
 - terminal adapter evidence cross-checked against assigned reviewer coverage
 - opt-in freshness gates for terminal adapter evidence in review handoffs
+- opt-in freshness gates for terminal reviewer decisions with future-date checks
 - reviewer assignment records with reviewer scopes, adapter coverage, deterministic status, evidence references, and chronological decision history
 
 The repository also includes deterministic, dependency-free checks for skill

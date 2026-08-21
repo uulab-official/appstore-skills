@@ -92,6 +92,8 @@
   assets are labeled `baseline` rather than being presented as invented adds.
 - Policy and accessibility adapter records are absent by design, so selected
   adapters remain `pending` and require designated human review.
+- Reviewer decision freshness is not enabled in this fixture; production
+  handoffs can opt into a maximum terminal decision age.
 
 ## Decision
 

@@ -80,8 +80,6 @@ reviewable commits.
 - Reviewer assignment and chronological decision-history ergonomics without
   automatic approval
 
-## Next
-
 ### v1.1.0 — Review packet quality
 
 - More granular reviewer scopes and evidence references across platform,
@@ -100,13 +98,15 @@ reviewable commits.
 - Source-capture manifest uniqueness checks that protect scope coverage
 - Project-owned evidence registries with explicit selection, project-root
   ownership checks, and output-root path containment
-
-## Longer term
-
 - Localized copy field-parity checks across Apple and Google Play metadata
 - Verified locale/copy review records with reviewer and timestamp gates
 - Normalized token-aware terminology checks for localized copy
 - Project-facts provider for project-specific, user-approved product evidence
+
+## Next
+
+Prioritize forward-test feedback from external app projects and current
+platform-policy changes before committing the v1.2 scope.
 
 ## Scope rule
 

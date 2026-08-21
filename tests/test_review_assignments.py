@@ -32,6 +32,20 @@ class ReviewAssignmentTests(unittest.TestCase):
             command.extend(["--adapter", adapter])
         return subprocess.run(command, check=False, capture_output=True, text=True)
 
+    def run_validator_with_age_gate(self, path: Path, age_days: int) -> subprocess.CompletedProcess[str]:
+        return subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                str(path),
+                "--max-terminal-decision-age-days",
+                str(age_days),
+            ],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+
     def test_demo_assignment_passes_and_stays_pending(self) -> None:
         result = self.run_validator(DEMO)
 
@@ -177,6 +191,63 @@ review_assignment:
 
             self.assertEqual(result.returncode, 1)
             self.assertIn("terminal reviewer decision requires evidence", result.stdout)
+
+    def test_terminal_decision_age_gate_rejects_stale_and_future_decisions(self) -> None:
+        with TemporaryDirectory() as directory:
+            path = Path(directory) / "review-assignment.yml"
+            path.write_text(
+                """schema_version: 1
+review_assignment:
+  id: example
+  package: example
+  status: approved
+  owner: Product owner
+  reviewers:
+    - id: owner
+      role: product
+      required: true
+      status: approved
+      scope: [claims]
+      coverage: [policy-review]
+      assigned_to: Product owner
+      assigned_at: 2000-01-01T10:00:00Z
+      decision: approved
+      decided_at: 2000-01-01T11:00:00Z
+      evidence: [ticket-1]
+      notes: decision recorded
+  history:
+    - at: 2000-01-01T10:00:00Z
+      action: decided
+      actor: Product owner
+      reviewer: owner
+      note: decision recorded
+""",
+                encoding="utf-8",
+            )
+
+            stale = self.run_validator_with_age_gate(path, 30)
+
+            self.assertEqual(stale.returncode, 1)
+            self.assertIn("decided_at is older than max age (30 days)", stale.stdout)
+
+            path.write_text(
+                path.read_text(encoding="utf-8").replace(
+                    "decided_at: 2000-01-01T11:00:00Z",
+                    "decided_at: 2999-01-01T11:00:00Z",
+                ),
+                encoding="utf-8",
+            )
+
+            future = self.run_validator_with_age_gate(path, 30)
+
+            self.assertEqual(future.returncode, 1)
+            self.assertIn("decided_at cannot be in the future", future.stdout)
+
+    def test_negative_terminal_decision_age_is_rejected(self) -> None:
+        result = self.run_validator_with_age_gate(DEMO, -1)
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("must be zero or greater", result.stdout)
 
     def test_reviewer_scope_is_required_even_before_assignment(self) -> None:
         with TemporaryDirectory() as directory:
