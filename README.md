@@ -153,6 +153,8 @@ validation tooling:
 - optional requested-locale binding for simulator evidence
 - optional requested-device-family binding for simulator evidence
 - optional Cartesian scope-coverage gates for simulator evidence
+- duplicate source-capture path checks that prevent relabeled files from
+  masquerading as multiple scope combinations
 - locale plans and terminology QA that preserve review blockers
 - reversible store-copy experiment records with approval history
 - diff-friendly reviewer handoff summaries with manifest and reviewer-assignment baselines

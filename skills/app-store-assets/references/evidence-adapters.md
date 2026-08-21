@@ -21,7 +21,8 @@ label.
 1. Inspect the project and record source paths with the `project` adapter.
 2. Identify the exact build or commit with the `build` adapter.
 3. Capture real screens through a simulator/emulator or supplied device images
-   with the `simulator` adapter.
+   with the `simulator` adapter. Keep each source image path unique in the
+   capture manifest so one file cannot be relabeled as multiple scopes.
 4. Map each selected asset to its evidence and run platform/release review with
    the `release` adapter.
 5. Keep missing evidence `blocked`; do not upgrade a concept to a final asset

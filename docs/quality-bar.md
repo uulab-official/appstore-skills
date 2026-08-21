@@ -112,6 +112,8 @@ changes.
   implicit coverage for every device surface.
 - When scope coverage is enabled, every requested platform × locale × device
   family combination must have a source capture; partial coverage must block.
+- Source capture manifest paths must be unique; duplicate paths must block and
+  must never be counted as coverage for another scope combination.
 
 ## Skill acceptance criteria
 

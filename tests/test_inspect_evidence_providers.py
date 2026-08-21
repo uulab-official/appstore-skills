@@ -473,6 +473,41 @@ captures:
             self.assertEqual(result.returncode, 2)
             self.assertIn("requires at least one scope flag", result.stderr)
 
+    def test_duplicate_capture_path_is_blocked(self) -> None:
+        with TemporaryDirectory() as directory:
+            project = Path(directory) / "app"
+            output = project / "store-assets"
+            project.mkdir()
+            output.mkdir()
+            create_evidence(output)
+            (output / "evidence" / "captures.yml").write_text(
+                (output / "evidence" / "captures.yml").read_text(encoding="utf-8")
+                + """  - path: screenshots/source/home.png
+    platform: google-play
+    device_family: android-phone
+    locale: ko-KR
+    captured_at: 2026-08-21T10:06:00Z
+    provenance: android-emulator
+""",
+                encoding="utf-8",
+            )
+
+            result = self.run_inspector(
+                "--provider-file", str(PROVIDER_FILE),
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--provider", "simulator-source-captures",
+                "--platform", "apple",
+                "--platform", "google-play",
+                "--locale", "en-US",
+                "--device-family", "iphone",
+                "--require-scope-coverage",
+                "--fail-on-blocked",
+            )
+
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("capture 2 path is duplicated: screenshots/source/home.png", result.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()

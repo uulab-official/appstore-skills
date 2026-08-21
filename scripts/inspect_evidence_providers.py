@@ -326,7 +326,15 @@ def inspect_simulator(
     required = parse_list(provider.get("required_fields", ""))
     capture_root = Path(provider["capture_root"])
     output_resolved = output_root.resolve()
+    seen_capture_paths: set[str] = set()
     for index, record in enumerate(records, start=1):
+        path_value = record.get("path", "")
+        if path_value:
+            path_key = Path(path_value).as_posix()
+            if path_key in seen_capture_paths:
+                errors.append(f"capture {index} path is duplicated: {path_value}")
+            else:
+                seen_capture_paths.add(path_key)
         missing = [field for field in required if not record.get(field)]
         if missing:
             errors.append(f"capture {index} missing fields: {', '.join(missing)}")

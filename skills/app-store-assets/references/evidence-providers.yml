@@ -24,4 +24,4 @@ providers:
     required_fields: [path, platform, device_family, locale, captured_at, provenance]
     proves: Source images are real capture artifacts with named platform, device family, locale, and provenance.
     side_effects: none
-    required_checks: [manifest-exists, paths-contained, image-signature, metadata, timestamp]
+    required_checks: [manifest-exists, paths-contained, unique-paths, image-signature, metadata, timestamp]

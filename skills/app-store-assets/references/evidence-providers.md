@@ -11,8 +11,8 @@ The registry in
   revision, artifact identity, target platform, source, and timestamp are
   recorded.
 - `simulator-source-captures` reads `evidence/captures.yml`, checks capture
-  metadata, confirms each path stays under `screenshots/source/`, and verifies
-  basic PNG/JPEG/WebP file signatures.
+  metadata, confirms each path stays under `screenshots/source/`, rejects
+  duplicate manifest paths, and verifies basic PNG/JPEG/WebP file signatures.
 
 ## Build evidence
 
@@ -47,6 +47,9 @@ captures:
 
 The provider validates file identity and metadata; it cannot prove that a
 human-operated simulator session was honest or that private data is absent.
+Every manifest path must be unique. Reusing one source image under multiple
+platform, locale, or device-family labels is blocked and cannot satisfy scope
+coverage.
 Keep visual fidelity, privacy, accessibility, and product review in `QA.md`
 and `release-report.md`.
 
