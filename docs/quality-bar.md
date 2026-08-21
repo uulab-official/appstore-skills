@@ -95,6 +95,9 @@ changes.
   but must never infer human approval or legal/accessibility compliance. When
   freshness is enabled, stale or future-dated terminal evidence must remain
   blocked rather than being treated as current.
+- Provider-backed build and simulator evidence must remain read-only and
+  opt-in; when freshness is enabled, stale or future-dated `inspected_at` and
+  `captured_at` values must block the handoff.
 
 ## Skill acceptance criteria
 

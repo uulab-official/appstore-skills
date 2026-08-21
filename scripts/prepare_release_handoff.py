@@ -162,6 +162,7 @@ def prepare_handoff(
     approval_file: Path | None = None,
     provider_file: Path | None = None,
     providers: list[str] | None = None,
+    max_evidence_age_days: int | None = None,
 ) -> dict[str, object]:
     project_root = project_root.resolve()
     output_root = output_root.resolve()
@@ -181,6 +182,7 @@ def prepare_handoff(
                 project_root,
                 output_root,
                 selected_provider_file,
+                max_age_days=max_evidence_age_days,
             )
     checks: list[dict[str, str]] = []
 
@@ -302,6 +304,7 @@ def prepare_handoff(
             "source_revision": git_revision(project_root) if project_root.is_dir() else "unavailable",
             "platforms": platforms,
             "provider_mode": "opt-in-read-only",
+            "evidence_max_age_days": max_evidence_age_days,
             "provider_file": str((provider_file or DEFAULT_PROVIDER_FILE).resolve())
             if selected_providers
             else "not-supplied",
@@ -326,18 +329,28 @@ def render_yaml(report: dict[str, object]) -> str:
         "output_root",
         "source_revision",
         "provider_mode",
+        "evidence_max_age_days",
         "provider_file",
         "approval_file",
         "publish_status",
     )
     for key in scalar_keys:
-        lines.append(f"  {key}: {quote(str(handoff[key]))}")
+        value = handoff[key]
+        if key == "evidence_max_age_days":
+            lines.append(
+                "  evidence_max_age_days: null"
+                if value is None
+                else f"  evidence_max_age_days: {value}"
+            )
+        else:
+            lines.append(f"  {key}: null" if value is None else f"  {key}: {quote(str(value))}")
     platforms = handoff["platforms"]
-    lines.append("  platforms:")
-    for platform in platforms:
-        lines.append(f"    - {quote(str(platform))}")
-    lines.append(f"  provider_mode: {quote(str(handoff['provider_mode']))}")
-    lines.append(f"  provider_file: {quote(str(handoff['provider_file']))}")
+    if platforms:
+        lines.append("  platforms:")
+        for platform in platforms:
+            lines.append(f"    - {quote(str(platform))}")
+    else:
+        lines.append("  platforms: []")
     lines.append("  providers:")
     for provider in handoff["providers"]:
         lines.append(f"    - {quote(str(provider))}")
@@ -361,6 +374,11 @@ def render_summary(report: dict[str, object]) -> str:
         f"Publish: {handoff['publish_status']}",
         f"Source revision: {handoff['source_revision']}",
         f"Evidence providers: {', '.join(handoff['providers']) or 'none selected'}",
+        (
+            f"Evidence max age: {handoff['evidence_max_age_days']} days"
+            if handoff["evidence_max_age_days"] is not None
+            else "Evidence max age: disabled"
+        ),
         f"Approval file: {handoff['approval_file']}",
         "Checks:",
     ]
@@ -381,6 +399,11 @@ def main() -> int:
     parser.add_argument("--overwrite", action="store_true")
     parser.add_argument("--provider-file", type=Path)
     parser.add_argument("--provider", action="append", default=[])
+    parser.add_argument(
+        "--max-evidence-age-days",
+        type=int,
+        help="Optionally block selected build/capture evidence older than this many days.",
+    )
     parser.add_argument("--approval-file", type=Path)
     parser.add_argument("--fail-on-blocked", action="store_true")
     parser.add_argument("--fail-on-pending-approval", action="store_true")
@@ -392,6 +415,9 @@ def main() -> int:
     if not args.output_root.is_dir():
         print(f"Output root does not exist: {args.output_root}", file=sys.stderr)
         return 2
+    if args.max_evidence_age_days is not None and args.max_evidence_age_days < 0:
+        print("--max-evidence-age-days must be zero or greater", file=sys.stderr)
+        return 2
 
     report = prepare_handoff(
         args.project_root,
@@ -400,6 +426,7 @@ def main() -> int:
         approval_file=args.approval_file,
         provider_file=args.provider_file,
         providers=args.provider,
+        max_evidence_age_days=args.max_evidence_age_days,
     )
     rendered = render_yaml(report) if args.format == "yaml" else render_summary(report)
     if args.output:

@@ -42,6 +42,7 @@ python scripts/prepare_release_handoff.py \
   --provider-file ./skills/app-store-assets/references/evidence-providers.yml \
   --provider build-record \
   --provider simulator-source-captures \
+  --max-evidence-age-days 30 \
   --approval-file ./my-app/store-assets/release-approval.yml \
   --format summary
 ```
@@ -51,4 +52,6 @@ unless `--overwrite` is explicit. The report always records
 `publish_status: not-run`. Use `--fail-on-blocked` for technical or terminal
 approval blockers and `--fail-on-pending-approval` when a CI job must have an
 explicit approval before it succeeds. Provider checks are informational unless
-`--fail-on-blocked` is explicitly supplied.
+`--fail-on-blocked` is explicitly supplied. `--max-evidence-age-days` is
+optional; when enabled, stale or future-dated `inspected_at`/`captured_at`
+values block the selected providers while leaving missing evidence visible.

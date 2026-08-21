@@ -118,6 +118,78 @@ class InspectEvidenceProvidersTests(unittest.TestCase):
 
             self.assertEqual(result.returncode, 1)
 
+    def test_stale_build_evidence_can_gate(self) -> None:
+        with TemporaryDirectory() as directory:
+            project = Path(directory) / "app"
+            output = project / "store-assets"
+            project.mkdir()
+            output.mkdir()
+            create_evidence(output)
+            build = output / "evidence" / "build.yml"
+            build.write_text(
+                build.read_text(encoding="utf-8").replace(
+                    "2026-08-21T10:00:00Z", "2000-01-01T00:00:00Z"
+                ),
+                encoding="utf-8",
+            )
+
+            result = self.run_inspector(
+                "--provider-file", str(PROVIDER_FILE),
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--provider", "build-record",
+                "--max-age-days", "30",
+                "--fail-on-blocked",
+            )
+
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("older than max age (30 days)", result.stdout)
+
+    def test_future_capture_evidence_can_gate(self) -> None:
+        with TemporaryDirectory() as directory:
+            project = Path(directory) / "app"
+            output = project / "store-assets"
+            project.mkdir()
+            output.mkdir()
+            create_evidence(output)
+            captures = output / "evidence" / "captures.yml"
+            captures.write_text(
+                captures.read_text(encoding="utf-8").replace(
+                    "2026-08-21T10:05:00Z", "2999-01-01T00:00:00Z"
+                ),
+                encoding="utf-8",
+            )
+
+            result = self.run_inspector(
+                "--provider-file", str(PROVIDER_FILE),
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--provider", "simulator-source-captures",
+                "--max-age-days", "30",
+                "--fail-on-blocked",
+            )
+
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("cannot be in the future", result.stdout)
+
+    def test_negative_max_age_is_rejected(self) -> None:
+        with TemporaryDirectory() as directory:
+            project = Path(directory) / "app"
+            output = project / "store-assets"
+            project.mkdir()
+            output.mkdir()
+
+            result = self.run_inspector(
+                "--provider-file", str(PROVIDER_FILE),
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--provider", "build-record",
+                "--max-age-days", "-1",
+            )
+
+            self.assertEqual(result.returncode, 2)
+            self.assertIn("must be zero or greater", result.stderr)
+
 
 if __name__ == "__main__":
     unittest.main()

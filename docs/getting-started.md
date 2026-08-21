@@ -108,6 +108,7 @@ python scripts/prepare_release_handoff.py \
   --provider-file ./store-assets/evidence-providers.yml \
   --provider build-record \
   --provider simulator-source-captures \
+  --max-evidence-age-days 30 \
   --approval-file ./store-assets/release-approval.yml \
   --format summary
 ```
@@ -121,3 +122,6 @@ that gate is intentional. Use `--fail-on-pending-approval` when CI must have an
 explicit human decision record. Add `--max-evidence-age-days` when a project
 needs terminal policy, accessibility, or privacy evidence to be refreshed on a
 defined cadence; this gate is opt-in.
+The same option can be passed to the provider-backed release handoff to block
+stale build or simulator evidence; without it, timestamp checks remain
+format-only.

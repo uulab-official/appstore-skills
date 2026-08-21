@@ -104,6 +104,10 @@ workflow intentionally requires the human decision. When build or source
 capture evidence files already exist, select the opt-in providers described in
 [`evidence-providers.yml`](../app-store-assets/references/evidence-providers.yml);
 they only inspect files and do not execute the app project.
+When provider evidence must be refreshed on a cadence, pass
+`--max-evidence-age-days <days>` to the handoff command. This opt-in gate
+blocks stale or future-dated build and simulator evidence; the default leaves
+existing provider behavior unchanged.
 For optional policy, accessibility, and privacy review, read
 [`references/review-adapters.md`](references/review-adapters.md) and select
 only the adapters that have a designated reviewer and evidence path.

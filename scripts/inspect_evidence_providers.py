@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 import argparse
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 import json
 from pathlib import Path
 import re
@@ -86,12 +86,30 @@ def capture_records(path: Path) -> tuple[list[dict[str, str]], list[str]]:
     return records, errors
 
 
-def valid_timestamp(value: str) -> bool:
+def parse_timestamp(value: str) -> datetime | None:
     try:
-        datetime.fromisoformat(value.strip().replace("Z", "+00:00"))
+        parsed = datetime.fromisoformat(value.strip().replace("Z", "+00:00"))
     except ValueError:
-        return False
-    return True
+        return None
+    return parsed.replace(tzinfo=timezone.utc) if parsed.tzinfo is None else parsed
+
+
+def valid_timestamp(value: str) -> bool:
+    return parse_timestamp(value) is not None
+
+
+def freshness_error(label: str, value: str, max_age_days: int | None) -> str | None:
+    if max_age_days is None:
+        return None
+    parsed = parse_timestamp(value)
+    if parsed is None:
+        return None
+    age = datetime.now(timezone.utc) - parsed
+    if age.total_seconds() < 0:
+        return f"{label} cannot be in the future"
+    if age > timedelta(days=max_age_days):
+        return f"{label} is older than max age ({max_age_days} days)"
+    return None
 
 
 def image_error(path: Path) -> str | None:
@@ -120,7 +138,11 @@ def result(provider_id: str, kind: str, status: str, details: str) -> dict[str, 
     return {"id": provider_id, "kind": kind, "status": status, "details": details}
 
 
-def inspect_build(provider: dict[str, str], output_root: Path) -> dict[str, object]:
+def inspect_build(
+    provider: dict[str, str],
+    output_root: Path,
+    max_age_days: int | None = None,
+) -> dict[str, object]:
     provider_id = provider["id"]
     evidence_path = output_root / provider["evidence_path"]
     if not evidence_path.is_file():
@@ -132,12 +154,24 @@ def inspect_build(provider: dict[str, str], output_root: Path) -> dict[str, obje
         errors.append("missing fields: " + ", ".join(missing))
     if fields.get("inspected_at") and not valid_timestamp(fields["inspected_at"]):
         errors.append("inspected_at is not an ISO-8601 timestamp")
+    if fields.get("inspected_at"):
+        stale_error = freshness_error(
+            "build evidence inspected_at",
+            fields["inspected_at"],
+            max_age_days,
+        )
+        if stale_error:
+            errors.append(stale_error)
     if errors:
         return result(provider_id, "build", "blocked", "; ".join(errors))
     return result(provider_id, "build", "pass", f"validated {provider['evidence_path']}")
 
 
-def inspect_simulator(provider: dict[str, str], output_root: Path) -> dict[str, object]:
+def inspect_simulator(
+    provider: dict[str, str],
+    output_root: Path,
+    max_age_days: int | None = None,
+) -> dict[str, object]:
     provider_id = provider["id"]
     evidence_path = output_root / provider["evidence_path"]
     if not evidence_path.is_file():
@@ -176,6 +210,13 @@ def inspect_simulator(provider: dict[str, str], output_root: Path) -> dict[str, 
             errors.append(f"capture {index} {record['path']}: {image_problem}")
         if not valid_timestamp(record["captured_at"]):
             errors.append(f"capture {index} captured_at is not an ISO-8601 timestamp")
+        stale_error = freshness_error(
+            f"capture {index} captured_at",
+            record["captured_at"],
+            max_age_days,
+        )
+        if stale_error:
+            errors.append(stale_error)
     if errors:
         return result(provider_id, "simulator", "blocked", "; ".join(errors))
     return result(
@@ -191,6 +232,7 @@ def inspect_provider(
     project_root: Path,
     output_root: Path,
     provider_file: Path,
+    max_age_days: int | None = None,
 ) -> dict[str, object]:
     del project_root
     provider_file = provider_file.resolve()
@@ -202,8 +244,8 @@ def inspect_provider(
     if provider is None:
         return result(provider_id, "unknown", "blocked", "provider is not declared in the registry")
     if provider["kind"] == "build":
-        return inspect_build(provider, output_root.resolve())
-    return inspect_simulator(provider, output_root.resolve())
+        return inspect_build(provider, output_root.resolve(), max_age_days=max_age_days)
+    return inspect_simulator(provider, output_root.resolve(), max_age_days=max_age_days)
 
 
 def render_summary(results: list[dict[str, object]]) -> str:
@@ -219,6 +261,11 @@ def main() -> int:
     parser.add_argument("--project-root", type=Path, required=True)
     parser.add_argument("--output-root", type=Path, required=True)
     parser.add_argument("--provider", action="append", required=True)
+    parser.add_argument(
+        "--max-age-days",
+        type=int,
+        help="Optionally block build/capture evidence older than this many days.",
+    )
     parser.add_argument("--format", choices=("summary", "json"), default="summary")
     parser.add_argument("--fail-on-blocked", action="store_true")
     args = parser.parse_args()
@@ -229,9 +276,18 @@ def main() -> int:
     if not args.output_root.is_dir():
         print(f"Output root does not exist: {args.output_root}", file=sys.stderr)
         return 2
+    if args.max_age_days is not None and args.max_age_days < 0:
+        print("--max-age-days must be zero or greater", file=sys.stderr)
+        return 2
 
     results = [
-        inspect_provider(provider_id, args.project_root, args.output_root, args.provider_file)
+        inspect_provider(
+            provider_id,
+            args.project_root,
+            args.output_root,
+            args.provider_file,
+            max_age_days=args.max_age_days,
+        )
         for provider_id in args.provider
     ]
     if args.format == "json":

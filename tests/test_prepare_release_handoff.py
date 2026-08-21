@@ -136,6 +136,10 @@ class PrepareReleaseHandoffTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertIn('status: "pending_approval"', result.stdout)
             self.assertIn('publish_status: "not-run"', result.stdout)
+            self.assertIn("evidence_max_age_days: null", result.stdout)
+            self.assertIn("platforms: []", result.stdout)
+            self.assertEqual(result.stdout.count('provider_mode: "opt-in-read-only"'), 1)
+            self.assertEqual(result.stdout.count("provider_file:"), 1)
 
     def test_approved_evidence_is_ready_for_handoff(self) -> None:
         with TemporaryDirectory() as directory:
@@ -213,6 +217,51 @@ class PrepareReleaseHandoffTests(unittest.TestCase):
             )
 
             self.assertEqual(result.returncode, 1)
+
+    def test_evidence_age_gate_is_forwarded_to_selected_providers(self) -> None:
+        with TemporaryDirectory() as directory:
+            project = Path(directory) / "app"
+            output = project / "store-assets"
+            project.mkdir()
+            output.mkdir()
+            (project / "package.json").write_text("{}\n", encoding="utf-8")
+            create_output(output, with_evidence=True, with_capture=True)
+            build = output / "evidence" / "build.yml"
+            build.write_text(
+                build.read_text(encoding="utf-8").replace(
+                    "2026-08-21T10:00:00Z", "2000-01-01T00:00:00Z"
+                ),
+                encoding="utf-8",
+            )
+
+            result = self.run_script(
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--provider", "build-record",
+                "--max-evidence-age-days", "30",
+                "--format", "summary",
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn("Release handoff: blocked", result.stdout)
+            self.assertIn("Evidence max age: 30 days", result.stdout)
+            self.assertIn("build evidence inspected_at is older than max age (30 days)", result.stdout)
+
+    def test_negative_evidence_age_is_rejected(self) -> None:
+        with TemporaryDirectory() as directory:
+            project = Path(directory) / "app"
+            output = project / "store-assets"
+            project.mkdir()
+            output.mkdir()
+
+            result = self.run_script(
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--max-evidence-age-days", "-1",
+            )
+
+            self.assertEqual(result.returncode, 2)
+            self.assertIn("must be zero or greater", result.stderr)
 
 
 if __name__ == "__main__":
