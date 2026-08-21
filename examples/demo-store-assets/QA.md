@@ -70,8 +70,12 @@
   evidence because this fixture intentionally has no approving human.
 - The provider registry snapshot is kept in the demo package so the exact
   read-only checks used by the handoff are inspectable.
+- The localization plan includes en-US source copy and a ko-KR review draft;
+  the terminology validator confirms required mappings and forbidden terms.
 - Store copy is a draft and has not passed product, policy, or platform field
   review.
+- The ko-KR copy has not received native or designated reviewer approval and
+  no localized screenshot/UI capture is supplied.
 
 ## Decision
 

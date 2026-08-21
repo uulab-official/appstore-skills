@@ -420,6 +420,25 @@ assets:
     status: review
     source: brand-context.yml
     checks: [evidence-backed, draft-labeled]
+  - path: metadata/store-copy.ko-KR.yml
+    kind: localized-store-copy
+    platform: shared
+    locale: ko-KR
+    status: review
+    source: metadata/store-copy.en-US.yml and terminology.yml
+    checks: [locale-matched, glossary-checked, native-review-required, draft-labeled]
+  - path: localization-plan.yml
+    kind: localization-plan
+    platform: shared
+    status: review
+    source: brand-context.yml and target-market brief
+    checks: [source-locale, locale-paths, reviewer-recorded]
+  - path: terminology.yml
+    kind: terminology-glossary
+    platform: shared
+    status: review
+    source: product vocabulary and approved copy
+    checks: [canonical-terms, locale-mappings, forbidden-terms, approval-state]
 assumptions:
   - The product and all visual assets are fictional review fixtures.
   - No real app UI or device captures are available.

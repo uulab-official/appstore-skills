@@ -43,6 +43,11 @@ jobs:
           skills/app-store-assets/references/release-approval.yml
           examples/demo-store-assets/release-approval.yml
       - run: >-
+          python scripts/validate_localization_specs.py
+          examples/demo-store-assets/localization-plan.yml
+          examples/demo-store-assets/terminology.yml
+          --package-root examples/demo-store-assets
+      - run: >-
           python scripts/prepare_release_handoff.py
           --project-root .
           --output-root examples/demo-store-assets

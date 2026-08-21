@@ -49,6 +49,12 @@ reviewable commits.
 - Opt-in, read-only build and simulator capture evidence providers with field,
   path, timestamp, and image-signature checks
 
+### v0.8.0 — Localization and copy governance (in progress)
+
+- Locale plans, terminology mappings, forbidden-term checks, and review-state
+  preservation for localized store copy (implemented)
+- Store-copy experiment records with approval history and reversible variants
+
 ### Operational tooling
 
 - Dependency-free Skill metadata validator

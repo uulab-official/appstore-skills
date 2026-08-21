@@ -15,6 +15,7 @@ warnings:
   - Amazon Appstore and Samsung Galaxy Store profiles are documentation-linked concepts, not verified submissions.
   - The release handoff is a dry-run report only; no build, simulator, upload, or publish action ran.
   - The release approval record is pending; no human decision is inferred from structural checks.
+  - The ko-KR copy is a localization draft without native or designated reviewer approval.
   - The icon design brief is still in review because product-owner approval is missing.
   - Platform requirements were not checked for a live submission.
 platform_docs_checked: []

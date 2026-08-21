@@ -1,0 +1,222 @@
+#!/usr/bin/env python3
+"""Validate locale plans, terminology mappings, and store-copy files."""
+
+from __future__ import annotations
+
+import argparse
+from pathlib import Path
+import re
+
+
+ALLOWED_PLAN_STATUSES = {"source", "draft", "review", "verified", "blocked"}
+ALLOWED_COPY_STATUSES = {"draft", "review", "verified", "blocked"}
+SECTION_FIELD_LINE = re.compile(r"^\s{2}([a-z][a-z0-9_-]*):\s*(.*?)\s*$")
+LOCALE_LINE = re.compile(r"^\s{4}-\s+code:\s*(.*?)\s*$")
+LOCALE_FIELD_LINE = re.compile(r"^\s{6}([a-z][a-z0-9_-]*):\s*(.*?)\s*$")
+ENTRY_LINE = re.compile(r"^\s{4}-\s+id:\s*(.*?)\s*$")
+ENTRY_FIELD_LINE = re.compile(r"^\s{6}([a-z][a-z0-9_-]*):\s*(.*?)\s*$")
+
+
+def unquote(value: str) -> str:
+    value = value.strip()
+    if len(value) >= 2 and value[0] == value[-1] and value[0] in {'"', "'"}:
+        return value[1:-1]
+    return value
+
+
+def parse_list(value: str) -> list[str]:
+    value = value.strip()
+    if not (value.startswith("[") and value.endswith("]")):
+        return []
+    contents = value[1:-1].strip()
+    if not contents:
+        return []
+    return [unquote(item.strip()) for item in contents.split(",") if item.strip()]
+
+
+def parse_localization_plan(text: str) -> tuple[dict[str, str], list[dict[str, str]]]:
+    section: dict[str, str] = {}
+    locales: list[dict[str, str]] = []
+    in_localization = False
+    current: dict[str, str] | None = None
+    for line in text.splitlines():
+        if line == "localization:":
+            in_localization = True
+            continue
+        if not in_localization:
+            continue
+        section_match = SECTION_FIELD_LINE.match(line)
+        if section_match:
+            key, value = section_match.groups()
+            section[key] = unquote(value)
+            continue
+        locale_match = LOCALE_LINE.match(line)
+        if locale_match:
+            if current is not None:
+                locales.append(current)
+            current = {"code": unquote(locale_match.group(1))}
+            continue
+        if current is not None:
+            field_match = LOCALE_FIELD_LINE.match(line)
+            if field_match:
+                key, value = field_match.groups()
+                current[key] = unquote(value)
+    if current is not None:
+        locales.append(current)
+    return section, locales
+
+
+def parse_glossary(text: str) -> tuple[dict[str, str], list[dict[str, object]]]:
+    section: dict[str, str] = {}
+    entries: list[dict[str, object]] = []
+    in_glossary = False
+    current: dict[str, object] | None = None
+    for line in text.splitlines():
+        if line == "glossary:":
+            in_glossary = True
+            continue
+        if not in_glossary:
+            continue
+        if line.startswith("  source_locale:"):
+            section["source_locale"] = unquote(line.split(":", 1)[1])
+            continue
+        entry_match = ENTRY_LINE.match(line)
+        if entry_match:
+            if current is not None:
+                entries.append(current)
+            current = {"id": unquote(entry_match.group(1))}
+            continue
+        if current is not None:
+            field_match = ENTRY_FIELD_LINE.match(line)
+            if field_match:
+                key, value = field_match.groups()
+                current[key] = parse_list(value) if key == "do_not_use" else unquote(value)
+    if current is not None:
+        entries.append(current)
+    return section, entries
+
+
+def copy_metadata(text: str) -> dict[str, str]:
+    values: dict[str, str] = {}
+    for key in ("schema_version", "locale", "status"):
+        match = re.search(rf"^{key}:\s*(.*?)\s*$", text, re.MULTILINE)
+        if match:
+            values[key] = unquote(match.group(1))
+    return values
+
+
+def validate(
+    plan_path: Path,
+    glossary_path: Path,
+    package_root: Path,
+) -> list[str]:
+    errors: list[str] = []
+    for path, label in ((plan_path, "localization plan"), (glossary_path, "terminology glossary")):
+        if not path.is_file():
+            errors.append(f"{label} does not exist: {path}")
+    if errors:
+        return errors
+
+    plan_text = plan_path.read_text(encoding="utf-8")
+    glossary_text = glossary_path.read_text(encoding="utf-8")
+    if not re.search(r"^schema_version:\s*1\s*$", plan_text, re.MULTILINE):
+        errors.append(f"{plan_path}: must declare schema_version: 1")
+    if not re.search(r"^schema_version:\s*1\s*$", glossary_text, re.MULTILINE):
+        errors.append(f"{glossary_path}: must declare schema_version: 1")
+
+    plan, locales = parse_localization_plan(plan_text)
+    glossary, entries = parse_glossary(glossary_text)
+    source_locale = plan.get("source_locale", "")
+    if not source_locale:
+        errors.append(f"{plan_path}: localization.source_locale is required")
+    if plan.get("status") not in ALLOWED_PLAN_STATUSES:
+        errors.append(f"{plan_path}: localization.status is unsupported")
+    if glossary.get("source_locale") != source_locale:
+        errors.append(f"{glossary_path}: glossary.source_locale must match {source_locale}")
+    if not locales:
+        errors.append(f"{plan_path}: localization.locales must contain at least one locale")
+    if sum(item.get("code") == source_locale for item in locales) != 1:
+        errors.append(f"{plan_path}: source locale must occur exactly once")
+
+    locale_codes = [str(item.get("code", "")) for item in locales]
+    if len(set(locale_codes)) != len(locale_codes):
+        errors.append(f"{plan_path}: locale codes must be unique")
+
+    copy_texts: dict[str, str] = {}
+    for locale in locales:
+        code = str(locale.get("code", ""))
+        prefix = f"{plan_path}: locale {code or '<unnamed>'}"
+        if locale.get("status") not in ALLOWED_PLAN_STATUSES:
+            errors.append(f"{prefix}.status is unsupported")
+        relative = Path(str(locale.get("copy_file", "")))
+        if not str(relative) or relative.is_absolute() or ".." in relative.parts:
+            errors.append(f"{prefix}.copy_file must be a safe relative path")
+            continue
+        copy_path = package_root / relative
+        if not copy_path.is_file():
+            errors.append(f"{prefix}.copy_file does not exist: {relative}")
+            continue
+        text = copy_path.read_text(encoding="utf-8")
+        copy_texts[code] = text
+        metadata = copy_metadata(text)
+        if metadata.get("schema_version") != "1":
+            errors.append(f"{copy_path}: must declare schema_version: 1")
+        if metadata.get("locale") != code:
+            errors.append(f"{copy_path}: locale must be {code}")
+        if metadata.get("status") not in ALLOWED_COPY_STATUSES:
+            errors.append(f"{copy_path}: unsupported copy status")
+
+    seen_ids: set[str] = set()
+    for entry in entries:
+        entry_id = str(entry.get("id", ""))
+        prefix = f"{glossary_path}: term {entry_id or '<unnamed>'}"
+        if entry_id in seen_ids:
+            errors.append(f"{prefix}: duplicate id")
+        seen_ids.add(entry_id)
+        for key in ("status", "source"):
+            if not entry.get(key):
+                errors.append(f"{prefix}.{key} is required")
+        if entry.get("status") != "approved":
+            errors.append(f"{prefix}.status must be approved before use")
+        for code in locale_codes:
+            localized = entry.get(code.lower())
+            if not localized:
+                errors.append(f"{prefix}: missing mapping for {code}")
+                continue
+            if str(entry.get("required", "false")).lower() != "true":
+                continue
+            copy_text = copy_texts.get(code, "").lower()
+            if str(localized).lower() not in copy_text:
+                errors.append(f"{prefix}: required term missing from {code} copy")
+        forbidden = entry.get("do_not_use", [])
+        if isinstance(forbidden, list):
+            for code, copy_text in copy_texts.items():
+                lower_copy = copy_text.lower()
+                for term in forbidden:
+                    if str(term).lower() in lower_copy:
+                        errors.append(f"{prefix}: do_not_use term {term!r} found in {code} copy")
+    return errors
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("plan", type=Path, help="Localization plan")
+    parser.add_argument("glossary", type=Path, help="Terminology glossary")
+    parser.add_argument("--package-root", type=Path, required=True)
+    args = parser.parse_args()
+
+    try:
+        errors = validate(args.plan, args.glossary, args.package_root.resolve())
+    except (OSError, UnicodeDecodeError) as error:
+        errors = [str(error)]
+    if errors:
+        print("Localization validation failed:")
+        for error in errors:
+            print(f"- {error}")
+        return 1
+    print(f"Validated localization plan and glossary: {args.plan}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

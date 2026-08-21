@@ -1,0 +1,25 @@
+schema_version: 1
+glossary:
+  source_locale: en-US
+  entries:
+    - id: task
+      status: approved
+      required: true
+      source: task
+      en-us: task
+      ko-kr: 할 일
+      do_not_use: [chore]
+    - id: reminders
+      status: approved
+      required: true
+      source: reminders
+      en-us: reminders
+      ko-kr: 알림
+      do_not_use: [alerts]
+    - id: shared-lists
+      status: approved
+      required: false
+      source: shared lists
+      en-us: shared lists
+      ko-kr: 공유 목록
+      do_not_use: []

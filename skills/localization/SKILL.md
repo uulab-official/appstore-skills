@@ -93,6 +93,11 @@ terms, missing fonts, unavailable localized screenshots, and approvals needed.
 
 Read [references/localization-qa.md](references/localization-qa.md) for the
 full checklist.
+For repeatable locale and terminology checks, read
+[references/localization-contract.md](references/localization-contract.md) and
+run `scripts/validate_localization_specs.py` against the plan, glossary, and
+package root. This check preserves `review` until a designated or native
+reviewer confirms the localized result.
 
 ## Guardrails
 
@@ -101,4 +106,3 @@ full checklist.
 - Do not fake localized UI by changing only screenshot captions.
 - Preserve source files and make locale outputs reversible.
 - Keep locale codes consistent with the target platform and project metadata.
-

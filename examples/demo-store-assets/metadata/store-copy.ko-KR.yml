@@ -1,0 +1,28 @@
+schema_version: 1
+status: review
+locale: ko-KR
+product: Example App
+apple:
+  name: Example App
+  subtitle: 매일 할 일을 한눈에 관리하세요
+  promotional_text: 다음 할 일을 기록하고 계속 진행하세요.
+  description: |
+    Example App은 바쁜 사람들이 매일 해야 할 일을 한눈에 확인하고 쉽게
+    완료하도록 돕습니다. 할 일을 빠르게 기록하고, 알림을 설정하고, 공유
+    목록을 한곳에서 간편하게 관리하세요.
+  keywords:
+    - 할 일
+    - 알림
+    - 목록
+  whats_new: 데모 카피입니다. 승인된 출시 노트로 교체하세요.
+google_play:
+  short_description: 매일 할 일을 한눈에 보고 쉽게 완료하세요.
+  full_description: |
+    Example App으로 매일 해야 할 일을 한눈에 관리하세요. 할 일을 빠르게
+    기록하고, 알림을 설정하고, 공유 목록을 한곳에서 정리할 수 있습니다.
+evidence:
+  - source: ../brand-context.yml
+    supports: 제품명, 대상 사용자, 가치 제안, 기능 용어
+assumptions:
+  - 한국어 번역 초안이며 native reviewer의 의미·문체·플랫폼 필드 검토가 필요합니다.
+  - 플랫폼별 필드 제한과 정책 검토는 실제 제출 시점에 확인해야 합니다.

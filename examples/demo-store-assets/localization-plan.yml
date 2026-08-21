@@ -1,0 +1,13 @@
+schema_version: 1
+localization:
+  source_locale: en-US
+  status: review
+  locales:
+    - code: en-US
+      status: source
+      reviewer: Product owner
+      copy_file: metadata/store-copy.en-US.yml
+    - code: ko-KR
+      status: review
+      reviewer: Native Korean reviewer required
+      copy_file: metadata/store-copy.ko-KR.yml

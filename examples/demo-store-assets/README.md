@@ -23,6 +23,7 @@ screen captures.
 - a pending human-approval record and dry-run release handoff report with
   publishing permanently marked `not-run`
 - evidence-backed English store-copy draft
+- English source copy, Korean review copy, locale plan, and terminology glossary
 - manifest, QA, and release-check output
 
 ## What is intentionally blocked
@@ -33,6 +34,10 @@ masters are concept compositions generated from the fictional brand context;
 they are not approved campaign or Play assets. Supply real app or emulator
 captures, verify current platform rules, and rerun `release-check` before
 treating the package as submission-ready.
+
+The Korean listing is a translation draft. It is intentionally `review` until
+a native or designated reviewer checks meaning, tone, field fit, and any
+localized visual assets.
 
 Run the deterministic package check from the repository root:
 
