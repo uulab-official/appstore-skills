@@ -125,6 +125,68 @@ class ValidateLocalizationSpecsTests(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("unexpected platform copy fields relative to en-US: apple.campaign_badge", result.stdout)
 
+    def test_verified_locale_requires_reviewer_record(self) -> None:
+        with TemporaryDirectory() as directory:
+            package = Path(directory)
+            plan, glossary = self.create_copy_fixture(package)
+            plan.write_text(
+                plan.read_text(encoding="utf-8").replace(
+                    "    - code: ko-KR\n      status: review\n      reviewer: Native Korean reviewer required\n",
+                    "    - code: ko-KR\n      status: verified\n      reviewer: \"\"\n",
+                ),
+                encoding="utf-8",
+            )
+
+            result = self.run_validator(plan, glossary, package)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("locale ko-KR.reviewer is required when status is verified", result.stdout)
+            self.assertIn("locale ko-KR.reviewed_at must be ISO-8601 when status is verified", result.stdout)
+
+    def test_verified_copy_requires_reviewer_record(self) -> None:
+        with TemporaryDirectory() as directory:
+            package = Path(directory)
+            plan, glossary = self.create_copy_fixture(package)
+            target = package / "metadata/store-copy.ko-KR.yml"
+            target.write_text(
+                target.read_text(encoding="utf-8").replace(
+                    "status: review\n", "status: verified\n", 1
+                ),
+                encoding="utf-8",
+            )
+
+            result = self.run_validator(plan, glossary, package)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("reviewer is required when status is verified", result.stdout)
+            self.assertIn("reviewed_at must be ISO-8601 when status is verified", result.stdout)
+
+    def test_verified_locale_with_review_record_passes(self) -> None:
+        with TemporaryDirectory() as directory:
+            package = Path(directory)
+            plan, glossary = self.create_copy_fixture(package)
+            plan.write_text(
+                plan.read_text(encoding="utf-8").replace(
+                    "      status: review\n      reviewer: Native Korean reviewer required\n",
+                    "      status: verified\n      reviewer: Native Korean reviewer\n      reviewed_at: 2026-08-21T13:00:00Z\n",
+                    1,
+                ),
+                encoding="utf-8",
+            )
+            target = package / "metadata/store-copy.ko-KR.yml"
+            target.write_text(
+                target.read_text(encoding="utf-8").replace(
+                    "status: review\n",
+                    "status: verified\nreviewer: Native Korean reviewer\nreviewed_at: 2026-08-21T13:00:00Z\n",
+                    1,
+                ),
+                encoding="utf-8",
+            )
+
+            result = self.run_validator(plan, glossary, package)
+
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
 
 if __name__ == "__main__":
     unittest.main()

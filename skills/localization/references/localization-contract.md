@@ -20,10 +20,15 @@ The check verifies:
 - the source locale is present exactly once
 - every target copy preserves the source locale's Apple and Google Play field
   structure, with no silently missing or untracked platform fields
+- a locale plan marked `verified` records a `reviewer` and ISO-8601
+  `reviewed_at`, and its copy file is also `verified`
+- a copy file marked `verified` records its own `reviewer` and `reviewed_at`
 - every glossary entry has a status, source term, and mapping for every locale
 - required localized terms occur in the corresponding copy file
 - `do_not_use` terms do not occur in the copy file
 
-This is a terminology and structure check, not a fluency or cultural review.
+This is a terminology, structure, and review-record check, not a fluency or
+cultural review. The validator records fields; it cannot prove who performed
+the review.
 Keep target copies at `review` until the designated or native reviewer signs
 off on meaning, tone, layout, legal conditions, and platform limits.

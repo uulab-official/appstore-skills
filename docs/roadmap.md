@@ -104,6 +104,7 @@ reviewable commits.
 ## Longer term
 
 - Localized copy field-parity checks across Apple and Google Play metadata
+- Verified locale/copy review records with reviewer and timestamp gates
 - Project-facts provider for project-specific, user-approved product evidence
 
 ## Scope rule

@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+from datetime import datetime
 from pathlib import Path
 import re
 
@@ -100,11 +101,19 @@ def parse_glossary(text: str) -> tuple[dict[str, str], list[dict[str, object]]]:
 
 def copy_metadata(text: str) -> dict[str, str]:
     values: dict[str, str] = {}
-    for key in ("schema_version", "locale", "status"):
+    for key in ("schema_version", "locale", "status", "reviewer", "reviewed_at"):
         match = re.search(rf"^{key}:\s*(.*?)\s*$", text, re.MULTILINE)
         if match:
             values[key] = unquote(match.group(1))
     return values
+
+
+def valid_timestamp(value: str) -> bool:
+    try:
+        datetime.fromisoformat(value.strip().replace("Z", "+00:00"))
+    except ValueError:
+        return False
+    return True
 
 
 def copy_platform_fields(text: str) -> set[str]:
@@ -169,6 +178,12 @@ def validate(
         prefix = f"{plan_path}: locale {code or '<unnamed>'}"
         if locale.get("status") not in ALLOWED_PLAN_STATUSES:
             errors.append(f"{prefix}.status is unsupported")
+        if locale.get("status") == "verified":
+            if not str(locale.get("reviewer", "")).strip():
+                errors.append(f"{prefix}.reviewer is required when status is verified")
+            reviewed_at = str(locale.get("reviewed_at", ""))
+            if not valid_timestamp(reviewed_at):
+                errors.append(f"{prefix}.reviewed_at must be ISO-8601 when status is verified")
         relative = Path(str(locale.get("copy_file", "")))
         if not str(relative) or relative.is_absolute() or ".." in relative.parts:
             errors.append(f"{prefix}.copy_file must be a safe relative path")
@@ -188,6 +203,13 @@ def validate(
             errors.append(f"{copy_path}: locale must be {code}")
         if metadata.get("status") not in ALLOWED_COPY_STATUSES:
             errors.append(f"{copy_path}: unsupported copy status")
+        if metadata.get("status") == "verified":
+            if not metadata.get("reviewer", "").strip():
+                errors.append(f"{copy_path}: reviewer is required when status is verified")
+            if not valid_timestamp(metadata.get("reviewed_at", "")):
+                errors.append(f"{copy_path}: reviewed_at must be ISO-8601 when status is verified")
+        if locale.get("status") == "verified" and metadata.get("status") != "verified":
+            errors.append(f"{copy_path}: verified locale requires copy status verified")
 
     source_platform_fields = copy_platform_field_sets.get(source_locale, set())
     if source_platform_fields:

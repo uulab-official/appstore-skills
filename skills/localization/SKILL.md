@@ -107,3 +107,5 @@ designated or native reviewer confirms the localized result.
 - Do not fake localized UI by changing only screenshot captions.
 - Preserve source files and make locale outputs reversible.
 - Keep locale codes consistent with the target platform and project metadata.
+- Do not mark a locale or copy `verified` without a named reviewer and review
+  timestamp in the corresponding records.

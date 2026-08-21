@@ -149,6 +149,7 @@ validation tooling:
 - opt-in, read-only build and simulator evidence providers
 - optional read-only project-facts provider for product truth and source paths
 - localized copy field-parity checks across Apple and Google Play metadata
+- verified locale/copy review records with reviewer and timestamp gates
 - opt-in freshness gates for build and simulator evidence in release handoffs
 - optional current-project Git revision binding for build evidence
 - optional requested-platform binding for build and simulator evidence

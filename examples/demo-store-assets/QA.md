@@ -82,6 +82,8 @@
   review.
 - The ko-KR copy has not received native or designated reviewer approval and
   no localized screenshot/UI capture is supplied.
+- No locale or copy is marked `verified`; the demo intentionally has no
+  reviewer/timestamp record to support that status.
 - No copy variant is approved, traffic-tested, or published; there is no
   evidence for conversion or ranking claims.
 - The reviewer handoff summary is generated without a baseline, so current
