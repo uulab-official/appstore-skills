@@ -15,7 +15,11 @@
   <circle cx="1040" cy="590" r="240" fill="#315CFF" opacity=".10"/>
   <g transform="translate(92 92)">
     <rect width="78" height="78" rx="22" fill="#315CFF"/>
-    <path d="m17 39 17 17 31-31" fill="none" stroke="#FFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="11"/>
+    <g transform="scale(.076171875)">
+      <path fill="#FF786B" d="M 774 651 C 837 640 886 671 895 721 C 904 771 876 811 819 818 L 759 818 Z"/>
+      <path fill="#F6F8FF" fill-rule="evenodd" d="M 246 742 C 214 622 211 454 257 337 C 314 194 446 126 594 151 C 742 176 834 299 843 463 C 851 588 835 704 788 793 C 765 836 724 860 678 860 L 273 860 C 220 860 192 818 202 772 C 208 752 223 741 246 742 Z M 367 711 L 367 454 C 367 355 431 286 536 278 C 642 270 718 341 731 445 C 742 531 737 637 717 711 Z"/>
+      <path fill="#FF786B" d="M 561 329 C 481 338 433 393 421 463 C 403 568 453 661 532 691 C 576 708 619 704 659 687 C 603 642 579 575 584 501 C 589 425 621 370 682 344 C 641 325 601 322 561 329 Z"/>
+    </g>
   </g>
   <text x="92" y="238" fill="#315CFF" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" letter-spacing="2">EXAMPLE APP</text>
   <text x="92" y="326" fill="#17203A" font-family="Arial, Helvetica, sans-serif" font-size="62" font-weight="700">Keep important</text>
@@ -23,10 +27,11 @@
   <text x="96" y="456" fill="#52607D" font-family="Arial, Helvetica, sans-serif" font-size="26">Capture, organize, and finish everyday work.</text>
   <g transform="translate(874 220)" filter="url(#shadow)">
     <rect width="206" height="206" rx="54" fill="#F6F8FF"/>
-    <path d="M151 63c-13-13-33-17-51-11-18 5-32 20-37 38-6 18-2 38 11 51l-10 10c-17-17-22-43-14-66 7-23 25-41 48-48 23-8 49-3 66 14l-13 12Z" fill="#FF786B"/>
-    <path d="M55 144c13 13 33 17 51 11 18-5 32-20 37-38 6-18 2-38-11-51l10-10c17 17 22 43 14 66-7 23-25 41-48 48-23 8-49 3-66-14l13-12Z" fill="#FF786B"/>
-    <path d="m57 105 28 28 65-65" fill="none" stroke="#315CFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="22"/>
+    <g transform="scale(.201171875)">
+      <path fill="#FF786B" d="M 774 651 C 837 640 886 671 895 721 C 904 771 876 811 819 818 L 759 818 Z"/>
+      <path fill="#315CFF" fill-rule="evenodd" d="M 246 742 C 214 622 211 454 257 337 C 314 194 446 126 594 151 C 742 176 834 299 843 463 C 851 588 835 704 788 793 C 765 836 724 860 678 860 L 273 860 C 220 860 192 818 202 772 C 208 752 223 741 246 742 Z M 367 711 L 367 454 C 367 355 431 286 536 278 C 642 270 718 341 731 445 C 742 531 737 637 717 711 Z"/>
+      <path fill="#FF786B" d="M 561 329 C 481 338 433 393 421 463 C 403 568 453 661 532 691 C 576 708 619 704 659 687 C 603 642 579 575 584 501 C 589 425 621 370 682 344 C 641 325 601 322 561 329 Z"/>
+    </g>
   </g>
   <text x="96" y="568" fill="#7B86A2" font-family="Arial, Helvetica, sans-serif" font-size="16" letter-spacing="1">DEMO CONCEPT — NOT A PRODUCTION LISTING</text>
 </svg>
-

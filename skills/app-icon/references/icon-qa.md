@@ -11,12 +11,18 @@ submission-ready.
 - Preserve every returned candidate and its prompt or direction rationale;
   do not silently filter or overwrite a candidate.
 - Compare candidates at the same scale and against the same brand context.
+- Reject a candidate whose only identity is a generic category symbol such as
+  a checkmark, bell, lock, gear, cloud, document, or card stack.
+- Require a product-specific silhouette or negative-space relationship that is
+  still recognizable without text or a color legend.
 
 ## Visual checks
 
 - Confirm the canvas is square and the subject has a deliberate safe area.
 - Inspect the silhouette at 1024px, 180px, and 32px.
 - Confirm the main idea remains legible without relying on tiny details.
+- Confirm the candidate is ownable enough to justify selection; if none pass,
+  generate another batch instead of selecting the least-bad generic symbol.
 - Confirm foreground and background have sufficient contrast.
 - Check that no unintended clipping, halos, seams, or transparent pixels
   remain at the edge.
@@ -36,6 +42,8 @@ submission-ready.
 ## Delivery checks
 
 - Preserve the selected source/master and candidate rationale.
+- If geometry is simple, preserve the generated reference and the refined
+  vector master separately, then derive raster exports from the vector master.
 - Confirm every requested export exists at the path recorded in the report.
 - Verify dimensions against current official platform documentation.
 - Record unresolved issues as blockers instead of silently shipping them.

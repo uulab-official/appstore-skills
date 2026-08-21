@@ -8,14 +8,20 @@ assets:
     kind: app-icon-master
     platform: shared
     status: review
-    source: icon/concepts/A2.png
-    checks: [square, small-size-review, selected-A2, concept-labeled]
+    source: icon/icon-master.svg
+    checks: [square, vector-refined, small-size-review, selected-C2-v2, concept-labeled]
+  - path: icon/icon-master.svg
+    kind: app-icon-vector-master
+    platform: shared
+    status: review
+    source: icon/concepts-v2/C2.png
+    checks: [vector, exact-brand-colors, selected-C2-v2]
   - path: icon/selection.md
     kind: app-icon-selection
     platform: shared
     status: review
-    source: icon/concepts/A1.png through C2.png
-    checks: [candidate-comparison, rationale-recorded]
+    source: icon/concepts-v2/A1.png through C2.png
+    checks: [candidate-comparison, rationale-recorded, distinctiveness-gate]
   - path: icon/concepts/A1.png
     kind: app-icon-candidate
     platform: shared
@@ -52,6 +58,42 @@ assets:
     status: review
     source: imagegen direction C2
     checks: [independent-candidate, preserved]
+  - path: icon/concepts-v2/A1.png
+    kind: app-icon-candidate
+    platform: shared
+    status: review
+    source: imagegen direction A1 v2
+    checks: [independent-candidate, preserved, distinctiveness-review]
+  - path: icon/concepts-v2/A2.png
+    kind: app-icon-candidate
+    platform: shared
+    status: review
+    source: imagegen direction A2 v2
+    checks: [independent-candidate, preserved, distinctiveness-review]
+  - path: icon/concepts-v2/B1.png
+    kind: app-icon-candidate
+    platform: shared
+    status: review
+    source: imagegen direction B1 v2
+    checks: [independent-candidate, preserved, distinctiveness-review]
+  - path: icon/concepts-v2/B2.png
+    kind: app-icon-candidate
+    platform: shared
+    status: review
+    source: imagegen direction B2 v2
+    checks: [independent-candidate, preserved, distinctiveness-review]
+  - path: icon/concepts-v2/C1.png
+    kind: app-icon-candidate
+    platform: shared
+    status: review
+    source: imagegen direction C1 v2
+    checks: [independent-candidate, preserved, distinctiveness-review]
+  - path: icon/concepts-v2/C2.png
+    kind: app-icon-candidate
+    platform: shared
+    status: review
+    source: imagegen direction C2 v2
+    checks: [independent-candidate, selected, preserved, distinctiveness-pass]
   - path: icon/concepts/legacy-v1.png
     kind: app-icon-previous-concept
     platform: shared

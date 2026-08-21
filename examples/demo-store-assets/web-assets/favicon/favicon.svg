@@ -1,9 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
   <title id="title">Example App favicon</title>
-  <desc id="desc">A cobalt checkmark inside a coral task spark.</desc>
-  <rect width="256" height="256" rx="56" fill="#F6F8FF"/>
-  <path d="M181 73c-15-15-38-20-59-13-21 6-38 23-44 44-7 21-2 44 13 59l-12 12c-20-20-26-50-17-77 8-27 29-48 56-56 27-9 57-3 77 17l-14 14Z" fill="#FF786B"/>
-  <path d="M75 183c15 15 38 20 59 13 21-6 38-23 44-44 7-21 2-44-13-59l12-12c20 20 26 50 17 77-8 27-29 48-56 56-27 9-57 3-77-17l14-14Z" fill="#FF786B"/>
-  <path d="m72 126 35 35 78-78" fill="none" stroke="#315CFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="26"/>
+  <desc id="desc">A cobalt visibility aperture holding a coral crescent.</desc>
+  <rect width="1024" height="1024" rx="160" fill="#F6F8FF"/>
+  <path fill="#FF786B" d="M 774 651 C 837 640 886 671 895 721 C 904 771 876 811 819 818 L 759 818 Z"/>
+  <path fill="#315CFF" fill-rule="evenodd" d="M 246 742 C 214 622 211 454 257 337 C 314 194 446 126 594 151 C 742 176 834 299 843 463 C 851 588 835 704 788 793 C 765 836 724 860 678 860 L 273 860 C 220 860 192 818 202 772 C 208 752 223 741 246 742 Z M 367 711 L 367 454 C 367 355 431 286 536 278 C 642 270 718 341 731 445 C 742 531 737 637 717 711 Z"/>
+  <path fill="#FF786B" d="M 561 329 C 481 338 433 393 421 463 C 403 568 453 661 532 691 C 576 708 619 704 659 687 C 603 642 579 575 584 501 C 589 425 621 370 682 344 C 641 325 601 322 561 329 Z"/>
 </svg>
-

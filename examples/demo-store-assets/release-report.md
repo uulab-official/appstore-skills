@@ -6,7 +6,7 @@ blockers:
   - Real app or emulator screenshots are missing.
   - Product and platform approvals are missing.
 warnings:
-  - A2 is a selected concept and not a production-approved mark.
+  - C2 is a refined demo concept and not a production-approved mark.
   - Platform requirements were not checked for a live submission.
 platform_docs_checked: []
 human_review_required: true

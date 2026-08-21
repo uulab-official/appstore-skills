@@ -20,6 +20,14 @@ changes.
   connected to one product.
 - Preserve approved assets and previous outputs unless replacement is explicit.
 
+### 2.1 Icon distinctiveness
+
+- Do not ship the clearest generic category symbol as the default icon.
+- Require a product-specific silhouette, aperture, negative-space move, or
+  character proportion that remains recognizable at 32px.
+- Preserve rejected candidate batches and record why a stronger direction was
+  generated when the first pass is too generic.
+
 ### 3. Platform correctness
 
 - Check current official requirements for every store, device family, locale,
@@ -80,4 +88,3 @@ Use `draft`, `review`, `verified`, and `blocked` for generated asset manifests.
 Use `ready_for_review`, `incomplete`, and `blocked` for release summaries.
 Reserve `verified` or `ready_for_submission` for checks that were actually
 performed and documented.
-

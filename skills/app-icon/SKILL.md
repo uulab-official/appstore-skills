@@ -134,12 +134,24 @@ photorealistic material, sharp tips, thin lines, or external shadow.
 Change only the candidate's direction, subject treatment, or palette mapping
 between calls so the six outputs remain useful for comparison.
 
+### Distinctiveness gate
+
+Do not select the clearest generic symbol by default. Reject a candidate when
+its identity depends on a checkmark, bell, lock, gear, cloud, document, card
+stack, or another category symbol that could describe many unrelated apps.
+Require one product-specific silhouette decision—such as an unusual aperture,
+negative-space relationship, or repeatable character proportion—that survives
+without text or a color legend. If no candidate passes this gate, generate a
+new batch and preserve the rejected batch for comparison.
+
 ### 4. Evaluate and select
 
 Render or inspect each candidate at 1024px, 180px, and 32px. Score clarity,
-distinctiveness, contrast, brand fit, and platform safety. Reject candidates
-whose key idea disappears after reduction, whose edges are clipped, or whose
-details depend on color alone.
+distinctiveness, ownability, contrast, brand fit, and platform safety. Treat
+distinctiveness and ownability as gates, not optional polish. Reject candidates
+whose key idea disappears after reduction, whose edges are clipped, whose
+details depend on color alone, or whose concept is only a generic category
+symbol.
 
 Show the candidate sheet and recommendation when interaction is possible.
 Otherwise select one candidate and explain the trade-off in the delivery
@@ -159,6 +171,12 @@ store-assets/icon/
 ├── icon-192.png
 └── icon-180.png
 ```
+
+When the selected concept uses simple geometry, refine it into a vector master
+before producing raster exports. Keep the generated candidate as a preserved
+reference, record the refinement in the delivery report, and derive every
+platform size from the refined master so curves, colors, and safe area stay
+consistent.
 
 Verify the image mode, dimensions, safe area, and background treatment. Check
 current Apple and Google requirements at execution time before labeling an

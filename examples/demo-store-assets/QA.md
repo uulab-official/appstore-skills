@@ -10,9 +10,13 @@
 
 ## Passed
 
-- Six independent icon candidates were preserved and compared at 32×32.
-- A2 was selected for the demo because its rounded visibility window and
-  checkmark remain the clearest small-size silhouette.
+- Two six-candidate icon batches were preserved for comparison.
+- The second batch was screened for generic category symbols and compared at
+  180×180 and 32×32.
+- C2 was selected because its asymmetric aperture and crescent remain legible
+  without a checkmark, card stack, or tiny character detail.
+- C2 was refined into a vector master with exact brand colors before raster
+  exports were produced.
 - The selected icon is square, centered, text-free, and visually consistent
   with the example brand context.
 - Icon exports were resized from one selected master.

@@ -7,7 +7,7 @@ screen captures.
 
 ## What this demonstrates
 
-- six generated app-icon candidates, an A2 selection, and a size family
+- two six-candidate icon batches, a refined C2 vector selection, and a size family
 - a matching favicon SVG
 - a branded OG image SVG/PNG with exact, inspectable copy
 - evidence-backed English store-copy draft
