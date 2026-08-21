@@ -33,6 +33,7 @@ reviewable commits.
 - SVG `viewBox` and optional PNG color-type metadata validation
 - Reusable promotional and feature-graphic template contracts
 - Dependency-free template-spec validator and regression tests
+- GitHub Actions annotations and Step Summary for release reports
 - Unit tests for path, manifest, and image metadata safety checks
 - GitHub Actions validation on pushes and pull requests
 - Manual GitHub Actions workflow for repository-relative store output
@@ -41,7 +42,6 @@ reviewable commits.
 
 ### v0.4.0 — Asset and release automation (in progress)
 
-- Release report annotations for pull requests
 - Additional platform-specific adapters
 
 ## Longer term

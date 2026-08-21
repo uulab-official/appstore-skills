@@ -38,6 +38,11 @@ page when adding a Skill, changing an output contract, changing a validation
 command, or moving a roadmap item. Keep examples runnable and avoid claiming
 that a platform requirement is permanent.
 
+Release reports can be surfaced in pull requests with
+`annotate_release_report.py`; keep blocker and warning annotations factual and
+do not turn the demo fixture's intentional `blocked` status into a repository
+failure unless a workflow explicitly opts into `--fail-on-blockers`.
+
 Use [`docs/quality-bar.md`](docs/quality-bar.md) as the acceptance checklist
 for implementation and documentation changes.
 

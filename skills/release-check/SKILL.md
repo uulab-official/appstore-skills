@@ -87,6 +87,12 @@ human review.
 Read [references/release-checklist.md](references/release-checklist.md) for
 the detailed checks and report fields.
 
+When running in GitHub Actions, surface the report in the pull request with
+`python scripts/annotate_release_report.py <release-report.md> --github-actions`.
+This emits blocker and warning annotations and appends a Step Summary when the
+runner provides `GITHUB_STEP_SUMMARY`; use `--fail-on-blockers` only when the
+workflow should gate on the report status.
+
 ## Non-goals
 
 - Do not upload or submit to App Store Connect or Play Console.
@@ -94,4 +100,3 @@ the detailed checks and report fields.
   of the project owner.
 - Do not silently rewrite assets or metadata while auditing them.
 - Do not call a missing check successful because a similar previous run passed.
-

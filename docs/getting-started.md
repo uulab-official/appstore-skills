@@ -76,4 +76,9 @@ To validate an actual generated package, run:
 
 ```bash
 python scripts/validate_store_output.py ./store-assets
+python scripts/annotate_release_report.py ./store-assets/release-report.md
 ```
+
+In GitHub Actions, add `--github-actions` to turn blockers and warnings into
+pull-request annotations. The annotation command is informational by default;
+use `--fail-on-blockers` when a workflow should gate on unresolved blockers.
