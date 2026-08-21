@@ -389,6 +389,12 @@ assets:
     status: review
     source: brand-context.yml and shared masters
     checks: [source-separated, transformations-recorded, execution-time-checks]
+  - path: evidence-adapters.yml
+    kind: evidence-adapter-map
+    platform: shared
+    status: review
+    source: project sources, build identity, simulator captures, and release review
+    checks: [facts-separated, build-identity, capture-fidelity, blocker-state]
   - path: metadata/store-copy.en-US.yml
     kind: store-copy
     platform: shared

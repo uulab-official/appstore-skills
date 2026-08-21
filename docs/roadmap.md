@@ -38,6 +38,7 @@ reviewable commits.
 - Manifest-declared PNG/SVG format and dimension validation
 - SVG `viewBox` and optional PNG color-type metadata validation
 - Dependency-free template-spec and adapter-map validators with regression tests
+- Dependency-free project/build/simulator/release evidence-adapter validator
 - Unit tests for path, manifest, and image metadata safety checks
 - GitHub Actions validation on pushes and pull requests
 - Manual GitHub Actions workflow for repository-relative store output

@@ -38,6 +38,11 @@ page when adding a Skill, changing an output contract, changing a validation
 command, or moving a roadmap item. Keep examples runnable and avoid claiming
 that a platform requirement is permanent.
 
+When changing evidence handling, preserve the distinction between project
+facts, build identity, real simulator/device captures, and release approvals.
+Do not make the demo fixture appear verified by filling a missing evidence
+source with a placeholder.
+
 Release reports can be surfaced in pull requests with
 `annotate_release_report.py`; keep blocker and warning annotations factual and
 do not turn the demo fixture's intentional `blocked` status into a repository

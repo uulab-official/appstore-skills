@@ -24,4 +24,7 @@ jobs:
       - run: >-
           python scripts/validate_adapter_specs.py
           skills/app-store-assets/references/platform-adapters.yml
+      - run: >-
+          python scripts/validate_evidence_specs.py
+          skills/app-store-assets/references/evidence-adapters.yml
       - run: python -m unittest discover -s tests

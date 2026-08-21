@@ -1,0 +1,34 @@
+schema_version: 1
+evidence_set:
+  id: example-app-evidence-v1
+  status: review
+  source_of_truth: brand-context.yml
+adapters:
+  - id: project-discovery
+    kind: project
+    status: review
+    inputs: [examples/brand-context.yml, fictional product brief]
+    outputs: [brand-context.yml, icon/icon-design-brief.yml, evidence/project-facts.yml]
+    proves: Product category, audience, value proposition, listed features, and visual direction.
+    required_checks: [source-paths, facts-separated-from-assumptions, private-data-screen]
+  - id: build-evidence
+    kind: build
+    status: blocked
+    inputs: [app build configuration, package metadata, commit or release revision]
+    outputs: [evidence/build.yml]
+    proves: No real app build or source revision is available in this fictional fixture.
+    required_checks: [build-revision, target-platform, reproducible-command, artifact-identity]
+  - id: simulator-capture
+    kind: simulator
+    status: blocked
+    inputs: [real iOS simulator, Android emulator, or supplied device captures]
+    outputs: [screenshots/source/]
+    proves: No real app UI is available, so final store screenshots remain blocked.
+    required_checks: [device-family, locale, capture-date, ui-fidelity, no-private-data]
+  - id: release-system
+    kind: release
+    status: review
+    inputs: [release-report.md, QA.md, platform documentation, approvals, licenses]
+    outputs: [QA.md, release-report.md]
+    proves: Structural checks pass while product, platform, and human approvals remain explicit blockers.
+    required_checks: [current-docs, approval-state, rights-review, blocker-annotation]

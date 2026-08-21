@@ -66,6 +66,12 @@ When more than one platform is in scope, preserve a filled adapter map using
 source master, output root, named transformations, requested surfaces, and
 execution-time checks for each platform.
 
+When the app, build, simulator, or release system is available, preserve an
+evidence map using [`evidence-adapters.yml`](evidence-adapters.yml). It must
+separate project facts, build identity, real screen captures, and release
+approvals. Missing build or simulator evidence is a blocker for claims that
+depend on it.
+
 ## Recommended layout
 
 ```text

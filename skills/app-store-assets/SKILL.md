@@ -24,7 +24,11 @@ directory or ask the user before replacing anything. Inspect:
 - target platforms, locales, device families, and requested deliverables
 
 Create an evidence log with source paths and separate confirmed facts from
-assumptions.
+assumptions. Use
+[`references/evidence-adapters.yml`](references/evidence-adapters.yml) to
+separate project, build, simulator, and release evidence. Read
+[`references/evidence-adapters.md`](references/evidence-adapters.md) and keep
+an adapter `blocked` when the app, build, or real screen capture is missing.
 
 ### 2. Create shared brand context
 
@@ -80,7 +84,7 @@ Read and follow the repository-local skills:
 - [`../app-store-screenshots/SKILL.md`](../app-store-screenshots/SKILL.md) for
   real-screen discovery, storyboarding, composition, and platform exports
 
-Pass the same `brand-context.yml`, evidence log, output root, target locales,
+Pass the same `brand-context.yml`, evidence map, output root, target locales,
 and platform scope to both. Do not let a screenshot workflow invent an icon
 palette or let an icon workflow infer unsupported product claims.
 

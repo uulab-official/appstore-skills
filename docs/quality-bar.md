@@ -11,6 +11,8 @@ changes.
 - Ground product names, features, benefits, and claims in project evidence.
 - Record source paths in `brand-context.yml`, copy evidence, or `QA.md`.
 - Mark assumptions and unknowns explicitly.
+- When available, record project, build, simulator, and release evidence with
+  the evidence adapter map; missing evidence must remain visible as a blocker.
 - Never present a concept, mockup, or synthetic UI as a shipped product screen.
 
 ### 1.1 User-input fidelity
