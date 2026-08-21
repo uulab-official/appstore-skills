@@ -115,6 +115,9 @@ Pass `--platform` values to bind both build records and source captures to the
 requested store surfaces; an omitted platform scope must not be inferred.
 Pass `--locale` values to bind source captures to the requested locale set;
 locale separators are normalized, but omitted locale scope must not be inferred.
+Pass `--device-family` values to bind source captures to a named device family;
+documented aliases are normalized, but omitted device-family scope must not be
+inferred.
 For optional policy, accessibility, and privacy review, read
 [`references/review-adapters.md`](references/review-adapters.md) and select
 only the adapters that have a designated reviewer and evidence path.

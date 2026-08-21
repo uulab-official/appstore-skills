@@ -95,6 +95,7 @@ reviewable commits.
 - Optional current-project Git revision binding for build evidence
 - Optional requested-platform binding for build and simulator evidence
 - Optional requested-locale binding for simulator evidence
+- Optional requested-device-family binding for simulator evidence
 - Optional project-owned evidence integrations that remain user-approved and
   read-only
 

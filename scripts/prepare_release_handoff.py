@@ -165,6 +165,7 @@ def prepare_handoff(
     max_evidence_age_days: int | None = None,
     require_current_revision: bool = False,
     locales: list[str] | None = None,
+    device_families: list[str] | None = None,
 ) -> dict[str, object]:
     project_root = project_root.resolve()
     output_root = output_root.resolve()
@@ -172,6 +173,7 @@ def prepare_handoff(
     captures = find_capture_files(project_root, output_root)
     source_revision = git_revision(project_root) if project_root.is_dir() else "unavailable"
     requested_locales = locales or []
+    requested_device_families = device_families or []
     build_evidence = first_existing(
         output_root,
         ("evidence/build.yml", "evidence/build.json", "build-evidence.yml", "build.yml"),
@@ -191,6 +193,7 @@ def prepare_handoff(
                 require_current_revision=require_current_revision,
                 expected_platforms=platforms,
                 expected_locales=requested_locales,
+                expected_device_families=requested_device_families,
             )
     checks: list[dict[str, str]] = []
 
@@ -303,6 +306,8 @@ def prepare_handoff(
         next_actions.append("Capture source images for a requested target platform before handoff.")
     if "locale does not match requested locales" in simulator_provider_details:
         next_actions.append("Capture source images for a requested locale before handoff.")
+    if "device family does not match requested device families" in simulator_provider_details:
+        next_actions.append("Capture source images for a requested device family before handoff.")
     if not next_actions:
         next_actions.append("Handoff is approved for read-only execution review; publishing remains disabled.")
 
@@ -324,6 +329,7 @@ def prepare_handoff(
             "source_revision": source_revision,
             "platforms": platforms,
             "locales": requested_locales,
+            "device_families": requested_device_families,
             "provider_mode": "opt-in-read-only",
             "evidence_max_age_days": max_evidence_age_days,
             "require_current_revision": require_current_revision,
@@ -383,6 +389,13 @@ def render_yaml(report: dict[str, object]) -> str:
             lines.append(f"    - {quote(str(locale))}")
     else:
         lines.append("  locales: []")
+    device_families = handoff["device_families"]
+    if device_families:
+        lines.append("  device_families:")
+        for device_family in device_families:
+            lines.append(f"    - {quote(str(device_family))}")
+    else:
+        lines.append("  device_families: []")
     lines.append("  providers:")
     for provider in handoff["providers"]:
         lines.append(f"    - {quote(str(provider))}")
@@ -413,6 +426,7 @@ def render_summary(report: dict[str, object]) -> str:
         ),
         f"Revision binding: {'required' if handoff['require_current_revision'] else 'disabled'}",
         f"Locales: {', '.join(handoff['locales']) or 'none specified'}",
+        f"Device families: {', '.join(handoff['device_families']) or 'none specified'}",
         f"Approval file: {handoff['approval_file']}",
         "Checks:",
     ]
@@ -449,6 +463,12 @@ def main() -> int:
         default=[],
         help="Optionally require selected source captures to match a requested locale.",
     )
+    parser.add_argument(
+        "--device-family",
+        action="append",
+        default=[],
+        help="Optionally require selected source captures to match a requested device family.",
+    )
     parser.add_argument("--approval-file", type=Path)
     parser.add_argument("--fail-on-blocked", action="store_true")
     parser.add_argument("--fail-on-pending-approval", action="store_true")
@@ -474,6 +494,7 @@ def main() -> int:
         max_evidence_age_days=args.max_evidence_age_days,
         require_current_revision=args.require_current_revision,
         locales=args.locale,
+        device_families=args.device_family,
     )
     rendered = render_yaml(report) if args.format == "yaml" else render_summary(report)
     if args.output:

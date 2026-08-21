@@ -108,6 +108,7 @@ python scripts/prepare_release_handoff.py \
   --platform apple \
   --platform google-play \
   --locale en-US \
+  --device-family iphone \
   --provider-file ./store-assets/evidence-providers.yml \
   --provider build-record \
   --provider simulator-source-captures \
@@ -133,3 +134,5 @@ Add `--require-current-revision` when the build evidence must correspond to
 the current Git checkout; this strict source binding is also opt-in.
 Add `--locale` when source captures must correspond to a specific localized
 listing; locale separators such as `en_US` and `en-US` are normalized.
+Add `--device-family` when captures must correspond to a named iPhone, iPad,
+or Android device family; no family is inferred when omitted.

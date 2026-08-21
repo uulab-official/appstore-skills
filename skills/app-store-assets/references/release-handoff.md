@@ -40,6 +40,7 @@ python scripts/prepare_release_handoff.py \
   --platform apple \
   --platform google-play \
   --locale en-US \
+  --device-family iphone \
   --provider-file ./skills/app-store-assets/references/evidence-providers.yml \
   --provider build-record \
   --provider simulator-source-captures \
@@ -64,4 +65,6 @@ providers. Each record must match at least one requested platform, using only
 documented compatibility aliases; no platform scope is inferred when the flag
 is omitted. Any `--locale` values are forwarded to source-capture evidence;
 separator variants such as `en_US` and `en-US` are normalized, while omitted
-locale scope remains explicitly unchecked.
+locale scope remains explicitly unchecked. Any `--device-family` values are
+forwarded to source-capture evidence and must match the named capture family;
+omitted device-family scope remains explicitly unchecked.

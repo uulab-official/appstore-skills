@@ -172,6 +172,7 @@ class PrepareReleaseHandoffTests(unittest.TestCase):
             self.assertIn("evidence_max_age_days: null", result.stdout)
             self.assertIn("platforms: []", result.stdout)
             self.assertIn("locales: []", result.stdout)
+            self.assertIn("device_families: []", result.stdout)
             self.assertIn("require_current_revision: false", result.stdout)
             self.assertEqual(result.stdout.count('provider_mode: "opt-in-read-only"'), 1)
             self.assertEqual(result.stdout.count("provider_file:"), 1)
@@ -432,6 +433,41 @@ class PrepareReleaseHandoffTests(unittest.TestCase):
                 "--project-root", str(project),
                 "--output-root", str(output),
                 "--locale", "en_US",
+                "--provider", "simulator-source-captures",
+                "--format", "summary",
+            )
+
+            self.assertEqual(matching.returncode, 0, matching.stderr)
+            self.assertIn("Release handoff: pending_approval", matching.stdout)
+            self.assertIn("pass: simulator-captures — provider simulator-source-captures", matching.stdout)
+
+    def test_device_family_scope_is_forwarded_to_source_capture_checks(self) -> None:
+        with TemporaryDirectory() as directory:
+            project = Path(directory) / "app"
+            output = project / "store-assets"
+            project.mkdir()
+            output.mkdir()
+            (project / "package.json").write_text("{}\n", encoding="utf-8")
+            create_output(output, with_evidence=True, with_capture=True)
+
+            mismatch = self.run_script(
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--device-family", "ipad",
+                "--provider", "simulator-source-captures",
+                "--format", "summary",
+            )
+
+            self.assertEqual(mismatch.returncode, 0, mismatch.stderr)
+            self.assertIn("Release handoff: blocked", mismatch.stdout)
+            self.assertIn("Device families: ipad", mismatch.stdout)
+            self.assertIn("capture 1 device family does not match requested device families", mismatch.stdout)
+            self.assertIn("Capture source images for a requested device family", mismatch.stdout)
+
+            matching = self.run_script(
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--device-family", "ios-phone",
                 "--provider", "simulator-source-captures",
                 "--format", "summary",
             )

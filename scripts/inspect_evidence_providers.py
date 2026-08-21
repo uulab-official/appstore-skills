@@ -30,6 +30,12 @@ PLATFORM_ALIASES = {
     "amazon-appstore": {"amazon-appstore", "fire"},
     "samsung-galaxy-store": {"samsung-galaxy-store", "android"},
 }
+DEVICE_FAMILY_ALIASES = {
+    "iphone": {"iphone", "ios-phone"},
+    "ipad": {"ipad", "ios-tablet"},
+    "android-phone": {"android-phone", "android-handset"},
+    "android-tablet": {"android-tablet", "android-large-screen"},
+}
 
 
 def unquote(value: str) -> str:
@@ -136,6 +142,23 @@ def platform_matches(recorded: str, expected: list[str]) -> bool:
 def locale_matches(recorded: str, expected: list[str]) -> bool:
     recorded_normalized = recorded.strip().lower().replace("_", "-")
     return any(recorded_normalized == item.strip().lower().replace("_", "-") for item in expected)
+
+
+def device_family_matches(recorded: str, expected: list[str]) -> bool:
+    recorded_normalized = recorded.strip().lower().replace("_", "-").replace(" ", "-")
+    for item in expected:
+        expected_normalized = item.strip().lower().replace("_", "-").replace(" ", "-")
+        aliases = next(
+            (
+                aliases
+                for canonical, aliases in DEVICE_FAMILY_ALIASES.items()
+                if expected_normalized == canonical or expected_normalized in aliases
+            ),
+            {expected_normalized},
+        )
+        if recorded_normalized in aliases:
+            return True
+    return False
 
 
 def current_git_revision(project_root: Path) -> str | None:
@@ -247,6 +270,7 @@ def inspect_simulator(
     max_age_days: int | None = None,
     expected_platforms: list[str] | None = None,
     expected_locales: list[str] | None = None,
+    expected_device_families: list[str] | None = None,
 ) -> dict[str, object]:
     provider_id = provider["id"]
     evidence_path = output_root / provider["evidence_path"]
@@ -296,6 +320,15 @@ def inspect_simulator(
                 f"capture {index} locale does not match requested locales "
                 f"(recorded: {recorded_locale}, requested: {', '.join(expected_locales)})"
             )
+        recorded_device_family = record.get("device_family", "")
+        if expected_device_families and recorded_device_family and not device_family_matches(
+            recorded_device_family,
+            expected_device_families,
+        ):
+            errors.append(
+                f"capture {index} device family does not match requested device families "
+                f"(recorded: {recorded_device_family}, requested: {', '.join(expected_device_families)})"
+            )
         if not valid_timestamp(record["captured_at"]):
             errors.append(f"capture {index} captured_at is not an ISO-8601 timestamp")
         stale_error = freshness_error(
@@ -325,6 +358,7 @@ def inspect_provider(
     require_current_revision: bool = False,
     expected_platforms: list[str] | None = None,
     expected_locales: list[str] | None = None,
+    expected_device_families: list[str] | None = None,
 ) -> dict[str, object]:
     provider_file = provider_file.resolve()
     registry_errors = validate_provider_registry(provider_file)
@@ -352,6 +386,7 @@ def inspect_provider(
         max_age_days=max_age_days,
         expected_platforms=expected_platforms,
         expected_locales=expected_locales,
+        expected_device_families=expected_device_families,
     )
 
 
@@ -390,6 +425,12 @@ def main() -> int:
         default=[],
         help="Optionally require source captures to match one requested locale.",
     )
+    parser.add_argument(
+        "--device-family",
+        action="append",
+        default=[],
+        help="Optionally require source captures to match one requested device family.",
+    )
     parser.add_argument("--format", choices=("summary", "json"), default="summary")
     parser.add_argument("--fail-on-blocked", action="store_true")
     args = parser.parse_args()
@@ -414,6 +455,7 @@ def main() -> int:
             require_current_revision=args.require_current_revision,
             expected_platforms=args.platform,
             expected_locales=args.locale,
+            expected_device_families=args.device_family,
         )
         for provider_id in args.provider
     ]

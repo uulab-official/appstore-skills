@@ -19,6 +19,7 @@ handoff:
     - google-play
     - web
   locales: []
+  device_families: []
   publish_status: not-run
   checks:
     - id: project-root

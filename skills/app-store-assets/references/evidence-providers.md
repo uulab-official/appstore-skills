@@ -61,6 +61,7 @@ python scripts/inspect_evidence_providers.py \
   --output-root ./my-app/store-assets \
   --platform apple \
   --locale en-US \
+  --device-family iphone \
   --provider build-record \
   --provider simulator-source-captures \
   --format summary
@@ -85,4 +86,6 @@ not being checked. The same scope is applied to every simulator source
 capture, so an iOS capture cannot satisfy a Google Play-only handoff. Use
 `--locale` to apply the same explicit scope to capture locales; separators are
 normalized (`en_US` and `en-US` are equivalent), but locale scope is never
-inferred.
+inferred. Use `--device-family` to require a named capture family such as
+`iphone`, `ipad`, `android-phone`, or `android-tablet`; documented aliases such
+as `ios-phone` are normalized, while device-family scope is also never inferred.

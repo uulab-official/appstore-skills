@@ -151,6 +151,7 @@ validation tooling:
 - optional current-project Git revision binding for build evidence
 - optional requested-platform binding for build and simulator evidence
 - optional requested-locale binding for simulator evidence
+- optional requested-device-family binding for simulator evidence
 - locale plans and terminology QA that preserve review blockers
 - reversible store-copy experiment records with approval history
 - diff-friendly reviewer handoff summaries with manifest and reviewer-assignment baselines
@@ -205,6 +206,7 @@ python scripts/prepare_release_handoff.py \
   --platform apple \
   --platform google-play \
   --locale en-US \
+  --device-family iphone \
   --provider-file ./skills/app-store-assets/references/evidence-providers.yml \
   --provider build-record \
   --provider simulator-source-captures \
