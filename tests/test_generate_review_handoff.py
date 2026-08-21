@@ -112,6 +112,10 @@ class GenerateReviewHandoffTests(unittest.TestCase):
             (previous / "manifest.yml").write_text(manifest, encoding="utf-8")
             current_assignment = DEMO_ASSIGNMENT.read_text(encoding="utf-8")
             previous_assignment = current_assignment.replace(
+                "  status: pending\n  owner:",
+                "  status: in_review\n  owner:",
+                1,
+            ).replace(
                 "      status: pending\n      scope: [product-claims, metadata, visual-assets]",
                 "      status: in_review\n      scope: [product-claims, metadata, visual-assets]",
                 1,

@@ -118,6 +118,8 @@ assignment deltas; use `--previous-assignment-file` for an external baseline.
 When selecting review adapters, ensure reviewer `coverage` entries map each
 selected adapter to an owner; the generated matrix is informational and does
 not approve the adapter.
+Assignment validation also checks that the top-level status matches the
+required reviewer states, including explicit `not_applicable` decisions.
 When reviewer ownership or decision history must be explicit, start from
 [`references/review-assignment.yml`](references/review-assignment.yml), validate
 it with `scripts/validate_review_assignments.py`, and read

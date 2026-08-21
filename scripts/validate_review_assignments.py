@@ -105,6 +105,21 @@ def valid_timestamp(value: str) -> bool:
     return True
 
 
+def derived_assignment_status(reviewers: list[dict[str, object]]) -> str:
+    required_statuses = {
+        str(item.get("status", ""))
+        for item in reviewers
+        if str(item.get("required", "")) == "true"
+    }
+    if "blocked" in required_statuses:
+        return "blocked"
+    if required_statuses and required_statuses <= {"approved", "not_applicable"}:
+        return "approved"
+    if "in_review" in required_statuses:
+        return "in_review"
+    return "pending"
+
+
 def validate(
     path: Path,
     adapter_file: Path | None = None,
@@ -134,9 +149,6 @@ def validate(
         errors.append(f"{path}: review_assignment.history must contain at least one event")
 
     seen_ids: set[str] = set()
-    required_terminal_count = 0
-    approved_required_count = 0
-    blocked_count = 0
     for reviewer in reviewers:
         reviewer_id = str(reviewer.get("id", ""))
         prefix = f"{path}: reviewer {reviewer_id or '<unnamed>'}"
@@ -152,12 +164,6 @@ def validate(
         status = str(reviewer.get("status", ""))
         if status not in ALLOWED_REVIEWER_STATUSES:
             errors.append(f"{prefix}.status is unsupported")
-        if required == "true":
-            required_terminal_count += 1
-        if status == "approved" and required == "true":
-            approved_required_count += 1
-        if status == "blocked":
-            blocked_count += 1
         scope = reviewer.get("scope", [])
         if not isinstance(scope, list) or not scope or any(not str(item).strip() for item in scope):
             errors.append(f"{prefix}.scope must be a non-empty list")
@@ -187,10 +193,20 @@ def validate(
         elif status == "in_review" and not str(reviewer.get("assigned_to", "")).strip():
             errors.append(f"{prefix}: in_review requires assigned_to")
 
-    if fields.get("status") == "approved" and approved_required_count != required_terminal_count:
-        errors.append(f"{path}: approved assignment requires every required reviewer to be approved")
-    if fields.get("status") == "approved" and blocked_count:
-        errors.append(f"{path}: approved assignment cannot contain blocked reviewers")
+    declared_status = fields.get("status")
+    derived_status = derived_assignment_status(reviewers)
+    if declared_status in ALLOWED_ASSIGNMENT_STATUSES and declared_status != derived_status:
+        errors.append(f"{path}: review_assignment.status {declared_status} does not match reviewer-derived status {derived_status}")
+    if declared_status == "approved":
+        required_statuses = {
+            str(item.get("status", ""))
+            for item in reviewers
+            if str(item.get("required", "")) == "true"
+        }
+        if not required_statuses or not required_statuses <= {"approved", "not_applicable"}:
+            errors.append(f"{path}: approved assignment requires every required reviewer to be approved or not_applicable")
+        if not fields.get("owner", "").strip():
+            errors.append(f"{path}: approved assignment requires review_assignment.owner")
 
     previous_timestamp: datetime | None = None
     for index, event in enumerate(history, start=1):
@@ -251,15 +267,7 @@ def summarize(path: Path) -> dict[str, object]:
         }
         for item in reviewers
     ]
-    statuses = {str(item.get("status", "")) for item in reviewers if str(item.get("required", "")) == "true"}
-    if "blocked" in statuses:
-        status = "blocked"
-    elif statuses and statuses <= {"approved", "not_applicable"}:
-        status = "approved"
-    elif "in_review" in statuses:
-        status = "in_review"
-    else:
-        status = "pending"
+    status = derived_assignment_status(reviewers)
     return {
         "status": status,
         "declared_status": fields.get("status", ""),

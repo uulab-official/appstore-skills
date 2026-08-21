@@ -86,6 +86,60 @@ class ReviewAssignmentTests(unittest.TestCase):
             self.assertEqual(result.returncode, 1)
             self.assertIn("selected review adapter has no reviewer coverage: accessibility-review", result.stdout)
 
+    def test_declared_status_must_match_reviewer_states(self) -> None:
+        with TemporaryDirectory() as directory:
+            path = Path(directory) / "review-assignment.yml"
+            path.write_text(
+                DEMO.read_text(encoding="utf-8").replace(
+                    "  status: pending\n  owner:",
+                    "  status: approved\n  owner:",
+                    1,
+                ),
+                encoding="utf-8",
+            )
+
+            result = self.run_validator(path)
+
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("does not match reviewer-derived status pending", result.stdout)
+
+    def test_required_not_applicable_reviewers_can_complete_assignment(self) -> None:
+        with TemporaryDirectory() as directory:
+            path = Path(directory) / "review-assignment.yml"
+            path.write_text(
+                """schema_version: 1
+review_assignment:
+  id: example
+  package: example
+  status: approved
+  owner: Product owner
+  reviewers:
+    - id: owner
+      role: product
+      required: true
+      status: not_applicable
+      scope: [claims]
+      coverage: [policy-review]
+      assigned_to: Product owner
+      assigned_at: 2026-08-21T10:00:00Z
+      decision: not_applicable
+      decided_at: 2026-08-21T11:00:00Z
+      evidence: [ticket-1]
+      notes: outside scope
+  history:
+    - at: 2026-08-21T10:00:00Z
+      action: decided
+      actor: Product owner
+      reviewer: owner
+      note: scope marked not applicable
+""",
+                encoding="utf-8",
+            )
+
+            result = self.run_validator(path)
+
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
     def test_approved_reviewer_requires_decision_evidence(self) -> None:
         with TemporaryDirectory() as directory:
             path = Path(directory) / "review-assignment.yml"

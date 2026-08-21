@@ -25,6 +25,11 @@ reviewer is approved and no reviewer is blocked. History events require an
 actor, action, note, and chronological timestamp; the contract never infers
 approval from CI or from a missing event.
 
+The top-level assignment status is deterministic: it must match the required
+reviewer states (`blocked`, `in_review`, `approved`, or `pending`). A terminal
+`not_applicable` reviewer still needs assignment, timestamps, decision, and
+evidence; it counts as complete for an `approved` assignment.
+
 Validate one or more records with:
 
 ```bash
