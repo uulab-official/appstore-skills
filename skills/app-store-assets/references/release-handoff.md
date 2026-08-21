@@ -58,3 +58,6 @@ optional; when enabled, stale or future-dated `inspected_at`/`captured_at`
 values block the selected providers while leaving missing evidence visible.
 `--require-current-revision` additionally requires the selected build record to
 match the current project's Git `HEAD`; it is disabled by default.
+Any `--platform` values are also forwarded to the selected build provider. A
+record must match at least one requested platform, using only documented
+compatibility aliases; no platform scope is inferred when the flag is omitted.

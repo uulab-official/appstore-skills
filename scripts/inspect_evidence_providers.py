@@ -23,6 +23,13 @@ FIELD_LINE = re.compile(r"^\s{4}([a-z][a-z0-9_-]*):\s*(.*?)\s*$")
 TOP_LEVEL_FIELD_LINE = re.compile(r"^\s{0,2}([a-z][a-z0-9_-]*):\s*(.*?)\s*$")
 CAPTURE_LINE = re.compile(r"^\s{2}-\s+path:\s*(.*?)\s*$")
 IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg", ".webp"}
+PLATFORM_ALIASES = {
+    "apple": {"apple", "ios"},
+    "google-play": {"google-play", "android"},
+    "web": {"web"},
+    "amazon-appstore": {"amazon-appstore", "fire"},
+    "samsung-galaxy-store": {"samsung-galaxy-store", "android"},
+}
 
 
 def unquote(value: str) -> str:
@@ -113,6 +120,19 @@ def freshness_error(label: str, value: str, max_age_days: int | None) -> str | N
     return None
 
 
+def platform_family(value: str) -> set[str]:
+    normalized = value.strip().lower().replace("_", "-").replace(" ", "-")
+    for canonical, aliases in PLATFORM_ALIASES.items():
+        if normalized == canonical or normalized in aliases:
+            return {canonical, *aliases}
+    return {normalized}
+
+
+def platform_matches(recorded: str, expected: list[str]) -> bool:
+    recorded_normalized = recorded.strip().lower().replace("_", "-").replace(" ", "-")
+    return any(recorded_normalized in platform_family(item) for item in expected)
+
+
 def current_git_revision(project_root: Path) -> str | None:
     try:
         result = subprocess.run(
@@ -174,6 +194,7 @@ def inspect_build(
     max_age_days: int | None = None,
     expected_revision: str | None = None,
     require_current_revision: bool = False,
+    expected_platforms: list[str] | None = None,
 ) -> dict[str, object]:
     provider_id = provider["id"]
     evidence_path = output_root / provider["evidence_path"]
@@ -204,6 +225,11 @@ def inspect_build(
                     "build evidence revision does not match current project revision "
                     f"(recorded: {recorded_revision}, current: {expected_revision})"
                 )
+    if expected_platforms and not platform_matches(fields.get("platform", ""), expected_platforms):
+        errors.append(
+            "build evidence platform does not match requested platforms "
+            f"(recorded: {fields.get('platform', '')}, requested: {', '.join(expected_platforms)})"
+        )
     if errors:
         return result(provider_id, "build", "blocked", "; ".join(errors))
     return result(provider_id, "build", "pass", f"validated {provider['evidence_path']}")
@@ -277,6 +303,7 @@ def inspect_provider(
     max_age_days: int | None = None,
     expected_revision: str | None = None,
     require_current_revision: bool = False,
+    expected_platforms: list[str] | None = None,
 ) -> dict[str, object]:
     provider_file = provider_file.resolve()
     registry_errors = validate_provider_registry(provider_file)
@@ -296,6 +323,7 @@ def inspect_provider(
             max_age_days=max_age_days,
             expected_revision=current_revision,
             require_current_revision=require_current_revision,
+            expected_platforms=expected_platforms,
         )
     return inspect_simulator(provider, output_root.resolve(), max_age_days=max_age_days)
 
@@ -323,6 +351,12 @@ def main() -> int:
         action="store_true",
         help="Require build evidence revision to match the project Git revision.",
     )
+    parser.add_argument(
+        "--platform",
+        action="append",
+        default=[],
+        help="Optionally require build evidence to match one requested platform.",
+    )
     parser.add_argument("--format", choices=("summary", "json"), default="summary")
     parser.add_argument("--fail-on-blocked", action="store_true")
     args = parser.parse_args()
@@ -345,6 +379,7 @@ def main() -> int:
             args.provider_file,
             max_age_days=args.max_age_days,
             require_current_revision=args.require_current_revision,
+            expected_platforms=args.platform,
         )
         for provider_id in args.provider
     ]

@@ -105,6 +105,8 @@ python scripts/validate_review_assignments.py \
 python scripts/prepare_release_handoff.py \
   --project-root ./my-app \
   --output-root ./store-assets \
+  --platform apple \
+  --platform google-play \
   --provider-file ./store-assets/evidence-providers.yml \
   --provider build-record \
   --provider simulator-source-captures \

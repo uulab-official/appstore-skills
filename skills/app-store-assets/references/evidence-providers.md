@@ -59,6 +59,7 @@ python scripts/inspect_evidence_providers.py \
   --provider-file skills/app-store-assets/references/evidence-providers.yml \
   --project-root ./my-app \
   --output-root ./my-app/store-assets \
+  --platform apple \
   --provider build-record \
   --provider simulator-source-captures \
   --format summary
@@ -76,3 +77,7 @@ stale or future-dated timestamps. To bind `build-record` to the current Git
 checkout, add `--require-current-revision` to either command. Exact revisions
 and unambiguous hexadecimal prefixes are accepted; a non-Git project or a
 mismatch remains blocked in this strict mode.
+When `--platform` is supplied, the build record must match at least one
+requested platform. The built-in compatibility aliases include `apple`/`ios`
+and `google-play`/`android`; omit the flag when platform scope is intentionally
+not being checked.

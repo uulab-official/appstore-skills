@@ -342,6 +342,40 @@ class PrepareReleaseHandoffTests(unittest.TestCase):
             self.assertIn("revision does not match current project revision", mismatch.stdout)
             self.assertIn("Regenerate evidence/build.yml", mismatch.stdout)
 
+    def test_platform_scope_is_forwarded_to_provider_checks(self) -> None:
+        with TemporaryDirectory() as directory:
+            project = Path(directory) / "app"
+            output = project / "store-assets"
+            project.mkdir()
+            output.mkdir()
+            (project / "package.json").write_text("{}\n", encoding="utf-8")
+            create_output(output, with_evidence=True, with_capture=True)
+
+            mismatch = self.run_script(
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--platform", "google-play",
+                "--provider", "build-record",
+                "--format", "summary",
+            )
+
+            self.assertEqual(mismatch.returncode, 0, mismatch.stderr)
+            self.assertIn("Release handoff: blocked", mismatch.stdout)
+            self.assertIn("platform does not match requested platforms", mismatch.stdout)
+            self.assertIn("Record build evidence for a requested target platform", mismatch.stdout)
+
+            matching = self.run_script(
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--platform", "apple",
+                "--provider", "build-record",
+                "--format", "summary",
+            )
+
+            self.assertEqual(matching.returncode, 0, matching.stderr)
+            self.assertIn("Release handoff: pending_approval", matching.stdout)
+            self.assertIn("pass: build-identity — provider build-record", matching.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()

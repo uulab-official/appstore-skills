@@ -285,6 +285,37 @@ class InspectEvidenceProvidersTests(unittest.TestCase):
             self.assertEqual(result.returncode, 1)
             self.assertIn("current project revision is unavailable", result.stdout)
 
+    def test_build_platform_can_be_checked_against_requested_scope(self) -> None:
+        with TemporaryDirectory() as directory:
+            project = Path(directory) / "app"
+            output = project / "store-assets"
+            project.mkdir()
+            output.mkdir()
+            create_evidence(output)
+
+            matching = self.run_inspector(
+                "--provider-file", str(PROVIDER_FILE),
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--provider", "build-record",
+                "--platform", "apple",
+                "--fail-on-blocked",
+            )
+
+            self.assertEqual(matching.returncode, 0, matching.stdout + matching.stderr)
+
+            mismatch = self.run_inspector(
+                "--provider-file", str(PROVIDER_FILE),
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--provider", "build-record",
+                "--platform", "google-play",
+                "--fail-on-blocked",
+            )
+
+            self.assertEqual(mismatch.returncode, 1)
+            self.assertIn("platform does not match requested platforms", mismatch.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()

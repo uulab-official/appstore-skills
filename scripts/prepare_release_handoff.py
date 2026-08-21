@@ -187,6 +187,7 @@ def prepare_handoff(
                 max_age_days=max_evidence_age_days,
                 expected_revision=source_revision if source_revision != "unavailable" else None,
                 require_current_revision=require_current_revision,
+                expected_platforms=platforms,
             )
     checks: list[dict[str, str]] = []
 
@@ -292,6 +293,8 @@ def prepare_handoff(
         next_actions.append("Regenerate evidence/build.yml from the current project revision before handoff.")
     elif "current project revision is unavailable" in build_provider_details:
         next_actions.append("Run the revision-bound handoff from a Git project with a readable HEAD revision.")
+    if "platform does not match requested platforms" in build_provider_details:
+        next_actions.append("Record build evidence for a requested target platform before handoff.")
     if not next_actions:
         next_actions.append("Handoff is approved for read-only execution review; publishing remains disabled.")
 

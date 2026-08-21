@@ -149,6 +149,7 @@ validation tooling:
 - opt-in, read-only build and simulator evidence providers
 - opt-in freshness gates for build and simulator evidence in release handoffs
 - optional current-project Git revision binding for build evidence
+- optional requested-platform binding for build evidence
 - locale plans and terminology QA that preserve review blockers
 - reversible store-copy experiment records with approval history
 - diff-friendly reviewer handoff summaries with manifest and reviewer-assignment baselines
@@ -200,6 +201,8 @@ python scripts/validate_review_assignments.py \
 python scripts/prepare_release_handoff.py \
   --project-root ./my-app \
   --output-root ./my-app/store-assets \
+  --platform apple \
+  --platform google-play \
   --provider-file ./skills/app-store-assets/references/evidence-providers.yml \
   --provider build-record \
   --provider simulator-source-captures \
