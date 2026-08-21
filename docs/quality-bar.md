@@ -13,6 +13,14 @@ changes.
 - Mark assumptions and unknowns explicitly.
 - Never present a concept, mockup, or synthetic UI as a shipped product screen.
 
+### 1.1 User-input fidelity
+
+- Treat explicit user art direction as a hard constraint, not inspiration.
+- Record the hero object, supporting components, material, mood, palette, and
+  avoid list before generating visual candidates.
+- Do not compensate for missing input with a generic metaphor; ask a focused
+  question or keep the result explicitly in draft/review status.
+
 ### 2. Brand coherence
 
 - Reuse the approved icon, colors, typography, tone, and terminology.

@@ -1,0 +1,48 @@
+schema_version: 1
+status: draft
+
+product:
+  name: Example App
+  promise: Keep important tasks visible and easy to finish.
+  primary_action: Capture an important task and keep it in view.
+
+direction:
+  hero_object: An asymmetric cobalt portal that cradles a coral core.
+  metaphor: A calm focus companion that keeps one important thing visible.
+  personality: [friendly, premium, focused, modern]
+  finish_mode: dimensional
+  material: Soft-touch cobalt enamel with a warm coral satin core.
+  lighting: One soft upper-left key light, restrained rim highlight, subtle ambient halo.
+  composition: Centered, upright, dominant silhouette with a generous safe area.
+  background: Deep indigo #121A3A with a quiet vignette.
+  components:
+    primary: Asymmetric cobalt portal loop.
+    secondary: Coral rounded core fully held inside the opening.
+    supporting_cue: One subtle ambient halo that separates the silhouette from the background.
+
+palette:
+  primary: "#315CFF"
+  secondary: "#FF786B"
+  accent: "#121A3A"
+
+constraints:
+  must_include:
+    - Open asymmetric portal silhouette.
+    - Coral core visible at 32px and 180px.
+    - Premium dimensional material with controlled lighting.
+  must_avoid:
+    - Checkmarks, bells, locks, eyes, documents, card stacks, and generic rings.
+    - Faces, text, UI, device frames, floor props, and noisy texture.
+  references: []
+
+evidence:
+  - source: ../brand-context.yml
+    notes: Product promise, audience, personality, and approved demo colors.
+
+assumptions:
+  - This is a fictional review fixture; no user-approved art direction exists yet.
+  - The dimensional portal and dark background are proposed directions only.
+
+decisions:
+  - decision: Generate a dimensional candidate batch from this draft brief.
+    status: review

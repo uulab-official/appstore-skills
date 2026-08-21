@@ -1,0 +1,35 @@
+schema_version: 1
+status: draft
+
+product:
+  name: ""
+  promise: ""
+  primary_action: ""
+
+direction:
+  hero_object: ""
+  metaphor: ""
+  personality: []
+  finish_mode: dimensional
+  material: ""
+  lighting: ""
+  composition: ""
+  background: ""
+  components:
+    primary: ""
+    secondary: ""
+    supporting_cue: ""
+
+palette:
+  primary: ""
+  secondary: ""
+  accent: ""
+
+constraints:
+  must_include: []
+  must_avoid: []
+  references: []
+
+evidence: []
+assumptions: []
+decisions: []

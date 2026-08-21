@@ -11,6 +11,9 @@
 ## Passed
 
 - Three six-candidate icon batches were preserved for comparison.
+- The icon design brief records the hero object, secondary component, material,
+  palette, and avoid list; it remains `draft` because no product owner input
+  exists for this fictional fixture.
 - The third batch was screened for generic category symbols and compared at
   180×180 and 32×32.
 - A1 was selected because its asymmetric portal and coral core remain legible

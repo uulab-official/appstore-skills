@@ -25,6 +25,24 @@ Record evidence with file paths. Separate facts from assumptions. If an
 existing icon is present, assess whether to refine, replace, or preserve it
 before generating alternatives.
 
+### Required creative brief
+
+Do not invent the hero object or visual metaphor when the user is available.
+Before generation, ask for or record an `icon-design-brief.yml` containing:
+
+- the product promise in one sentence and the action the icon should evoke
+- the requested hero object or metaphor, including what it must not resemble
+- the desired personality, finish mode, material, lighting, and background
+- the primary form, secondary component, and at most one small supporting cue
+- must-include details, must-avoid details, palette constraints, and references
+
+Map every requested input to a prompt decision. If a required field is missing,
+pause before generation and ask a focused question. In unattended work, use
+only evidence from the project, mark all proposed art direction as an
+assumption, and keep the result in `draft` or `review` rather than presenting
+it as the user's approved design. Use the template in
+[references/icon-design-brief.yml](references/icon-design-brief.yml).
+
 ## Workflow
 
 ### 1. Build product and brand context
@@ -59,7 +77,7 @@ Keep the context concise and reusable by the screenshot and integrated
 skills. Do not invent a brand color when the project provides no evidence;
 label a proposed color as an assumption.
 
-### 2. Propose icon directions
+### 2. Convert the brief into icon directions
 
 Propose three materially different directions before committing to a final
 concept:
@@ -71,10 +89,11 @@ concept:
 3. **Abstract** — express a brand idea through geometry, motion, or negative
    space when a literal symbol would be generic.
 
-For each direction, state the symbol, silhouette, palette, relationship to the
-product, and the main small-size risk. Ask for a choice when the user is
-available. When the request explicitly asks for generation without a review
-step, select the strongest direction, record the decision, and continue.
+For each direction, state the user-provided hero object, the silhouette, the
+primary and secondary components, palette, relationship to the product, and the
+main small-size risk. Ask for a choice when the user is available. When the
+request explicitly asks for generation without a review step, select the
+strongest direction only after recording which brief inputs it satisfies.
 
 ### 3. Generate candidate concepts
 
@@ -127,15 +146,27 @@ Choose one finish mode from the brand context before generating:
   add a floor, props, reflections, or tiny surface detail just to make it look
   expensive.
 
+For dimensional work, use a detail budget instead of adding arbitrary objects:
+
+- **Hero form** — one dominant object occupying roughly 60–75% of the subject
+  area and carrying the product metaphor.
+- **Secondary component** — one meaningful cavity, lens, strap, hinge, core, or
+  other interaction that comes from the user's brief and supports the hero.
+- **Supporting cue** — at most one small detail, only if it survives at 180px;
+  omit it when it becomes noise at 32px.
+- **Finish system** — no more than two materials, one key light, one ambient
+  fill, and a controlled background treatment.
+
 Use a prompt structure like this for each independent candidate:
 
 ```text
 Create one complete full-bleed 1:1 square image.
 Background: use <named brand background color> in every open area.
-Subject: one extremely simplified <symbol or character> expressing <product connection>.
+Subject: <brief hero object> expressing <product connection>.
+Components: <brief secondary component>; optional supporting cue <brief cue>.
 Complexity: 4–7 broad shapes, one defining feature, no tiny details, readable at 32×32.
 Color: two purposeful subject colors plus the background; maintain clear separation.
-Composition: centered with a deliberate safe area; keep the mark dominant and upright.
+Composition: <brief composition>; centered with a deliberate safe area; keep the subject dominant and upright.
 Finish: use <vector-native or dimensional product-render mode>; keep the
 surface treatment coherent and the silhouette simple; no text or presentation frame.
 Constraints: no words, letters, numbers, watermark, UI, border, device mockup,
@@ -144,6 +175,10 @@ scene props, uncontrolled photorealism, sharp tips, thin lines, or clutter.
 
 Change only the candidate's direction, subject treatment, or palette mapping
 between calls so the six outputs remain useful for comparison.
+
+Keep the brief, each candidate prompt, and the selection rationale together.
+If the generated details drift from the brief, reject the result or revise the
+prompt; do not retrofit a rationale after the fact.
 
 ### Distinctiveness gate
 
@@ -208,6 +243,9 @@ report success when a requested export or validation step was skipped.
 - If the project context is too sparse to make a grounded icon, deliver the
   analysis and proposed directions first instead of fabricating product
   meaning.
+- Treat explicit user art direction as a hard constraint. Do not replace a
+  requested object, component, material, or mood with a more convenient
+  generic metaphor.
 
 For the detailed review checklist, read
 [references/icon-qa.md](references/icon-qa.md).

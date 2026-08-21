@@ -3,6 +3,15 @@
 Use this checklist after selecting a candidate and before calling an export
 submission-ready.
 
+## Brief fidelity checks
+
+- Confirm `icon-design-brief.yml` exists when the user supplied creative
+  direction and its status is recorded as `draft`, `review`, or `approved`.
+- Trace the hero object, secondary component, material, palette, and avoid list
+  into each candidate prompt and the selection rationale.
+- Reject candidates that add an attractive but unrequested metaphor or detail;
+  visual polish does not override the user's brief.
+
 ## Candidate-set checks
 
 - Confirm the batch contains the requested independent candidates, labeled
@@ -29,6 +38,8 @@ submission-ready.
 - For dimensional work, check that material, key light, and ambient shadow are
   consistent; reject floor planes, props, accidental reflections, and noisy
   texture that collapse at store size.
+- Confirm the dimensional detail budget is respected: one hero form, one
+  meaningful secondary component, and at most one small supporting cue.
 - Check that the color profile and image mode are appropriate for the export.
 - Compare the icon with the app UI and `brand-context.yml` for brand fit.
 

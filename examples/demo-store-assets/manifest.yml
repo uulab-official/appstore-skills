@@ -22,6 +22,12 @@ assets:
     status: review
     source: icon/concepts-v3/A1.png through C2.png
     checks: [candidate-comparison, rationale-recorded, distinctiveness-gate, small-size-review]
+  - path: icon/icon-design-brief.yml
+    kind: app-icon-design-brief
+    platform: shared
+    status: review
+    source: brand-context.yml
+    checks: [input-mapping, assumptions-recorded, draft-labeled]
   - path: icon/concepts/A1.png
     kind: app-icon-candidate
     platform: shared
