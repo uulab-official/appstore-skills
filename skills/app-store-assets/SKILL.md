@@ -88,9 +88,15 @@ palette or let an icon workflow infer unsupported product claims.
 
 Generate promotional art, feature graphics, OG images, or store metadata only
 when the user requests them or the project explicitly includes them in scope.
-Keep platform-specific content in separate folders. Treat copy and claims as
-product content: ground them in project evidence, preserve locale, and flag
-missing translations or approvals.
+For promotional and feature-graphic work, start from the reusable contracts in
+[`references/promotional-template.yml`](references/promotional-template.yml)
+and [`references/feature-graphic-template.yml`](references/feature-graphic-template.yml).
+Fill their content and visual slots from the app evidence before rendering;
+do not treat a blank template as an approved design. Read
+[`references/marketing-template-qa.md`](references/marketing-template-qa.md)
+before exporting channel variants. Keep platform-specific content in separate
+folders. Treat copy and claims as product content: ground them in project
+evidence, preserve locale, and flag missing translations or approvals.
 
 For web outputs, read [`../favicon/SKILL.md`](../favicon/SKILL.md) and
 [`../og-image/SKILL.md`](../og-image/SKILL.md) instead of improvising browser or
@@ -130,6 +136,10 @@ assumptions: []
 Use statuses such as `draft`, `review`, `verified`, and `blocked`. Only mark
 an asset `verified` when its source fidelity, dimensions, and current platform
 requirements have actually been checked.
+
+For every rendered promotional or feature-graphic image, declare `format` and
+`dimensions` in the manifest. Validate filled template specs with
+`python scripts/validate_template_specs.py <template.yml>` before rendering.
 
 ### 7. Perform final QA and deliver
 

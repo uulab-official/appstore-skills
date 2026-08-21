@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 500" role="img" aria-labelledby="title desc">
+  <title id="title">Example App Google Play feature graphic concept</title>
+  <desc id="desc">A fictional feature graphic for keeping everyday tasks visible.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F8FAFF"/>
+      <stop offset="1" stop-color="#E7EDFF"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#233D9D"/>
+      <stop offset="1" stop-color="#101A45"/>
+    </linearGradient>
+    <linearGradient id="shell" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#91B0FF"/>
+      <stop offset=".42" stop-color="#315CFF"/>
+      <stop offset="1" stop-color="#1537A5"/>
+    </linearGradient>
+    <radialGradient id="coral" cx="35%" cy="22%" r="78%">
+      <stop offset="0" stop-color="#FFD0C9"/>
+      <stop offset=".3" stop-color="#FF786B"/>
+      <stop offset="1" stop-color="#D9434A"/>
+    </radialGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="170%">
+      <feDropShadow dx="0" dy="18" stdDeviation="20" flood-color="#17203A" flood-opacity=".24"/>
+    </filter>
+  </defs>
+  <rect width="1024" height="500" fill="url(#bg)"/>
+  <circle cx="72" cy="62" r="110" fill="#FF786B" opacity=".13"/>
+  <circle cx="558" cy="444" r="190" fill="#315CFF" opacity=".09"/>
+  <text x="72" y="94" fill="#315CFF" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="700" letter-spacing="3">EXAMPLE APP</text>
+  <text x="72" y="190" fill="#17203A" font-family="Arial, Helvetica, sans-serif" font-size="55" font-weight="700">Keep everyday</text>
+  <text x="72" y="250" fill="#17203A" font-family="Arial, Helvetica, sans-serif" font-size="55" font-weight="700">tasks visible.</text>
+  <text x="74" y="306" fill="#52607D" font-family="Arial, Helvetica, sans-serif" font-size="23">Capture, organize, and finish</text>
+  <text x="74" y="338" fill="#52607D" font-family="Arial, Helvetica, sans-serif" font-size="23">everyday work in one place.</text>
+  <g transform="translate(72 380)">
+    <rect width="126" height="38" rx="19" fill="#315CFF"/>
+    <text x="20" y="26" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700">Quick capture</text>
+    <rect x="140" width="108" height="38" rx="19" fill="#FF786B"/>
+    <text x="161" y="26" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700">Reminders</text>
+  </g>
+  <g transform="translate(650 42)" filter="url(#shadow)">
+    <rect width="302" height="416" rx="42" fill="url(#panel)"/>
+    <circle cx="230" cy="58" r="10" fill="#FF786B"/>
+    <circle cx="262" cy="58" r="10" fill="#9DB4FF"/>
+    <g transform="translate(36 68) scale(1.05)">
+      <path fill="url(#shell)" d="M64 200C42 178 38 132 48 85C58 42 94 25 137 34C178 43 207 75 214 112C217 128 207 139 195 141C184 143 177 135 173 123C166 97 150 79 130 73C106 67 88 79 81 102C74 127 78 152 94 169C110 185 132 188 155 180L173 208C135 224 93 222 64 200Z"/>
+      <path fill="#080F27" d="M82 101C91 74 117 62 143 69C171 76 190 98 195 125C197 137 190 145 180 146H93C82 140 78 121 82 101Z"/>
+      <rect x="82" y="101" width="102" height="52" rx="26" fill="url(#coral)"/>
+      <rect x="112" y="113" width="49" height="28" rx="14" fill="#FFB1A6" opacity=".62"/>
+      <rect x="174" y="116" width="31" height="20" rx="10" fill="url(#coral)"/>
+    </g>
+    <rect x="36" y="310" width="230" height="12" rx="6" fill="#FFFFFF" opacity=".18"/>
+    <rect x="36" y="338" width="168" height="12" rx="6" fill="#FF786B"/>
+    <rect x="36" y="366" width="92" height="12" rx="6" fill="#7AA3FF"/>
+  </g>
+  <text x="72" y="470" fill="#7B86A2" font-family="Arial, Helvetica, sans-serif" font-size="13" letter-spacing="1.4">DEMO CONCEPT — VERIFY CURRENT PLAY REQUIREMENTS BEFORE SUBMISSION</text>
+</svg>

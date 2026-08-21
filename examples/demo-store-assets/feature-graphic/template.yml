@@ -1,0 +1,59 @@
+schema_version: 1
+template:
+  id: example-app-google-play-feature-v1
+  kind: feature-graphic
+  status: review
+  purpose: Explain Example App's everyday-task value at a glance for a Play listing concept.
+  target: google-play
+canvas:
+  width: 1024
+  height: 500
+  format: svg
+  note: Demo working artboard; current Play Console acceptance is not verified.
+safe_area:
+  left: 72
+  right: 72
+  top: 56
+  bottom: 56
+layout:
+  type: headline-plus-hero
+  text_zone: left
+  visual_zone: right
+  focal_point: Product mark first; headline remains readable if the hero is cropped.
+content:
+  eyebrow: EXAMPLE APP
+  headline: Keep everyday tasks visible.
+  supporting_line: Capture, organize, and finish everyday work in one place.
+  cta: ""
+  max_headline_chars: 38
+  max_supporting_line_chars: 72
+visual:
+  hero_asset: icon/icon-master.png
+  supporting_assets: []
+  background_treatment: Soft light background with cobalt/coral brand accents.
+  material_limit: 2
+  key_light_count: 1
+  detail_budget: Refined portal shell and coral core; no synthetic product UI.
+claims:
+  allowed:
+    - quick capture
+    - reminders
+    - shared lists
+  disallowed:
+    - fabricated ratings, reviews, awards, or user counts
+    - unsupported performance, ranking, or guarantee claims
+platform:
+  submission_dimensions: verify-at-execution
+  current_documentation_url: ""
+outputs:
+  master: feature-graphic/example-app-feature.svg
+  channel_variants: []
+evidence:
+  - source: brand-context.yml
+    supports: product category, value proposition, audience, and listed features
+  - source: metadata/store-copy.en-US.yml
+    supports: headline and supporting line
+assumptions:
+  - This is a fictional review fixture, not an approved Play listing asset.
+decisions:
+  - Keep the working artboard explicitly labeled until current Play requirements are checked.

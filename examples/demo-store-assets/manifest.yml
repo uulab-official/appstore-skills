@@ -355,6 +355,34 @@ assets:
     color_type: rgba
     source: web-assets/og/og-image.svg
     checks: [1200x630, exact-copy, concept-labeled]
+  - path: promotional/template.yml
+    kind: promotional-template
+    platform: shared
+    status: review
+    source: brand-context.yml and metadata/store-copy.en-US.yml
+    checks: [template-contract, safe-area, claims-review, evidence-recorded]
+  - path: promotional/example-app-hero.svg
+    kind: promotional-master
+    platform: shared
+    status: review
+    format: svg
+    dimensions: 1600x900
+    source: promotional/template.yml
+    checks: [safe-area, evidence-backed-copy, rendered-template, concept-labeled]
+  - path: feature-graphic/template.yml
+    kind: feature-graphic-template
+    platform: google-play
+    status: review
+    source: brand-context.yml and metadata/store-copy.en-US.yml
+    checks: [template-contract, safe-area, claims-review, execution-time-platform-check]
+  - path: feature-graphic/example-app-feature.svg
+    kind: feature-graphic-master
+    platform: google-play
+    status: review
+    format: svg
+    dimensions: 1024x500
+    source: feature-graphic/template.yml
+    checks: [safe-area, evidence-backed-copy, rendered-template, concept-labeled]
   - path: metadata/store-copy.en-US.yml
     kind: store-copy
     platform: shared

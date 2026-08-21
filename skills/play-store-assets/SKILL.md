@@ -65,6 +65,11 @@ For screenshots, reuse the storyboard discipline from
 capture Android-specific navigation, system bars, typography, and responsive
 layout. For the icon, reuse the evaluation discipline from
 [`../app-icon/SKILL.md`](../app-icon/SKILL.md).
+For a feature graphic, fill
+[`../app-store-assets/references/feature-graphic-template.yml`](../app-store-assets/references/feature-graphic-template.yml)
+and follow
+[`../app-store-assets/references/marketing-template-qa.md`](../app-store-assets/references/marketing-template-qa.md).
+Treat its artboard as a working source, not proof of current Play acceptance.
 
 ### 4. Adapt to current Play requirements
 
@@ -110,4 +115,3 @@ exact blockers and next steps for Play Console submission.
 - Do not fabricate ratings, reviews, user counts, awards, or policy claims.
 - Keep generated output separate from Android source assets and never overwrite
   previous runs without permission.
-

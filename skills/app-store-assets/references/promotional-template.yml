@@ -1,0 +1,47 @@
+schema_version: 1
+template:
+  id: promotional-editorial-hero-v1
+  kind: promotional
+  status: draft
+  purpose: Create a campaign-ready hero composition without inventing product UI.
+  target: shared
+canvas:
+  width: 1600
+  height: 900
+  format: svg
+  note: Working artboard; verify channel export dimensions at execution time.
+safe_area:
+  left: 96
+  right: 96
+  top: 80
+  bottom: 80
+layout:
+  type: split-hero
+  text_zone: left
+  visual_zone: right
+  focal_point: one hero asset with one supporting cue
+content:
+  eyebrow: ""
+  headline: ""
+  supporting_line: ""
+  cta: ""
+  max_headline_chars: 48
+  max_supporting_line_chars: 96
+visual:
+  hero_asset: ""
+  supporting_assets: []
+  background_treatment: brand-context
+  material_limit: 2
+  key_light_count: 1
+  detail_budget: Hero object first; one meaningful secondary component; one cue.
+claims:
+  allowed: []
+  disallowed:
+    - fabricated ratings, reviews, awards, or user counts
+    - unsupported performance, ranking, or guarantee claims
+outputs:
+  master: promotional/master.svg
+  channel_variants: []
+evidence: []
+assumptions: []
+decisions: []

@@ -31,6 +31,8 @@ reviewable commits.
 - Dependency-free generated-output manifest validator
 - Manifest-declared PNG/SVG format and dimension validation
 - SVG `viewBox` and optional PNG color-type metadata validation
+- Reusable promotional and feature-graphic template contracts
+- Dependency-free template-spec validator and regression tests
 - Unit tests for path, manifest, and image metadata safety checks
 - GitHub Actions validation on pushes and pull requests
 - Manual GitHub Actions workflow for repository-relative store output
@@ -39,7 +41,6 @@ reviewable commits.
 
 ### v0.4.0 — Asset and release automation (in progress)
 
-- Reusable promotional and feature-graphic templates
 - Release report annotations for pull requests
 - Additional platform-specific adapters
 

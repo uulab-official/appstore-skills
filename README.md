@@ -139,6 +139,7 @@ validation tooling:
 - pre-submission release-readiness audit
 - manifest-declared PNG/SVG dimensions and format validation
 - SVG `viewBox` and optional PNG color-type validation
+- reusable promotional and Google Play feature-graphic template contracts
 
 The repository also includes deterministic, dependency-free checks for skill
 metadata and generated output manifests:
@@ -146,6 +147,9 @@ metadata and generated output manifests:
 ```bash
 python scripts/validate_skills.py
 python scripts/validate_docs.py
+python scripts/validate_template_specs.py \
+  skills/app-store-assets/references/promotional-template.yml \
+  skills/app-store-assets/references/feature-graphic-template.yml
 python -m unittest discover -s tests
 python scripts/validate_store_output.py ./store-assets
 ```

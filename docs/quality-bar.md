@@ -53,6 +53,10 @@ changes.
   are checked against those declarations.
 - Check dimensions, format, color profile, transparency, file size, and text
   legibility for the actual asset.
+- For promotional and feature graphics, keep a filled template spec with a
+  declared safe area, copy limits, hero asset, evidence, and claims review.
+- Review marketing compositions at full size, thumbnail size, and a likely
+  narrow crop before accepting a channel variant.
 - Keep source compositions, masters, and platform exports distinguishable.
 
 ### 5. Localization quality

@@ -1,0 +1,56 @@
+schema_version: 1
+template:
+  id: example-app-promotional-editorial-v1
+  kind: promotional
+  status: review
+  purpose: Present Example App as a calm, focused way to keep daily tasks visible.
+  target: shared
+canvas:
+  width: 1600
+  height: 900
+  format: svg
+  note: Demo working artboard; channel dimensions still require execution-time verification.
+safe_area:
+  left: 96
+  right: 96
+  top: 80
+  bottom: 80
+layout:
+  type: split-hero
+  text_zone: left
+  visual_zone: right
+  focal_point: Refined A1 icon with three evidence-backed feature cues.
+content:
+  eyebrow: EVERYDAY PRODUCTIVITY
+  headline: Keep important tasks visible.
+  supporting_line: Capture tasks quickly, set reminders, and keep shared lists organized in one simple place.
+  cta: ""
+  max_headline_chars: 48
+  max_supporting_line_chars: 96
+visual:
+  hero_asset: icon/icon-master.png
+  supporting_assets: []
+  background_treatment: Deep indigo to cobalt gradient from brand-context colors.
+  material_limit: 2
+  key_light_count: 1
+  detail_budget: Refined portal shell, coral priority core, and one capture-tab cue.
+claims:
+  allowed:
+    - quick capture
+    - reminders
+    - shared lists
+  disallowed:
+    - fabricated ratings, reviews, awards, or user counts
+    - unsupported performance, ranking, or guarantee claims
+outputs:
+  master: promotional/example-app-hero.svg
+  channel_variants: []
+evidence:
+  - source: brand-context.yml
+    supports: product category, value proposition, audience, and listed features
+  - source: metadata/store-copy.en-US.yml
+    supports: headline and supporting line
+assumptions:
+  - This is a fictional review fixture, not approved campaign copy.
+decisions:
+  - Keep the icon as the only hero object and use feature pills as subordinate cues.

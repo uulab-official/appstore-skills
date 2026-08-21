@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Example App promotional concept</title>
+  <desc id="desc">A fictional productivity app campaign card about keeping important tasks visible.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0D1535"/>
+      <stop offset="0.56" stop-color="#172967"/>
+      <stop offset="1" stop-color="#315CFF"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="40%" r="65%">
+      <stop offset="0" stop-color="#7AA3FF" stop-opacity=".45"/>
+      <stop offset="1" stop-color="#315CFF" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="shell" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#B5C8FF"/>
+      <stop offset=".18" stop-color="#6D92FF"/>
+      <stop offset=".58" stop-color="#315CFF"/>
+      <stop offset="1" stop-color="#102B9B"/>
+    </linearGradient>
+    <radialGradient id="coral" cx="35%" cy="22%" r="78%">
+      <stop offset="0" stop-color="#FFD0C9"/>
+      <stop offset=".3" stop-color="#FF786B"/>
+      <stop offset="1" stop-color="#D9434A"/>
+    </radialGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="170%">
+      <feDropShadow dx="0" dy="28" stdDeviation="26" flood-color="#050A20" flood-opacity=".34"/>
+    </filter>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="22"/>
+    </filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <circle cx="1250" cy="260" r="420" fill="url(#glow)"/>
+  <circle cx="1450" cy="760" r="260" fill="#FF786B" opacity=".12" filter="url(#soft)"/>
+  <path d="M0 770 C330 670 520 860 820 760 S1270 570 1600 680 V900 H0Z" fill="#0A1230" opacity=".28"/>
+  <g fill="#FFFFFF" opacity=".08">
+    <circle cx="930" cy="130" r="3"/><circle cx="980" cy="176" r="2"/><circle cx="1510" cy="180" r="3"/>
+    <circle cx="1420" cy="690" r="2"/><circle cx="1530" cy="620" r="3"/><circle cx="830" cy="760" r="2"/>
+  </g>
+  <text x="96" y="136" fill="#AFC1FF" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700" letter-spacing="4">EVERYDAY PRODUCTIVITY</text>
+  <text x="96" y="286" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="88" font-weight="700" letter-spacing="-2">Keep important</text>
+  <text x="96" y="382" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="88" font-weight="700" letter-spacing="-2">tasks visible.</text>
+  <text x="100" y="454" fill="#DDE5FF" font-family="Arial, Helvetica, sans-serif" font-size="32">Capture tasks quickly, set reminders, and keep</text>
+  <text x="100" y="496" fill="#DDE5FF" font-family="Arial, Helvetica, sans-serif" font-size="32">shared lists organized in one simple place.</text>
+  <g transform="translate(96 580)">
+    <rect width="188" height="54" rx="27" fill="#FFFFFF" opacity=".12" stroke="#FFFFFF" stroke-opacity=".2"/>
+    <circle cx="30" cy="27" r="8" fill="#FF786B"/><text x="52" y="36" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700">Quick capture</text>
+    <rect x="208" width="170" height="54" rx="27" fill="#FFFFFF" opacity=".12" stroke="#FFFFFF" stroke-opacity=".2"/>
+    <circle cx="238" cy="27" r="8" fill="#FFB1A6"/><text x="260" y="36" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700">Reminders</text>
+    <rect x="398" width="178" height="54" rx="27" fill="#FFFFFF" opacity=".12" stroke="#FFFFFF" stroke-opacity=".2"/>
+    <circle cx="428" cy="27" r="8" fill="#9DB4FF"/><text x="450" y="36" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700">Shared lists</text>
+  </g>
+  <g transform="translate(1002 120)" filter="url(#shadow)">
+    <rect width="486" height="660" rx="62" fill="#111A3D" stroke="#FFFFFF" stroke-opacity=".18" stroke-width="2"/>
+    <rect x="24" y="24" width="438" height="438" rx="48" fill="#0B1230"/>
+    <circle cx="244" cy="245" r="184" fill="#315CFF" opacity=".18" filter="url(#soft)"/>
+    <g transform="translate(88 102) scale(1.35)">
+      <path fill="url(#shell)" d="M64 200C42 178 38 132 48 85C58 42 94 25 137 34C178 43 207 75 214 112C217 128 207 139 195 141C184 143 177 135 173 123C166 97 150 79 130 73C106 67 88 79 81 102C74 127 78 152 94 169C110 185 132 188 155 180L173 208C135 224 93 222 64 200Z"/>
+      <path fill="#080F27" d="M82 101C91 74 117 62 143 69C171 76 190 98 195 125C197 137 190 145 180 146H93C82 140 78 121 82 101Z"/>
+      <rect x="82" y="101" width="102" height="52" rx="26" fill="url(#coral)"/>
+      <rect x="112" y="113" width="49" height="28" rx="14" fill="#FFB1A6" opacity=".62"/>
+      <rect x="174" y="116" width="31" height="20" rx="10" fill="url(#coral)"/>
+    </g>
+    <text x="48" y="518" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700">One clear place to start.</text>
+    <text x="48" y="558" fill="#AFC1FF" font-family="Arial, Helvetica, sans-serif" font-size="22">Simple by design. Ready for the next task.</text>
+    <rect x="48" y="594" width="166" height="10" rx="5" fill="#FF786B"/>
+    <rect x="226" y="594" width="92" height="10" rx="5" fill="#315CFF"/>
+    <rect x="330" y="594" width="70" height="10" rx="5" fill="#7AA3FF" opacity=".7"/>
+  </g>
+  <text x="96" y="846" fill="#AFC1FF" font-family="Arial, Helvetica, sans-serif" font-size="16" letter-spacing="2">DEMO CONCEPT — NOT A PRODUCTION LISTING</text>
+</svg>

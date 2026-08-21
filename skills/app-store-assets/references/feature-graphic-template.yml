@@ -1,0 +1,50 @@
+schema_version: 1
+template:
+  id: google-play-feature-graphic-v1
+  kind: feature-graphic
+  status: draft
+  purpose: Build a Play listing hero that explains the product at a glance.
+  target: google-play
+canvas:
+  width: 1024
+  height: 500
+  format: svg
+  note: Working artboard only; verify current Play Console requirements at execution time.
+safe_area:
+  left: 72
+  right: 72
+  top: 56
+  bottom: 56
+layout:
+  type: headline-plus-hero
+  text_zone: left
+  visual_zone: right
+  focal_point: one hero asset; keep the headline readable without the asset
+content:
+  eyebrow: ""
+  headline: ""
+  supporting_line: ""
+  cta: ""
+  max_headline_chars: 38
+  max_supporting_line_chars: 72
+visual:
+  hero_asset: ""
+  supporting_assets: []
+  background_treatment: brand-context
+  material_limit: 2
+  key_light_count: 1
+  detail_budget: Use the product-specific hero before decorative texture.
+claims:
+  allowed: []
+  disallowed:
+    - fabricated ratings, reviews, awards, or user counts
+    - unsupported performance, ranking, or guarantee claims
+platform:
+  submission_dimensions: verify-at-execution
+  current_documentation_url: ""
+outputs:
+  master: feature-graphic/master.svg
+  channel_variants: []
+evidence: []
+assumptions: []
+decisions: []

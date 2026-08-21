@@ -17,4 +17,8 @@ jobs:
           python-version: "3.x"
       - run: python scripts/validate_skills.py
       - run: python scripts/validate_docs.py
+      - run: >-
+          python scripts/validate_template_specs.py
+          skills/app-store-assets/references/promotional-template.yml
+          skills/app-store-assets/references/feature-graphic-template.yml
       - run: python -m unittest discover -s tests

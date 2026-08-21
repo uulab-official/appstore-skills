@@ -46,6 +46,21 @@ Document the generated date, source evidence, official platform documentation
 checked, image validation, UI-fidelity review, copy and locale review,
 assumptions, blockers, and next steps.
 
+### Promotional and feature-graphic templates
+
+When either surface is in scope, preserve the filled template spec next to the
+rendered output. It must record the working canvas, safe area, layout zones,
+copy limits, hero asset, claims, evidence, assumptions, and output paths. Use
+the repository templates as starting points:
+
+- [`promotional-template.yml`](promotional-template.yml) for shared campaign
+  compositions
+- [`feature-graphic-template.yml`](feature-graphic-template.yml) for a Google
+  Play-oriented working artboard
+
+The template validator checks the structural contract; platform acceptance must
+still be verified against current official documentation at execution time.
+
 ## Recommended layout
 
 ```text

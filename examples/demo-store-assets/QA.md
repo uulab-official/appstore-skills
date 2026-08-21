@@ -28,6 +28,10 @@
 - Favicon and OG SVGs use the same cobalt/coral visual system.
 - OG copy is exact SVG text, the PNG export is 1200×630, and both include a
   visible demo disclaimer.
+- Promotional and feature-graphic template specs record canvas, safe area,
+  layout, copy limits, hero asset, claims, evidence, and output paths.
+- Promotional and feature-graphic SVG concept masters were rendered from
+  those specs and reviewed at full size and thumbnail size.
 - Every manifest asset exists and is non-empty.
 
 ## Blocked or review-required
@@ -38,6 +42,8 @@
   trademark requirements.
 - Apple, Google Play, and web platform requirements were not checked for a real
   submission.
+- The feature-graphic artboard is a working concept; its current Play Console
+  acceptance dimensions and crop behavior still require execution-time review.
 - Store copy is a draft and has not passed product, policy, or platform field
   review.
 
