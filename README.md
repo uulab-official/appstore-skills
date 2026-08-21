@@ -149,7 +149,7 @@ validation tooling:
 - opt-in, read-only build and simulator evidence providers
 - locale plans and terminology QA that preserve review blockers
 - reversible store-copy experiment records with approval history
-- diff-friendly reviewer handoff summaries
+- diff-friendly reviewer handoff summaries with manifest and reviewer-assignment baselines
 - opt-in policy, accessibility, and privacy review adapters with pending-visible states
 - reviewer assignment records with reviewer scopes, evidence references, and chronological decision history
 

@@ -59,6 +59,10 @@ decision history visible. Each reviewer declares a scope before assignment;
 terminal decisions must include evidence references. Its unassigned reviewers
 intentionally keep the demo in `pending` review state.
 
+When a previous package is supplied, the handoff compares reviewer status,
+assignment, scope, evidence references, and history-event counts without
+mutating either package.
+
 Run the deterministic package check from the repository root:
 
 ```bash

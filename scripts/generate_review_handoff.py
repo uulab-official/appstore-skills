@@ -13,7 +13,7 @@ import sys
 from annotate_release_report import parse_report
 from inspect_review_adapters import inspect_adapter
 from validate_release_approval import parse_approval, validate as validate_approval
-from validate_review_assignments import summarize as summarize_assignment
+from validate_review_assignments import compare_assignments, summarize as summarize_assignment
 
 
 ASSET_PATH_LINE = re.compile(r"^\s+-\s+path:\s*(.*?)\s*$")
@@ -121,12 +121,40 @@ def review_assignment_data(package_root: Path, assignment_file: Path | None = No
     return result
 
 
+def review_assignment_diff_data(
+    package_root: Path,
+    previous_package_root: Path | None,
+    assignment_file: Path | None = None,
+    previous_assignment_file: Path | None = None,
+) -> dict[str, object]:
+    current_path = assignment_file or package_root / "review-assignment.yml"
+    previous_path = previous_assignment_file
+    if previous_path is None and previous_package_root is not None:
+        previous_path = previous_package_root / "review-assignment.yml"
+    if previous_path is None:
+        return {"status": "not-supplied", "baseline": "not-supplied", "changes": [], "details": "no previous reviewer assignment supplied"}
+    if not current_path.is_file():
+        return {"status": "not-supplied", "baseline": previous_path.parent.name, "changes": [], "details": "current review-assignment.yml is missing"}
+    if not previous_path.is_file():
+        return {"status": "unavailable", "baseline": previous_path.parent.name, "changes": [], "details": f"missing {previous_path.name}"}
+    changes, errors = compare_assignments(current_path, previous_path)
+    if errors:
+        return {"status": "invalid", "baseline": previous_path.parent.name, "changes": [], "details": "; ".join(errors)}
+    return {
+        "status": "compared",
+        "baseline": previous_path.parent.name,
+        "changes": changes,
+        "details": f"{len(changes)} reviewer assignment change(s)",
+    }
+
+
 def build_summary(
     package_root: Path,
     previous_package_root: Path | None,
     adapter_file: Path | None = None,
     adapters: list[str] | None = None,
     assignment_file: Path | None = None,
+    previous_assignment_file: Path | None = None,
 ) -> dict[str, object]:
     manifest_path = package_root / "manifest.yml"
     blockers: list[str] = []
@@ -169,6 +197,12 @@ def build_summary(
                 warnings.append(f"{adapter['id']} review adapter is pending: {adapter['details']}")
 
     review_assignment = review_assignment_data(package_root, assignment_file)
+    review_assignment_diff = review_assignment_diff_data(
+        package_root,
+        previous_package_root,
+        assignment_file=assignment_file,
+        previous_assignment_file=previous_assignment_file,
+    )
     if review_assignment["status"] == "invalid":
         blockers.append(f"review assignment is invalid: {review_assignment['details']}")
     elif review_assignment["status"] in {"pending", "in_review"}:
@@ -178,6 +212,12 @@ def build_summary(
         )
     elif review_assignment["status"] == "blocked":
         blockers.append("Reviewer assignment contains a blocked required review.")
+    if review_assignment_diff["status"] == "invalid":
+        warnings.append(f"Reviewer assignment baseline could not be compared: {review_assignment_diff['details']}")
+    elif review_assignment_diff["status"] == "unavailable":
+        warnings.append(f"Reviewer assignment baseline is unavailable: {review_assignment_diff['details']}")
+    elif review_assignment_diff.get("changes"):
+        warnings.append(f"{review_assignment_diff['details']}; review the assignment delta before handoff.")
 
     status_counts = Counter(record.get("status", "unknown") for record in current_records)
     review_statuses = sum(status_counts.get(status, 0) for status in ("review", "draft"))
@@ -208,6 +248,8 @@ def build_summary(
         next_actions.append("Complete the selected policy, accessibility, and privacy adapter reviews.")
     if review_assignment["status"] in {"pending", "in_review"}:
         next_actions.append("Assign and complete the required reviewer decisions in review-assignment.yml.")
+    if review_assignment_diff.get("changes"):
+        next_actions.append("Review the reviewer assignment delta against the supplied baseline.")
     if not next_actions:
         next_actions.append("Complete final human review; publish_status remains not-run.")
 
@@ -226,6 +268,7 @@ def build_summary(
         "warnings": sorted(dict.fromkeys(warnings)),
         "review_adapters": review_adapters,
         "review_assignment": review_assignment,
+        "review_assignment_diff": review_assignment_diff,
         "next_actions": next_actions,
         "baseline": previous_package_root.name if previous_package_root is not None else "not-supplied",
     }
@@ -316,6 +359,30 @@ def render_markdown(summary: dict[str, object]) -> str:
             }
             for item in reviewers
         ], ("id", "role", "required", "scope", "status", "assigned_to", "decision", "evidence"))])
+    assignment_diff = summary["review_assignment_diff"]
+    assert isinstance(assignment_diff, dict)
+    lines.extend(["", "### Assignment changes", ""])
+    lines.append(f"- Baseline: `{assignment_diff.get('baseline', 'not-supplied')}`")
+    if assignment_diff["status"] == "not-supplied":
+        lines.append("- No previous reviewer assignment baseline supplied.")
+    elif assignment_diff["status"] in {"invalid", "unavailable"}:
+        lines.append(f"- Comparison unavailable: {assignment_diff['details']}")
+    else:
+        assignment_changes = assignment_diff.get("changes", [])
+        assert isinstance(assignment_changes, list)
+        if assignment_changes:
+            lines.extend(markdown_table([
+                {
+                    "change": str(item.get("change", "")),
+                    "reviewer": str(item.get("reviewer", "")),
+                    "field": str(item.get("field", "")),
+                    "before": str(item.get("before", "")) or "—",
+                    "after": str(item.get("after", "")) or "—",
+                }
+                for item in assignment_changes
+            ], ("change", "reviewer", "field", "before", "after")))
+        else:
+            lines.append("- No reviewer assignment changes detected against the supplied baseline.")
     for heading, key in (("Blockers", "blockers"), ("Warnings", "warnings")):
         lines.extend(["", f"## {heading}", ""])
         values = summary[key]
@@ -337,6 +404,7 @@ def main() -> int:
     parser.add_argument("--adapter-file", type=Path)
     parser.add_argument("--adapter", action="append", default=[])
     parser.add_argument("--assignment-file", type=Path)
+    parser.add_argument("--previous-assignment-file", type=Path)
     parser.add_argument("--format", choices=("markdown", "json"), default="markdown")
     parser.add_argument("--output", type=Path)
     parser.add_argument("--overwrite", action="store_true")
@@ -348,12 +416,16 @@ def main() -> int:
     if args.previous_package_root and not args.previous_package_root.is_dir():
         print(f"Previous package root does not exist: {args.previous_package_root}", file=sys.stderr)
         return 2
+    if args.previous_assignment_file and not args.previous_assignment_file.is_file():
+        print(f"Previous assignment file does not exist: {args.previous_assignment_file}", file=sys.stderr)
+        return 2
     summary = build_summary(
         args.package_root.resolve(),
         args.previous_package_root.resolve() if args.previous_package_root else None,
         adapter_file=args.adapter_file.resolve() if args.adapter_file else None,
         adapters=args.adapter,
         assignment_file=args.assignment_file.resolve() if args.assignment_file else None,
+        previous_assignment_file=args.previous_assignment_file.resolve() if args.previous_assignment_file else None,
     )
     rendered = render_markdown(summary) if args.format == "markdown" else json.dumps(summary, indent=2, ensure_ascii=False)
     rendered += "\n" if not rendered.endswith("\n") else ""

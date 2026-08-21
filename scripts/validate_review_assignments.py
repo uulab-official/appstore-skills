@@ -12,6 +12,7 @@ import re
 ALLOWED_ASSIGNMENT_STATUSES = {"pending", "in_review", "approved", "blocked"}
 ALLOWED_REVIEWER_STATUSES = {"pending", "in_review", "approved", "blocked", "not_applicable"}
 TERMINAL_REVIEWER_STATUSES = {"approved", "blocked", "not_applicable"}
+ASSIGNMENT_DIFF_FIELDS = ("role", "required", "scope", "status", "assigned_to", "decision", "evidence")
 TOP_FIELD_LINE = re.compile(r"^\s{2}([a-z][a-z0-9_-]*):\s*(.*?)\s*$")
 REVIEWER_LINE = re.compile(r"^\s{4}-\s+id:\s*(.*?)\s*$")
 HISTORY_LINE = re.compile(r"^\s{4}-\s+at:\s*(.*?)\s*$")
@@ -235,6 +236,62 @@ def summarize(path: Path) -> dict[str, object]:
         "history_events": len(history),
         "details": f"{len(reviewers)} reviewer(s), {len(history)} history event(s)",
     }
+
+
+def compare_assignments(current_path: Path, previous_path: Path) -> tuple[list[dict[str, str]], list[str]]:
+    """Compare stable reviewer fields and history counts between two valid records."""
+
+    errors = [*validate(current_path), *validate(previous_path)]
+    if errors:
+        return [], errors
+    _, current_reviewers, current_history = parse_assignment(current_path.read_text(encoding="utf-8"))
+    _, previous_reviewers, previous_history = parse_assignment(previous_path.read_text(encoding="utf-8"))
+
+    def reviewer_map(records: list[dict[str, object]]) -> dict[str, dict[str, str]]:
+        result: dict[str, dict[str, str]] = {}
+        for record in records:
+            reviewer_id = str(record.get("id", ""))
+            normalized: dict[str, str] = {}
+            for field in ASSIGNMENT_DIFF_FIELDS:
+                value = record.get(field, "")
+                if isinstance(value, list):
+                    normalized[field] = ", ".join(str(item) for item in value)
+                else:
+                    normalized[field] = str(value)
+            result[reviewer_id] = normalized
+        return result
+
+    current_map = reviewer_map(current_reviewers)
+    previous_map = reviewer_map(previous_reviewers)
+    changes: list[dict[str, str]] = []
+    for reviewer_id in sorted(set(current_map) | set(previous_map)):
+        current = current_map.get(reviewer_id)
+        previous = previous_map.get(reviewer_id)
+        if previous is None and current is not None:
+            changes.append({"change": "added", "reviewer": reviewer_id, "field": "record", "before": "", "after": current.get("status", "")})
+            continue
+        if current is None and previous is not None:
+            changes.append({"change": "removed", "reviewer": reviewer_id, "field": "record", "before": previous.get("status", ""), "after": ""})
+            continue
+        assert current is not None and previous is not None
+        for field in ASSIGNMENT_DIFF_FIELDS:
+            if current.get(field, "") != previous.get(field, ""):
+                changes.append({
+                    "change": "changed",
+                    "reviewer": reviewer_id,
+                    "field": field,
+                    "before": previous.get(field, ""),
+                    "after": current.get(field, ""),
+                })
+    if len(current_history) != len(previous_history):
+        changes.append({
+            "change": "changed",
+            "reviewer": "<history>",
+            "field": "events",
+            "before": str(len(previous_history)),
+            "after": str(len(current_history)),
+        })
+    return changes, []
 
 
 def main() -> int:

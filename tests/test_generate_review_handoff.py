@@ -9,6 +9,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts/generate_review_handoff.py"
 DEMO = ROOT / "examples/demo-store-assets"
+DEMO_ASSIGNMENT = DEMO / "review-assignment.yml"
 
 
 class GenerateReviewHandoffTests(unittest.TestCase):
@@ -29,6 +30,7 @@ class GenerateReviewHandoffTests(unittest.TestCase):
         self.assertIn("## Reviewer assignment", result.stdout)
         self.assertIn("product-claims, metadata, visual-assets", result.stdout)
         self.assertIn("evidence", result.stdout)
+        self.assertIn("No previous reviewer assignment baseline supplied.", result.stdout)
         self.assertIn("Reviewer assignment is pending", result.stdout)
         self.assertIn("publish_status` is permanently `not-run`", result.stdout)
 
@@ -82,6 +84,41 @@ class GenerateReviewHandoffTests(unittest.TestCase):
 
             self.assertEqual(result.returncode, 2)
             self.assertIn("Refusing to overwrite", result.stderr)
+
+    def test_previous_assignment_reports_reviewer_field_changes(self) -> None:
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            current = root / "current"
+            previous = root / "previous"
+            current.mkdir()
+            previous.mkdir()
+            manifest = "schema_version: 1\nassets:\n  - path: icon.png\n    status: review\n    kind: app-icon\n"
+            (current / "manifest.yml").write_text(manifest, encoding="utf-8")
+            (previous / "manifest.yml").write_text(manifest, encoding="utf-8")
+            current_assignment = DEMO_ASSIGNMENT.read_text(encoding="utf-8")
+            previous_assignment = current_assignment.replace(
+                "      status: pending\n      scope: [product-claims, metadata, visual-assets]",
+                "      status: in_review\n      scope: [product-claims, metadata, visual-assets]",
+                1,
+            ).replace('      assigned_to: ""', "      assigned_to: Alice", 1)
+            (current / "review-assignment.yml").write_text(current_assignment, encoding="utf-8")
+            (previous / "review-assignment.yml").write_text(previous_assignment, encoding="utf-8")
+
+            result = self.run_script(
+                "--package-root", str(current),
+                "--previous-package-root", str(previous),
+                "--format", "json",
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            summary = json.loads(result.stdout)
+            assignment_diff = summary["review_assignment_diff"]
+            self.assertEqual(assignment_diff["status"], "compared")
+            changed_fields = {
+                item["field"] for item in assignment_diff["changes"]
+                if item["reviewer"] == "product-owner"
+            }
+            self.assertEqual(changed_fields, {"status", "assigned_to"})
 
 
 if __name__ == "__main__":

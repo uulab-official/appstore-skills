@@ -107,6 +107,11 @@ This is a read-only reviewer aid. It does not approve, submit, upload, publish, 
 | native-locale-reviewer | localization | true | localized-store-copy, terminology, localized-layout | pending | not assigned | pending | none |
 | privacy-reviewer | privacy | true | data-collection, disclosures, permissions | pending | not assigned | pending | none |
 
+### Assignment changes
+
+- Baseline: `not-supplied`
+- No previous reviewer assignment baseline supplied.
+
 ## Blockers
 
 - 2 manifest asset(s) are blocked

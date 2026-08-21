@@ -15,7 +15,12 @@ The summary keeps these decisions separate:
 
 Use `--previous-package-root` to compare two package manifests. Without a
 baseline, the report labels every current asset as `baseline` rather than
-pretending that additions and removals are known.
+pretending that additions and removals are known. When both packages contain
+`review-assignment.yml`, the same baseline comparison also reports reviewer
+additions, removals, scope changes, status/assignment changes, evidence
+reference changes, and history-event count changes. Use
+`--previous-assignment-file` when the previous assignment record is stored
+outside the previous package root.
 
 The generator never rewrites the source manifest or release report. It refuses
 to overwrite an existing summary unless `--overwrite` is explicit.
@@ -26,3 +31,6 @@ python scripts/generate_review_handoff.py \
   --previous-package-root ./previous-store-assets \
   --output ./store-assets/review-handoff.md
 ```
+
+The assignment delta is informational. It does not infer approval from a
+changed status, and it never mutates either assignment record.

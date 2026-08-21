@@ -86,6 +86,8 @@ reviewable commits.
 
 - More granular reviewer scopes and evidence references across platform,
   localization, privacy, and accessibility review
+- Baseline-aware reviewer assignment deltas for status, ownership, scope,
+  evidence, and history changes
 - Optional project-owned evidence integrations that remain user-approved and
   read-only
 
