@@ -1,0 +1,18 @@
+# Generated store output
+store-assets/
+dist/
+output/
+
+# Local project files
+.DS_Store
+.env
+.env.*
+!.env.example
+
+# Editor and tooling files
+.idea/
+.vscode/
+*.swp
+__pycache__/
+*.py[cod]
+

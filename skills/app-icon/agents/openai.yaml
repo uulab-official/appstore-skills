@@ -1,0 +1,4 @@
+interface:
+  display_name: "App Icon"
+  short_description: "Design and export a grounded app icon"
+  default_prompt: "Analyze this app project and create a recognizable, small-size-legible app icon with documented directions, exports, and QA."

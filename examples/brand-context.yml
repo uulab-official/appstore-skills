@@ -1,0 +1,33 @@
+# Example shared context. Replace values with facts discovered from the app.
+schema_version: 1
+brand:
+  name: Example App
+  personality:
+    - friendly
+    - simple
+    - modern
+product:
+  category: productivity
+  audience: busy people organizing everyday tasks
+  value_proposition: Keep important tasks visible and easy to finish.
+  core_features:
+    - quick capture
+    - reminders
+    - shared lists
+visual:
+  style: minimal
+  typography: modern sans serif
+  radius: rounded
+  density: spacious
+colors:
+  primary: "#315CFF"
+  secondary: "#8EA2FF"
+  background: "#F6F8FF"
+  text: "#17203A"
+evidence:
+  - source: README.md
+    notes: Product description and audience
+  - source: src/theme/colors.ts
+    notes: Primary and background colors
+assumptions: []
+

@@ -1,0 +1,4 @@
+interface:
+  display_name: "App Store Screenshots"
+  short_description: "Create marketing screenshots from real app screens"
+  default_prompt: "Turn this app project's real screens into a coherent App Store and Google Play screenshot story with grounded copy, platform variants, and QA."

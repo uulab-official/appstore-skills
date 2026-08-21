@@ -1,0 +1,33 @@
+# App icon QA checklist
+
+Use this checklist after selecting a candidate and before calling an export
+submission-ready.
+
+## Visual checks
+
+- Confirm the canvas is square and the subject has a deliberate safe area.
+- Inspect the silhouette at 1024px, 180px, and 32px.
+- Confirm the main idea remains legible without relying on tiny details.
+- Confirm foreground and background have sufficient contrast.
+- Check that no unintended clipping, halos, seams, or transparent pixels
+  remain at the edge.
+- Check that the color profile and image mode are appropriate for the export.
+- Compare the icon with the app UI and `brand-context.yml` for brand fit.
+
+## Product and legal checks
+
+- Confirm the symbol represents the app and does not promise an unsupported
+  feature.
+- Confirm supplied logos and reference images are licensed for this use.
+- Check for accidental resemblance to a third-party trademark or another app's
+  distinctive icon.
+- Remove text unless the user explicitly approved it and the text remains
+  readable in the smallest target context.
+
+## Delivery checks
+
+- Preserve the selected source/master and candidate rationale.
+- Confirm every requested export exists at the path recorded in the report.
+- Verify dimensions against current official platform documentation.
+- Record unresolved issues as blockers instead of silently shipping them.
+
