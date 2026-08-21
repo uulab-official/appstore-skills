@@ -26,6 +26,8 @@ screen captures.
 - English source copy, Korean review copy, locale plan, and terminology glossary
 - Two reversible English copy-experiment variants with manual-review approval
   history
+- a diff-friendly reviewer handoff summary that keeps blockers and approval
+  state visible
 - manifest, QA, and release-check output
 
 ## What is intentionally blocked
@@ -43,6 +45,13 @@ localized visual assets.
 
 The copy experiment is also review-only. It does not allocate traffic, call a
 store API, publish a variant, or claim performance results.
+
+`review-handoff.md` is a generated triage aid. It compares manifest metadata
+when a previous package is supplied and labels the demo as `blocked`.
+
+The optional policy and accessibility adapters are registered in
+`review-adapters.yml`; their missing evidence is `pending`, never an automatic
+pass.
 
 Run the deterministic package check from the repository root:
 

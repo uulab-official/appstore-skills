@@ -91,6 +91,8 @@ changes.
   `publish_status: not-run`, and reports missing build or simulator evidence
   instead of hiding it. Any selected evidence provider must be explicitly
   opt-in, read-only, and backed by a registry with `side_effects: none`.
+- Policy and accessibility adapters may report `pending`, `pass`, or `blocked`,
+  but must never infer human approval or legal/accessibility compliance.
 
 ## Skill acceptance criteria
 

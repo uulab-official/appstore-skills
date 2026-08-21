@@ -81,6 +81,10 @@
   no localized screenshot/UI capture is supplied.
 - No copy variant is approved, traffic-tested, or published; there is no
   evidence for conversion or ranking claims.
+- The reviewer handoff summary is generated without a baseline, so current
+  assets are labeled `baseline` rather than being presented as invented adds.
+- Policy and accessibility adapter records are absent by design, so selected
+  adapters remain `pending` and require designated human review.
 
 ## Decision
 

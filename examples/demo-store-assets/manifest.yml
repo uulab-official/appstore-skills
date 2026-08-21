@@ -453,6 +453,18 @@ assets:
     status: review
     source: metadata/copy-experiments.yml
     checks: [source-locale, evidence-backed, review-only, not-published]
+  - path: review-handoff.md
+    kind: review-handoff-summary
+    platform: shared
+    status: blocked
+    source: manifest.yml, release-report.md, release-approval.yml
+    checks: [diff-friendly, blockers-surfaced, approval-state, publish-disabled]
+  - path: review-adapters.yml
+    kind: review-adapter-registry
+    platform: shared
+    status: review
+    source: release-report.md and human review owners
+    checks: [policy-scope, accessibility-scope, opt-in, read-only, pending-visible]
 assumptions:
   - The product and all visual assets are fictional review fixtures.
   - No real app UI or device captures are available.

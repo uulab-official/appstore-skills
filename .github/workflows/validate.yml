@@ -52,6 +52,24 @@ jobs:
           examples/demo-store-assets/metadata/copy-experiments.yml
           --package-root examples/demo-store-assets
       - run: >-
+          python scripts/generate_review_handoff.py
+          --package-root examples/demo-store-assets
+          --adapter-file skills/release-check/references/review-adapters.yml
+          --adapter policy-review
+          --adapter accessibility-review
+          --format markdown
+      - run: >-
+          python scripts/validate_review_adapter_specs.py
+          skills/release-check/references/review-adapters.yml
+          examples/demo-store-assets/review-adapters.yml
+      - run: >-
+          python scripts/inspect_review_adapters.py
+          --adapter-file skills/release-check/references/review-adapters.yml
+          --project-root .
+          --output-root examples/demo-store-assets
+          --adapter policy-review
+          --adapter accessibility-review
+      - run: >-
           python scripts/prepare_release_handoff.py
           --project-root .
           --output-root examples/demo-store-assets

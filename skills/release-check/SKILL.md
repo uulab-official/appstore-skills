@@ -104,6 +104,15 @@ workflow intentionally requires the human decision. When build or source
 capture evidence files already exist, select the opt-in providers described in
 [`evidence-providers.yml`](../app-store-assets/references/evidence-providers.yml);
 they only inspect files and do not execute the app project.
+For optional policy and accessibility review, read
+[`references/review-adapters.md`](references/review-adapters.md) and select
+only the adapters that have a designated reviewer and evidence path.
+
+For a reviewer-friendly packet, generate the separate diff-friendly summary
+with
+`python scripts/generate_review_handoff.py --package-root <store-assets> --output <store-assets>/review-handoff.md`.
+Read [the review handoff contract](references/review-handoff.md). This summary
+does not replace `release-report.md` and never implies approval or submission.
 
 ## Non-goals
 

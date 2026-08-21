@@ -17,6 +17,8 @@ warnings:
   - The release approval record is pending; no human decision is inferred from structural checks.
   - The ko-KR copy is a localization draft without native or designated reviewer approval.
   - The copy experiment variants are review-only with pending approvals; no traffic allocation or store API action ran.
+  - The review handoff summary is a diff-friendly triage aid; no previous package baseline was supplied.
+  - Policy and accessibility review adapters are opt-in and pending because no designated review evidence is present.
   - The icon design brief is still in review because product-owner approval is missing.
   - Platform requirements were not checked for a live submission.
 platform_docs_checked: []

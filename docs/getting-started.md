@@ -88,6 +88,12 @@ python scripts/validate_localization_specs.py \
 python scripts/validate_copy_experiments.py \
   ./store-assets/metadata/copy-experiments.yml \
   --package-root ./store-assets
+python scripts/generate_review_handoff.py \
+  --package-root ./store-assets \
+  --adapter-file ./skills/release-check/references/review-adapters.yml \
+  --adapter policy-review \
+  --adapter accessibility-review \
+  --output ./store-assets/review-handoff.md
 python scripts/prepare_release_handoff.py \
   --project-root ./my-app \
   --output-root ./store-assets \

@@ -67,12 +67,19 @@ reviewable commits.
 - GitHub Actions validation on pushes and pull requests
 - Manual GitHub Actions workflow for repository-relative store output
 
-## Next
-
 ### v0.9.0 — Review workflow ergonomics
 
 - Structured reviewer handoff summaries and diff-friendly package reports
-- Optional project-specific policy and accessibility check adapters
+  from stable manifest metadata
+- Optional project-specific policy and accessibility review adapters with
+  pending-visible, read-only states
+
+## Next
+
+### v1.0.0 — Evidence-backed review extensions
+
+- Project-specific policy, accessibility, and privacy evidence templates
+- Reviewer assignment and decision-history ergonomics without automatic approval
 
 ## Longer term
 

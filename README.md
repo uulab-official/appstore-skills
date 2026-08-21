@@ -124,7 +124,7 @@ guarantee store approval, or replace legal and accessibility review.
 
 ## Status
 
-The current public milestone is `v0.8.0` with operational
+The current public milestone is `v0.9.0` with operational
 validation tooling:
 
 - app icon generation workflow
@@ -149,6 +149,8 @@ validation tooling:
 - opt-in, read-only build and simulator evidence providers
 - locale plans and terminology QA that preserve review blockers
 - reversible store-copy experiment records with approval history
+- diff-friendly reviewer handoff summaries
+- opt-in policy and accessibility review adapters with pending-visible states
 
 The repository also includes deterministic, dependency-free checks for skill
 metadata and generated output manifests:
@@ -174,6 +176,14 @@ python scripts/validate_localization_specs.py \
 python scripts/validate_copy_experiments.py \
   ./store-assets/metadata/copy-experiments.yml \
   --package-root ./store-assets
+python scripts/generate_review_handoff.py \
+  --package-root ./store-assets \
+  --adapter-file ./skills/release-check/references/review-adapters.yml \
+  --adapter policy-review \
+  --adapter accessibility-review \
+  --output ./store-assets/review-handoff.md
+python scripts/validate_review_adapter_specs.py \
+  skills/release-check/references/review-adapters.yml
 python scripts/prepare_release_handoff.py \
   --project-root ./my-app \
   --output-root ./my-app/store-assets \
