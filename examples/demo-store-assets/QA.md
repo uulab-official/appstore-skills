@@ -10,13 +10,13 @@
 
 ## Passed
 
-- Two six-candidate icon batches were preserved for comparison.
-- The second batch was screened for generic category symbols and compared at
+- Three six-candidate icon batches were preserved for comparison.
+- The third batch was screened for generic category symbols and compared at
   180×180 and 32×32.
-- C2 was selected because its asymmetric aperture and crescent remain legible
+- A1 was selected because its asymmetric portal and coral core remain legible
   without a checkmark, card stack, or tiny character detail.
-- C2 was refined into a vector master with exact brand colors before raster
-  exports were produced.
+- A1 was refined once for centering, material consistency, and controlled
+  lighting before raster exports were produced.
 - The selected icon is square, centered, text-free, and visually consistent
   with the example brand context.
 - Icon exports were resized from one selected master.

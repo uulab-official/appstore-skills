@@ -1,8 +1,27 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
   <title id="title">Example App favicon</title>
-  <desc id="desc">A cobalt visibility aperture holding a coral crescent.</desc>
-  <rect width="1024" height="1024" rx="160" fill="#F6F8FF"/>
-  <path fill="#FF786B" d="M 774 651 C 837 640 886 671 895 721 C 904 771 876 811 819 818 L 759 818 Z"/>
-  <path fill="#315CFF" fill-rule="evenodd" d="M 246 742 C 214 622 211 454 257 337 C 314 194 446 126 594 151 C 742 176 834 299 843 463 C 851 588 835 704 788 793 C 765 836 724 860 678 860 L 273 860 C 220 860 192 818 202 772 C 208 752 223 741 246 742 Z M 367 711 L 367 454 C 367 355 431 286 536 278 C 642 270 718 341 731 445 C 742 531 737 637 717 711 Z"/>
-  <path fill="#FF786B" d="M 561 329 C 481 338 433 393 421 463 C 403 568 453 661 532 691 C 576 708 619 704 659 687 C 603 642 579 575 584 501 C 589 425 621 370 682 344 C 641 325 601 322 561 329 Z"/>
+  <desc id="desc">A cobalt sculptural portal cradling a coral core.</desc>
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="38%" r="78%">
+      <stop offset="0" stop-color="#1B2B69"/>
+      <stop offset="1" stop-color="#121A3A"/>
+    </radialGradient>
+    <linearGradient id="cobalt" x1="18%" y1="18%" x2="82%" y2="86%">
+      <stop offset="0" stop-color="#7AA3FF"/>
+      <stop offset=".28" stop-color="#315CFF"/>
+      <stop offset="1" stop-color="#1436A3"/>
+    </linearGradient>
+    <radialGradient id="coral" cx="38%" cy="28%" r="78%">
+      <stop offset="0" stop-color="#FFB1A6"/>
+      <stop offset=".3" stop-color="#FF786B"/>
+      <stop offset="1" stop-color="#D9434A"/>
+    </radialGradient>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="5"/>
+    </filter>
+  </defs>
+  <rect width="256" height="256" rx="52" fill="url(#bg)"/>
+  <ellipse cx="128" cy="202" rx="67" ry="13" fill="#315CFF" opacity=".28" filter="url(#soft)"/>
+  <path fill="url(#coral)" d="M 103 105 C 111 83 136 75 156 86 C 178 99 181 126 172 148 C 164 169 145 181 126 174 C 105 167 96 143 98 124 C 99 116 100 110 103 105 Z"/>
+  <path fill="url(#cobalt)" d="M 72 187 C 51 171 49 142 54 113 C 61 74 89 51 124 53 C 158 55 186 77 198 102 C 203 114 198 126 188 129 C 177 132 169 124 163 112 C 153 92 139 81 123 80 C 103 78 91 91 87 112 C 83 133 86 151 98 163 C 108 175 126 178 145 172 C 156 169 166 173 169 182 C 173 192 167 201 157 204 C 125 213 94 204 72 187 Z"/>
 </svg>

@@ -7,7 +7,7 @@ screen captures.
 
 ## What this demonstrates
 
-- two six-candidate icon batches, a refined C2 vector selection, and a size family
+- three six-candidate icon batches, a refined 3D A1 selection, and a size family
 - a matching favicon SVG
 - a branded OG image SVG/PNG with exact, inspectable copy
 - evidence-backed English store-copy draft

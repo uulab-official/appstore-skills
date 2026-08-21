@@ -113,9 +113,19 @@ Apply this compact visual budget before generating a batch:
 - Keep one defining feature; remove repeated texture, tiny highlights, thin
   outlines, and decorative marks.
 - Use thick rounded forms and clear negative space. Avoid sharp tips, fragile
-  lines, bevels, photorealistic materials, device frames, and external shadows.
+  lines, device frames, scene props, and uncontrolled photorealism.
 - Check the black silhouette and the smallest export before recommending a
   candidate.
+
+Choose one finish mode from the brand context before generating:
+
+- **Vector-native** — flat colors, crisp curves, deliberate negative space,
+  and no gradients when the product language is graphic and minimal.
+- **Dimensional product render** — one sculptural subject, one or two coherent
+  materials, one key light direction, restrained bevels, and a soft ambient
+  shadow. The object must still read as a clean silhouette at 32×32; do not
+  add a floor, props, reflections, or tiny surface detail just to make it look
+  expensive.
 
 Use a prompt structure like this for each independent candidate:
 
@@ -126,9 +136,10 @@ Subject: one extremely simplified <symbol or character> expressing <product conn
 Complexity: 4–7 broad shapes, one defining feature, no tiny details, readable at 32×32.
 Color: two purposeful subject colors plus the background; maintain clear separation.
 Composition: centered with a deliberate safe area; keep the mark dominant and upright.
-Finish: clean graphic treatment, crisp rounded forms, no text or presentation frame.
+Finish: use <vector-native or dimensional product-render mode>; keep the
+surface treatment coherent and the silhouette simple; no text or presentation frame.
 Constraints: no words, letters, numbers, watermark, UI, border, device mockup,
-photorealistic material, sharp tips, thin lines, or external shadow.
+scene props, uncontrolled photorealism, sharp tips, thin lines, or clutter.
 ```
 
 Change only the candidate's direction, subject treatment, or palette mapping

@@ -26,6 +26,9 @@ submission-ready.
 - Confirm foreground and background have sufficient contrast.
 - Check that no unintended clipping, halos, seams, or transparent pixels
   remain at the edge.
+- For dimensional work, check that material, key light, and ambient shadow are
+  consistent; reject floor planes, props, accidental reflections, and noisy
+  texture that collapse at store size.
 - Check that the color profile and image mode are appropriate for the export.
 - Compare the icon with the app UI and `brand-context.yml` for brand fit.
 

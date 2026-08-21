@@ -8,20 +8,20 @@ assets:
     kind: app-icon-master
     platform: shared
     status: review
-    source: icon/icon-master.svg
-    checks: [square, vector-refined, small-size-review, selected-C2-v2, concept-labeled]
-  - path: icon/icon-master.svg
-    kind: app-icon-vector-master
+    source: icon/concepts-v3/A1-refined.png
+    checks: [square, material-refined, small-size-review, selected-A1-v3, concept-labeled]
+  - path: icon/concepts-v3/A1-refined.png
+    kind: app-icon-refined-master
     platform: shared
     status: review
-    source: icon/concepts-v2/C2.png
-    checks: [vector, exact-brand-colors, selected-C2-v2]
+    source: icon/concepts-v3/A1.png
+    checks: [3d-refinement, selected-A1-v3, preserved]
   - path: icon/selection.md
     kind: app-icon-selection
     platform: shared
     status: review
-    source: icon/concepts-v2/A1.png through C2.png
-    checks: [candidate-comparison, rationale-recorded, distinctiveness-gate]
+    source: icon/concepts-v3/A1.png through C2.png
+    checks: [candidate-comparison, rationale-recorded, distinctiveness-gate, small-size-review]
   - path: icon/concepts/A1.png
     kind: app-icon-candidate
     platform: shared
@@ -94,6 +94,48 @@ assets:
     status: review
     source: imagegen direction C2 v2
     checks: [independent-candidate, selected, preserved, distinctiveness-pass]
+  - path: icon/concepts-v3/A1.png
+    kind: app-icon-candidate
+    platform: shared
+    status: review
+    source: imagegen direction A1 v3
+    checks: [independent-candidate, preserved, selected-direction]
+  - path: icon/concepts-v3/A2.png
+    kind: app-icon-candidate
+    platform: shared
+    status: review
+    source: imagegen direction A2 v3
+    checks: [independent-candidate, preserved]
+  - path: icon/concepts-v3/B1.png
+    kind: app-icon-candidate
+    platform: shared
+    status: review
+    source: imagegen direction B1 v3
+    checks: [independent-candidate, preserved]
+  - path: icon/concepts-v3/B2.png
+    kind: app-icon-candidate
+    platform: shared
+    status: review
+    source: imagegen direction B2 v3
+    checks: [independent-candidate, preserved]
+  - path: icon/concepts-v3/C1.png
+    kind: app-icon-candidate
+    platform: shared
+    status: review
+    source: imagegen direction C1 v3
+    checks: [independent-candidate, preserved]
+  - path: icon/concepts-v3/C2.png
+    kind: app-icon-candidate
+    platform: shared
+    status: review
+    source: imagegen direction C2 v3
+    checks: [independent-candidate, preserved]
+  - path: icon/previous/icon-master-flat-v2.svg
+    kind: app-icon-previous-master
+    platform: shared
+    status: review
+    source: icon/concepts-v2/C2.png
+    checks: [preserved-for-comparison, superseded-by-v3]
   - path: icon/concepts/legacy-v1.png
     kind: app-icon-previous-concept
     platform: shared
@@ -128,8 +170,8 @@ assets:
     kind: favicon
     platform: web
     status: review
-    source: icon/icon-master.png
-    checks: [square, vector, concept-labeled]
+    source: icon/concepts-v3/A1-refined.png
+    checks: [square, vector-adaptation, concept-labeled]
   - path: web-assets/favicon/favicon-32x32.png
     kind: favicon-export
     platform: web

@@ -23,6 +23,7 @@ colors:
   primary: "#315CFF"
   secondary: "#FF786B"
   background: "#F6F8FF"
+  icon_background: "#121A3A"
   text: "#17203A"
 evidence:
   - source: ../brand-context.yml
@@ -30,4 +31,5 @@ evidence:
 assumptions:
   - This is a fictional product used only as a review fixture.
   - No real app screens are available in this repository.
-
+  - The dark icon background and 3D material are a proposed v3 art direction,
+    not an approved production brand rule.
