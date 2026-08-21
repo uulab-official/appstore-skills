@@ -107,6 +107,7 @@ python scripts/prepare_release_handoff.py \
   --output-root ./store-assets \
   --platform apple \
   --platform google-play \
+  --locale en-US \
   --provider-file ./store-assets/evidence-providers.yml \
   --provider build-record \
   --provider simulator-source-captures \
@@ -130,3 +131,5 @@ stale build or simulator evidence; without it, timestamp checks remain
 format-only.
 Add `--require-current-revision` when the build evidence must correspond to
 the current Git checkout; this strict source binding is also opt-in.
+Add `--locale` when source captures must correspond to a specific localized
+listing; locale separators such as `en_US` and `en-US` are normalized.

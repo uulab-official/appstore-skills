@@ -39,6 +39,7 @@ python scripts/prepare_release_handoff.py \
   --output-root ./my-app/store-assets \
   --platform apple \
   --platform google-play \
+  --locale en-US \
   --provider-file ./skills/app-store-assets/references/evidence-providers.yml \
   --provider build-record \
   --provider simulator-source-captures \
@@ -61,4 +62,6 @@ match the current project's Git `HEAD`; it is disabled by default.
 Any `--platform` values are also forwarded to the selected build and simulator
 providers. Each record must match at least one requested platform, using only
 documented compatibility aliases; no platform scope is inferred when the flag
-is omitted.
+is omitted. Any `--locale` values are forwarded to source-capture evidence;
+separator variants such as `en_US` and `en-US` are normalized, while omitted
+locale scope remains explicitly unchecked.

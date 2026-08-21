@@ -104,6 +104,9 @@ changes.
 - When requested platforms are supplied, build evidence and source captures
   must match the declared platform scope; an omitted platform scope must never
   be treated as implicit coverage for every store.
+- When requested locales are supplied, source captures must match the declared
+  locale scope; an omitted locale scope must never be treated as implicit
+  coverage for every localized listing.
 
 ## Skill acceptance criteria
 

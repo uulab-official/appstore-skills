@@ -133,6 +133,11 @@ def platform_matches(recorded: str, expected: list[str]) -> bool:
     return any(recorded_normalized in platform_family(item) for item in expected)
 
 
+def locale_matches(recorded: str, expected: list[str]) -> bool:
+    recorded_normalized = recorded.strip().lower().replace("_", "-")
+    return any(recorded_normalized == item.strip().lower().replace("_", "-") for item in expected)
+
+
 def current_git_revision(project_root: Path) -> str | None:
     try:
         result = subprocess.run(
@@ -225,10 +230,11 @@ def inspect_build(
                     "build evidence revision does not match current project revision "
                     f"(recorded: {recorded_revision}, current: {expected_revision})"
                 )
-    if expected_platforms and not platform_matches(fields.get("platform", ""), expected_platforms):
+    recorded_platform = fields.get("platform", "")
+    if expected_platforms and recorded_platform and not platform_matches(recorded_platform, expected_platforms):
         errors.append(
             "build evidence platform does not match requested platforms "
-            f"(recorded: {fields.get('platform', '')}, requested: {', '.join(expected_platforms)})"
+            f"(recorded: {recorded_platform}, requested: {', '.join(expected_platforms)})"
         )
     if errors:
         return result(provider_id, "build", "blocked", "; ".join(errors))
@@ -240,6 +246,7 @@ def inspect_simulator(
     output_root: Path,
     max_age_days: int | None = None,
     expected_platforms: list[str] | None = None,
+    expected_locales: list[str] | None = None,
 ) -> dict[str, object]:
     provider_id = provider["id"]
     evidence_path = output_root / provider["evidence_path"]
@@ -283,6 +290,12 @@ def inspect_simulator(
                 f"capture {index} platform does not match requested platforms "
                 f"(recorded: {recorded_platform}, requested: {', '.join(expected_platforms)})"
             )
+        recorded_locale = record.get("locale", "")
+        if expected_locales and recorded_locale and not locale_matches(recorded_locale, expected_locales):
+            errors.append(
+                f"capture {index} locale does not match requested locales "
+                f"(recorded: {recorded_locale}, requested: {', '.join(expected_locales)})"
+            )
         if not valid_timestamp(record["captured_at"]):
             errors.append(f"capture {index} captured_at is not an ISO-8601 timestamp")
         stale_error = freshness_error(
@@ -311,6 +324,7 @@ def inspect_provider(
     expected_revision: str | None = None,
     require_current_revision: bool = False,
     expected_platforms: list[str] | None = None,
+    expected_locales: list[str] | None = None,
 ) -> dict[str, object]:
     provider_file = provider_file.resolve()
     registry_errors = validate_provider_registry(provider_file)
@@ -337,6 +351,7 @@ def inspect_provider(
         output_root.resolve(),
         max_age_days=max_age_days,
         expected_platforms=expected_platforms,
+        expected_locales=expected_locales,
     )
 
 
@@ -369,6 +384,12 @@ def main() -> int:
         default=[],
         help="Optionally require build evidence to match one requested platform.",
     )
+    parser.add_argument(
+        "--locale",
+        action="append",
+        default=[],
+        help="Optionally require source captures to match one requested locale.",
+    )
     parser.add_argument("--format", choices=("summary", "json"), default="summary")
     parser.add_argument("--fail-on-blocked", action="store_true")
     args = parser.parse_args()
@@ -392,6 +413,7 @@ def main() -> int:
             max_age_days=args.max_age_days,
             require_current_revision=args.require_current_revision,
             expected_platforms=args.platform,
+            expected_locales=args.locale,
         )
         for provider_id in args.provider
     ]

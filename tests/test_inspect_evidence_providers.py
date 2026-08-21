@@ -347,6 +347,37 @@ class InspectEvidenceProvidersTests(unittest.TestCase):
             self.assertEqual(mismatch.returncode, 1)
             self.assertIn("capture 1 platform does not match requested platforms", mismatch.stdout)
 
+    def test_capture_locale_can_be_checked_against_requested_scope(self) -> None:
+        with TemporaryDirectory() as directory:
+            project = Path(directory) / "app"
+            output = project / "store-assets"
+            project.mkdir()
+            output.mkdir()
+            create_evidence(output)
+
+            matching = self.run_inspector(
+                "--provider-file", str(PROVIDER_FILE),
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--provider", "simulator-source-captures",
+                "--locale", "en_US",
+                "--fail-on-blocked",
+            )
+
+            self.assertEqual(matching.returncode, 0, matching.stdout + matching.stderr)
+
+            mismatch = self.run_inspector(
+                "--provider-file", str(PROVIDER_FILE),
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--provider", "simulator-source-captures",
+                "--locale", "ko-KR",
+                "--fail-on-blocked",
+            )
+
+            self.assertEqual(mismatch.returncode, 1)
+            self.assertIn("capture 1 locale does not match requested locales", mismatch.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()

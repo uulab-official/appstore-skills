@@ -60,6 +60,7 @@ python scripts/inspect_evidence_providers.py \
   --project-root ./my-app \
   --output-root ./my-app/store-assets \
   --platform apple \
+  --locale en-US \
   --provider build-record \
   --provider simulator-source-captures \
   --format summary
@@ -81,4 +82,7 @@ When `--platform` is supplied, the build record must match at least one
 requested platform. The built-in compatibility aliases include `apple`/`ios`
 and `google-play`/`android`; omit the flag when platform scope is intentionally
 not being checked. The same scope is applied to every simulator source
-capture, so an iOS capture cannot satisfy a Google Play-only handoff.
+capture, so an iOS capture cannot satisfy a Google Play-only handoff. Use
+`--locale` to apply the same explicit scope to capture locales; separators are
+normalized (`en_US` and `en-US` are equivalent), but locale scope is never
+inferred.

@@ -164,12 +164,14 @@ def prepare_handoff(
     providers: list[str] | None = None,
     max_evidence_age_days: int | None = None,
     require_current_revision: bool = False,
+    locales: list[str] | None = None,
 ) -> dict[str, object]:
     project_root = project_root.resolve()
     output_root = output_root.resolve()
     build_signals = find_build_signals(project_root) if project_root.is_dir() else []
     captures = find_capture_files(project_root, output_root)
     source_revision = git_revision(project_root) if project_root.is_dir() else "unavailable"
+    requested_locales = locales or []
     build_evidence = first_existing(
         output_root,
         ("evidence/build.yml", "evidence/build.json", "build-evidence.yml", "build.yml"),
@@ -188,6 +190,7 @@ def prepare_handoff(
                 expected_revision=source_revision if source_revision != "unavailable" else None,
                 require_current_revision=require_current_revision,
                 expected_platforms=platforms,
+                expected_locales=requested_locales,
             )
     checks: list[dict[str, str]] = []
 
@@ -298,6 +301,8 @@ def prepare_handoff(
     simulator_provider_details = str(provider_results.get("simulator-source-captures", {}).get("details", ""))
     if "platform does not match requested platforms" in simulator_provider_details:
         next_actions.append("Capture source images for a requested target platform before handoff.")
+    if "locale does not match requested locales" in simulator_provider_details:
+        next_actions.append("Capture source images for a requested locale before handoff.")
     if not next_actions:
         next_actions.append("Handoff is approved for read-only execution review; publishing remains disabled.")
 
@@ -318,6 +323,7 @@ def prepare_handoff(
             "output_root": str(output_root),
             "source_revision": source_revision,
             "platforms": platforms,
+            "locales": requested_locales,
             "provider_mode": "opt-in-read-only",
             "evidence_max_age_days": max_evidence_age_days,
             "require_current_revision": require_current_revision,
@@ -370,6 +376,13 @@ def render_yaml(report: dict[str, object]) -> str:
             lines.append(f"    - {quote(str(platform))}")
     else:
         lines.append("  platforms: []")
+    locales = handoff["locales"]
+    if locales:
+        lines.append("  locales:")
+        for locale in locales:
+            lines.append(f"    - {quote(str(locale))}")
+    else:
+        lines.append("  locales: []")
     lines.append("  providers:")
     for provider in handoff["providers"]:
         lines.append(f"    - {quote(str(provider))}")
@@ -399,6 +412,7 @@ def render_summary(report: dict[str, object]) -> str:
             else "Evidence max age: disabled"
         ),
         f"Revision binding: {'required' if handoff['require_current_revision'] else 'disabled'}",
+        f"Locales: {', '.join(handoff['locales']) or 'none specified'}",
         f"Approval file: {handoff['approval_file']}",
         "Checks:",
     ]
@@ -429,6 +443,12 @@ def main() -> int:
         action="store_true",
         help="Require selected build evidence revision to match the project Git revision.",
     )
+    parser.add_argument(
+        "--locale",
+        action="append",
+        default=[],
+        help="Optionally require selected source captures to match a requested locale.",
+    )
     parser.add_argument("--approval-file", type=Path)
     parser.add_argument("--fail-on-blocked", action="store_true")
     parser.add_argument("--fail-on-pending-approval", action="store_true")
@@ -453,6 +473,7 @@ def main() -> int:
         providers=args.provider,
         max_evidence_age_days=args.max_evidence_age_days,
         require_current_revision=args.require_current_revision,
+        locales=args.locale,
     )
     rendered = render_yaml(report) if args.format == "yaml" else render_summary(report)
     if args.output:

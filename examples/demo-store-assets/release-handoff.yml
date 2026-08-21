@@ -18,6 +18,7 @@ handoff:
     - apple
     - google-play
     - web
+  locales: []
   publish_status: not-run
   checks:
     - id: project-root
