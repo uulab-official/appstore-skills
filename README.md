@@ -124,7 +124,8 @@ guarantee store approval, or replace legal and accessibility review.
 
 ## Status
 
-The current public milestone is `v0.3.0` with operational validation tooling:
+The current public milestone is `v0.4.0` development with operational
+validation tooling:
 
 - app icon generation workflow
 - App Store and Google Play screenshot workflow
@@ -136,6 +137,8 @@ The current public milestone is `v0.3.0` with operational validation tooling:
 - store listing copy workflow
 - localization workflow for copy and visual assets
 - pre-submission release-readiness audit
+- manifest-declared PNG/SVG dimensions and format validation
+- SVG `viewBox` and optional PNG color-type validation
 
 The repository also includes deterministic, dependency-free checks for skill
 metadata and generated output manifests:

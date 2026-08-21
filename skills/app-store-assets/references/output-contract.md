@@ -28,11 +28,17 @@ assets:
     status: review
     source: screenshots/source/home.png
     checks: [factual-copy, ui-fidelity, dimensions]
+    format: png
+    dimensions: 1290x2796
+    color_type: rgba
 assumptions: []
 ```
 
 Use paths relative to the output root. Keep statuses honest: `draft`,
-`review`, `verified`, or `blocked`.
+`review`, `verified`, or `blocked`. For image records, `format` and
+`dimensions` make the file contract machine-checkable. The repository
+validator currently supports `png` and `svg`; SVG dimensions are checked
+against the numeric `viewBox`, and PNG `color_type` is optional.
 
 ### `QA.md`
 

@@ -47,6 +47,10 @@ changes.
 
 - Confirm every manifest path exists, is non-empty, and stays inside the output
   root.
+- For image records, declare `format` and `dimensions` in `manifest.yml`; use
+  `color_type` for PNG output when the color mode is part of the contract.
+- Run the dependency-free validator so PNG headers and SVG `viewBox` metadata
+  are checked against those declarations.
 - Check dimensions, format, color profile, transparency, file size, and text
   legibility for the actual asset.
 - Keep source compositions, masters, and platform exports distinguishable.

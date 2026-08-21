@@ -7,7 +7,7 @@ screen captures.
 
 ## What this demonstrates
 
-- four six-candidate icon batches, a draft design brief, a refined component-rich 3D A1 selection, and a size family
+- four six-candidate icon batches, a review-stage design brief, a refined component-rich 3D A1 selection, and a size family
 - a matching favicon SVG
 - a branded OG image SVG/PNG with exact, inspectable copy
 - evidence-backed English store-copy draft

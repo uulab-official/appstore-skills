@@ -29,15 +29,16 @@ reviewable commits.
 
 - Dependency-free Skill metadata validator
 - Dependency-free generated-output manifest validator
-- Unit tests for path and manifest safety checks
+- Manifest-declared PNG/SVG format and dimension validation
+- SVG `viewBox` and optional PNG color-type metadata validation
+- Unit tests for path, manifest, and image metadata safety checks
 - GitHub Actions validation on pushes and pull requests
 - Manual GitHub Actions workflow for repository-relative store output
 
 ## Next
 
-### v0.4.0 — Asset and release automation
+### v0.4.0 — Asset and release automation (in progress)
 
-- Deterministic image-dimension and metadata validation
 - Reusable promotional and feature-graphic templates
 - Release report annotations for pull requests
 - Additional platform-specific adapters
@@ -54,4 +55,3 @@ reviewable commits.
 Keep generated assets factual, reversible, and separate from source projects.
 Verify unstable platform requirements at execution time and never turn a
 design draft into a submission claim without evidence and human review.
-

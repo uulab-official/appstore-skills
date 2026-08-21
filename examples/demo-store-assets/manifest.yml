@@ -8,12 +8,18 @@ assets:
     kind: app-icon-master
     platform: shared
     status: review
+    format: png
+    dimensions: 1024x1024
+    color_type: rgb
     source: icon/concepts-v4/A1-refined.png
     checks: [square, material-refined, component-rich, small-size-review, selected-A1-v4, concept-labeled]
   - path: icon/concepts-v4/A1-refined.png
     kind: app-icon-refined-master
     platform: shared
     status: review
+    format: png
+    dimensions: 1254x1254
+    color_type: rgb
     source: icon/concepts-v4/A1.png
     checks: [3d-refinement, component-detail, selected-A1-v4, preserved]
   - path: icon/selection.md
@@ -32,216 +38,321 @@ assets:
     kind: app-icon-candidate
     platform: shared
     status: review
+    format: png
+    dimensions: 1254x1254
+    color_type: rgb
     source: imagegen direction A1
     checks: [independent-candidate, preserved]
   - path: icon/concepts/A2.png
     kind: app-icon-candidate
     platform: shared
     status: review
+    format: png
+    dimensions: 1254x1254
+    color_type: rgb
     source: imagegen direction A2
     checks: [independent-candidate, selected, preserved]
   - path: icon/concepts/B1.png
     kind: app-icon-candidate
     platform: shared
     status: review
+    format: png
+    dimensions: 1254x1254
+    color_type: rgb
     source: imagegen direction B1
     checks: [independent-candidate, preserved]
   - path: icon/concepts/B2.png
     kind: app-icon-candidate
     platform: shared
     status: review
+    format: png
+    dimensions: 1254x1254
+    color_type: rgb
     source: imagegen direction B2
     checks: [independent-candidate, preserved]
   - path: icon/concepts/C1.png
     kind: app-icon-candidate
     platform: shared
     status: review
+    format: png
+    dimensions: 1254x1254
+    color_type: rgb
     source: imagegen direction C1
     checks: [independent-candidate, preserved]
   - path: icon/concepts/C2.png
     kind: app-icon-candidate
     platform: shared
     status: review
+    format: png
+    dimensions: 1254x1254
+    color_type: rgb
     source: imagegen direction C2
     checks: [independent-candidate, preserved]
   - path: icon/concepts-v2/A1.png
     kind: app-icon-candidate
     platform: shared
     status: review
+    format: png
+    dimensions: 1254x1254
+    color_type: rgb
     source: imagegen direction A1 v2
     checks: [independent-candidate, preserved, distinctiveness-review]
   - path: icon/concepts-v2/A2.png
     kind: app-icon-candidate
     platform: shared
     status: review
+    format: png
+    dimensions: 1254x1254
+    color_type: rgb
     source: imagegen direction A2 v2
     checks: [independent-candidate, preserved, distinctiveness-review]
   - path: icon/concepts-v2/B1.png
     kind: app-icon-candidate
     platform: shared
     status: review
+    format: png
+    dimensions: 1254x1254
+    color_type: rgb
     source: imagegen direction B1 v2
     checks: [independent-candidate, preserved, distinctiveness-review]
   - path: icon/concepts-v2/B2.png
     kind: app-icon-candidate
     platform: shared
     status: review
+    format: png
+    dimensions: 1254x1254
+    color_type: rgb
     source: imagegen direction B2 v2
     checks: [independent-candidate, preserved, distinctiveness-review]
   - path: icon/concepts-v2/C1.png
     kind: app-icon-candidate
     platform: shared
     status: review
+    format: png
+    dimensions: 1254x1254
+    color_type: rgb
     source: imagegen direction C1 v2
     checks: [independent-candidate, preserved, distinctiveness-review]
   - path: icon/concepts-v2/C2.png
     kind: app-icon-candidate
     platform: shared
     status: review
+    format: png
+    dimensions: 1254x1254
+    color_type: rgb
     source: imagegen direction C2 v2
     checks: [independent-candidate, selected, preserved, distinctiveness-pass]
   - path: icon/concepts-v3/A1.png
     kind: app-icon-candidate
     platform: shared
     status: review
+    format: png
+    dimensions: 1254x1254
+    color_type: rgb
     source: imagegen direction A1 v3
     checks: [independent-candidate, preserved, superseded-by-v4]
   - path: icon/concepts-v3/A2.png
     kind: app-icon-candidate
     platform: shared
     status: review
+    format: png
+    dimensions: 1254x1254
+    color_type: rgb
     source: imagegen direction A2 v3
     checks: [independent-candidate, preserved]
   - path: icon/concepts-v3/B1.png
     kind: app-icon-candidate
     platform: shared
     status: review
+    format: png
+    dimensions: 1254x1254
+    color_type: rgb
     source: imagegen direction B1 v3
     checks: [independent-candidate, preserved]
   - path: icon/concepts-v3/B2.png
     kind: app-icon-candidate
     platform: shared
     status: review
+    format: png
+    dimensions: 1254x1254
+    color_type: rgb
     source: imagegen direction B2 v3
     checks: [independent-candidate, preserved]
   - path: icon/concepts-v3/C1.png
     kind: app-icon-candidate
     platform: shared
     status: review
+    format: png
+    dimensions: 1254x1254
+    color_type: rgb
     source: imagegen direction C1 v3
     checks: [independent-candidate, preserved]
   - path: icon/concepts-v3/C2.png
     kind: app-icon-candidate
     platform: shared
     status: review
+    format: png
+    dimensions: 1254x1254
+    color_type: rgb
     source: imagegen direction C2 v3
     checks: [independent-candidate, preserved]
   - path: icon/concepts-v4/A1.png
     kind: app-icon-candidate
     platform: shared
     status: review
+    format: png
+    dimensions: 1254x1254
+    color_type: rgb
     source: imagegen direction A1 v4
     checks: [independent-candidate, preserved, selected-direction]
   - path: icon/concepts-v4/A2.png
     kind: app-icon-candidate
     platform: shared
     status: review
+    format: png
+    dimensions: 1254x1254
+    color_type: rgb
     source: imagegen direction A2 v4
     checks: [independent-candidate, preserved]
   - path: icon/concepts-v4/B1.png
     kind: app-icon-candidate
     platform: shared
     status: review
+    format: png
+    dimensions: 1254x1254
+    color_type: rgb
     source: imagegen direction B1 v4
     checks: [independent-candidate, preserved]
   - path: icon/concepts-v4/B2.png
     kind: app-icon-candidate
     platform: shared
     status: review
+    format: png
+    dimensions: 1254x1254
+    color_type: rgb
     source: imagegen direction B2 v4
     checks: [independent-candidate, preserved]
   - path: icon/concepts-v4/C1.png
     kind: app-icon-candidate
     platform: shared
     status: review
+    format: png
+    dimensions: 1254x1254
+    color_type: rgb
     source: imagegen direction C1 v4
     checks: [independent-candidate, preserved]
   - path: icon/concepts-v4/C2.png
     kind: app-icon-candidate
     platform: shared
     status: review
+    format: png
+    dimensions: 1254x1254
+    color_type: rgb
     source: imagegen direction C2 v4
     checks: [independent-candidate, preserved]
   - path: icon/previous/icon-master-flat-v2.svg
     kind: app-icon-previous-master
     platform: shared
     status: review
+    format: svg
+    dimensions: 1024x1024
     source: icon/concepts-v2/C2.png
     checks: [preserved-for-comparison, superseded-by-v3]
   - path: icon/previous/icon-master-dimensional-v3.png
     kind: app-icon-previous-master
     platform: shared
     status: review
+    format: png
+    dimensions: 1024x1024
+    color_type: rgb
     source: icon/concepts-v3/A1-refined.png
     checks: [preserved-for-comparison, superseded-by-v4]
   - path: icon/concepts/legacy-v1.png
     kind: app-icon-previous-concept
     platform: shared
     status: review
+    format: png
+    dimensions: 1254x1254
+    color_type: rgb
     source: initial demo draw
     checks: [preserved-for-comparison]
   - path: icon/icon-1024.png
     kind: app-icon-export
     platform: shared
     status: review
+    format: png
+    dimensions: 1024x1024
+    color_type: rgb
     source: icon/icon-master.png
     checks: [dimensions, concept-labeled]
   - path: icon/icon-512.png
     kind: app-icon-export
     platform: shared
     status: review
+    format: png
+    dimensions: 512x512
+    color_type: rgb
     source: icon/icon-master.png
     checks: [dimensions, concept-labeled]
   - path: icon/icon-192.png
     kind: app-icon-export
     platform: shared
     status: review
+    format: png
+    dimensions: 192x192
+    color_type: rgb
     source: icon/icon-master.png
     checks: [dimensions, concept-labeled]
   - path: icon/icon-180.png
     kind: app-icon-export
     platform: shared
     status: review
+    format: png
+    dimensions: 180x180
+    color_type: rgb
     source: icon/icon-master.png
     checks: [dimensions, concept-labeled]
   - path: web-assets/favicon/favicon.svg
     kind: favicon
     platform: web
     status: review
+    format: svg
+    dimensions: 256x256
     source: icon/concepts-v3/A1-refined.png
     checks: [square, vector-adaptation, concept-labeled]
   - path: web-assets/favicon/favicon-32x32.png
     kind: favicon-export
     platform: web
     status: review
+    format: png
+    dimensions: 32x32
+    color_type: rgba
     source: icon/icon-master.png
     checks: [32x32, small-size-review, concept-labeled]
   - path: web-assets/favicon/favicon-16x16.png
     kind: favicon-export
     platform: web
     status: review
+    format: png
+    dimensions: 16x16
+    color_type: rgba
     source: icon/icon-master.png
     checks: [16x16, small-size-review, concept-labeled]
   - path: web-assets/og/og-image.svg
     kind: og-image
     platform: web
     status: review
+    format: svg
+    dimensions: 1200x630
     source: examples/brand-context.yml
     checks: [exact-copy, aspect-ratio, concept-labeled]
   - path: web-assets/og/og-image.png
     kind: og-image-export
     platform: web
     status: review
+    format: png
+    dimensions: 1200x630
+    color_type: rgba
     source: web-assets/og/og-image.svg
     checks: [1200x630, exact-copy, concept-labeled]
   - path: metadata/store-copy.en-US.yml
