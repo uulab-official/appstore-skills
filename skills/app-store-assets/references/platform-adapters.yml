@@ -1,0 +1,41 @@
+schema_version: 1
+adapter_set:
+  id: store-surface-adapters-v1
+  status: draft
+  verification: execution-time
+  source_of_truth: brand-context.yml
+adapters:
+  - id: apple-store
+    platform: apple
+    status: review
+    source_root: icon/icon-master.png
+    output_root: apple/
+    surfaces: [icon, screenshots, promotional]
+    transformations:
+      icon: Preserve the approved mark and export current Apple-required sizes.
+      screenshots: Compose only from real Apple device captures.
+      promotional: Adapt the shared template and verify current crop rules.
+    required_checks: [current-official-docs, dimensions, safe-area, source-fidelity]
+  - id: google-play
+    platform: google-play
+    status: review
+    source_root: icon/icon-master.png
+    output_root: google-play/
+    surfaces: [icon, screenshots, feature-graphic, promotional]
+    transformations:
+      icon: Preserve the mark and keep adaptive-icon sources separate from flattened exports.
+      screenshots: Compose only from real Android phone or tablet captures.
+      feature-graphic: Fill the feature-graphic template and verify current Play rules.
+      promotional: Adapt the shared template and verify current crop rules.
+    required_checks: [current-official-docs, dimensions, safe-area, android-fidelity]
+  - id: web
+    platform: web
+    status: review
+    source_root: icon/icon-master.png
+    output_root: web-assets/
+    surfaces: [favicon, og-image, promotional]
+    transformations:
+      favicon: Simplify the approved mark for tab, bookmark, and touch-icon sizes.
+      og-image: Preserve page metadata and keep the social-preview crop readable.
+      promotional: Adapt the shared template to the page and channel context.
+    required_checks: [page-evidence, dimensions, light-dark-contrast, public-url]

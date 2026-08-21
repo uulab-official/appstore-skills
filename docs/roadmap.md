@@ -25,24 +25,30 @@ reviewable commits.
 - Localization workflow for copy and visual assets
 - Pre-submission release-check workflow
 
+### v0.4.0 — Asset and release automation
+
+- Reusable promotional and feature-graphic template contracts
+- GitHub Actions annotations and Step Summary for release reports
+- Apple, Google Play, and Web platform adapter maps
+
 ### Operational tooling
 
 - Dependency-free Skill metadata validator
 - Dependency-free generated-output manifest validator
 - Manifest-declared PNG/SVG format and dimension validation
 - SVG `viewBox` and optional PNG color-type metadata validation
-- Reusable promotional and feature-graphic template contracts
-- Dependency-free template-spec validator and regression tests
-- GitHub Actions annotations and Step Summary for release reports
+- Dependency-free template-spec and adapter-map validators with regression tests
 - Unit tests for path, manifest, and image metadata safety checks
 - GitHub Actions validation on pushes and pull requests
 - Manual GitHub Actions workflow for repository-relative store output
 
 ## Next
 
-### v0.4.0 — Asset and release automation (in progress)
+### v0.5.0 — Extended platform integrations
 
-- Additional platform-specific adapters
+- Additional platform-specific adapters beyond the shared Apple, Google Play,
+  and Web map
+- Build, simulator, and release-system evidence adapters
 
 ## Longer term
 

@@ -21,4 +21,7 @@ jobs:
           python scripts/validate_template_specs.py
           skills/app-store-assets/references/promotional-template.yml
           skills/app-store-assets/references/feature-graphic-template.yml
+      - run: >-
+          python scripts/validate_adapter_specs.py
+          skills/app-store-assets/references/platform-adapters.yml
       - run: python -m unittest discover -s tests

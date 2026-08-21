@@ -32,6 +32,8 @@
   layout, copy limits, hero asset, claims, evidence, and output paths.
 - Promotional and feature-graphic SVG concept masters were rendered from
   those specs and reviewed at full size and thumbnail size.
+- The platform adapter map separates Apple, Google Play, and Web branches and
+  records execution-time checks without claiming current platform acceptance.
 - Every manifest asset exists and is non-empty.
 
 ## Blocked or review-required
@@ -44,6 +46,8 @@
   submission.
 - The feature-graphic artboard is a working concept; its current Play Console
   acceptance dimensions and crop behavior still require execution-time review.
+- The adapter map is a review plan; no Apple or Android device captures are
+  available to verify those branches.
 - Store copy is a draft and has not passed product, policy, or platform field
   review.
 

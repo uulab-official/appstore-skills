@@ -116,6 +116,13 @@ Check current official Apple and Google documentation for every platform and
 device family in scope. Requirements can change; never use remembered sizes or
 submission rules as proof of readiness.
 
+For every requested platform, fill the adapter map in
+[`references/platform-adapters.yml`](references/platform-adapters.yml) and
+follow [`references/platform-adapters.md`](references/platform-adapters.md).
+Keep source masters separate from platform outputs, name each transformation,
+and leave the adapter in `review` or `blocked` until the current platform
+documentation and source-fidelity checks are recorded.
+
 Write `manifest.yml` with one record per deliverable:
 
 ```yaml

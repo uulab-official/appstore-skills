@@ -383,6 +383,12 @@ assets:
     dimensions: 1024x500
     source: feature-graphic/template.yml
     checks: [safe-area, evidence-backed-copy, rendered-template, concept-labeled]
+  - path: platform-adapters.yml
+    kind: platform-adapter-map
+    platform: shared
+    status: review
+    source: brand-context.yml and shared masters
+    checks: [source-separated, transformations-recorded, execution-time-checks]
   - path: metadata/store-copy.en-US.yml
     kind: store-copy
     platform: shared

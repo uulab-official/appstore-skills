@@ -70,6 +70,9 @@ For a feature graphic, fill
 and follow
 [`../app-store-assets/references/marketing-template-qa.md`](../app-store-assets/references/marketing-template-qa.md).
 Treat its artboard as a working source, not proof of current Play acceptance.
+Record the Play branch in
+[`../app-store-assets/references/platform-adapters.yml`](../app-store-assets/references/platform-adapters.yml)
+so Android-specific outputs remain separate from shared masters.
 
 ### 4. Adapt to current Play requirements
 

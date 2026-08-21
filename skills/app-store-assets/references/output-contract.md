@@ -61,6 +61,11 @@ the repository templates as starting points:
 The template validator checks the structural contract; platform acceptance must
 still be verified against current official documentation at execution time.
 
+When more than one platform is in scope, preserve a filled adapter map using
+[`platform-adapters.yml`](platform-adapters.yml). It must identify the shared
+source master, output root, named transformations, requested surfaces, and
+execution-time checks for each platform.
+
 ## Recommended layout
 
 ```text

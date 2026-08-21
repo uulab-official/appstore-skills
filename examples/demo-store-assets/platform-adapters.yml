@@ -1,0 +1,41 @@
+schema_version: 1
+adapter_set:
+  id: example-app-store-surfaces-v1
+  status: review
+  verification: execution-time
+  source_of_truth: brand-context.yml
+adapters:
+  - id: apple-store
+    platform: apple
+    status: blocked
+    source_root: icon/icon-master.png
+    output_root: apple-store-assets/
+    surfaces: [icon, screenshots, promotional]
+    transformations:
+      icon: Use the selected A1 v4 mark and verify current Apple export sizes.
+      screenshots: Blocked until real Apple device captures exist.
+      promotional: Adapt promotional/template.yml and verify current crop rules.
+    required_checks: [current-official-docs, dimensions, safe-area, source-fidelity]
+  - id: google-play
+    platform: google-play
+    status: blocked
+    source_root: icon/icon-master.png
+    output_root: google-play-assets/
+    surfaces: [icon, screenshots, feature-graphic, promotional]
+    transformations:
+      icon: Preserve the mark and verify current Android export requirements.
+      screenshots: Blocked until real Android phone or tablet captures exist.
+      feature-graphic: Use feature-graphic/template.yml and verify current Play rules.
+      promotional: Adapt promotional/template.yml and verify current crop rules.
+    required_checks: [current-official-docs, dimensions, safe-area, android-fidelity]
+  - id: web
+    platform: web
+    status: review
+    source_root: icon/icon-master.png
+    output_root: web-assets/
+    surfaces: [favicon, og-image, promotional]
+    transformations:
+      favicon: Use the existing simplified favicon family.
+      og-image: Preserve the exact demo copy and 1200x630 SVG/PNG pair.
+      promotional: Adapt promotional/template.yml to the page and channel context.
+    required_checks: [page-evidence, dimensions, light-dark-contrast, public-url]

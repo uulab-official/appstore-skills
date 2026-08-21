@@ -12,6 +12,8 @@ screen captures.
 - a branded OG image SVG/PNG with exact, inspectable copy
 - reusable promotional and Google Play feature-graphic template specs with
   rendered SVG concept masters
+- an Apple, Google Play, and Web adapter map that keeps shared masters and
+  platform branches explicit
 - evidence-backed English store-copy draft
 - manifest, QA, and release-check output
 

@@ -9,6 +9,7 @@ warnings:
   - A1 v4 is a refined demo concept and not a production-approved mark.
   - Promotional and feature-graphic masters are concept compositions and not approved campaign assets.
   - The feature-graphic working artboard has not been checked against current Play Console requirements.
+  - The platform adapter map is a review plan; Apple and Android source captures are missing.
   - The icon design brief is still in review because product-owner approval is missing.
   - Platform requirements were not checked for a live submission.
 platform_docs_checked: []

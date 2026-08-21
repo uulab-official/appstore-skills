@@ -77,6 +77,7 @@ To validate an actual generated package, run:
 ```bash
 python scripts/validate_store_output.py ./store-assets
 python scripts/annotate_release_report.py ./store-assets/release-report.md
+python scripts/validate_adapter_specs.py ./store-assets/platform-adapters.yml
 ```
 
 In GitHub Actions, add `--github-actions` to turn blockers and warnings into

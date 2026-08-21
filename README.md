@@ -141,6 +141,7 @@ validation tooling:
 - SVG `viewBox` and optional PNG color-type validation
 - reusable promotional and Google Play feature-graphic template contracts
 - GitHub Actions annotations for release-report blockers and warnings
+- Apple, Google Play, and Web platform adapter maps with execution-time checks
 
 The repository also includes deterministic, dependency-free checks for skill
 metadata and generated output manifests:
@@ -151,6 +152,8 @@ python scripts/validate_docs.py
 python scripts/validate_template_specs.py \
   skills/app-store-assets/references/promotional-template.yml \
   skills/app-store-assets/references/feature-graphic-template.yml
+python scripts/validate_adapter_specs.py \
+  skills/app-store-assets/references/platform-adapters.yml
 python -m unittest discover -s tests
 python scripts/validate_store_output.py ./store-assets
 python scripts/annotate_release_report.py ./store-assets/release-report.md
