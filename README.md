@@ -124,6 +124,15 @@ The current public milestone is `v0.3.0`:
 - localization workflow for copy and visual assets
 - pre-submission release-readiness audit
 
+The repository also includes deterministic, dependency-free checks for skill
+metadata and generated output manifests:
+
+```bash
+python scripts/validate_skills.py
+python -m unittest discover -s tests
+python scripts/validate_store_output.py ./store-assets
+```
+
 The next roadmap milestone focuses on operational maturity:
 
 - deterministic image and metadata validators
