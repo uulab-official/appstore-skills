@@ -7,6 +7,8 @@ handoff:
   output_root: examples/demo-store-assets
   source_revision: fixture-not-applicable
   provider_mode: opt-in-read-only
+  evidence_max_age_days: null
+  require_current_revision: false
   provider_file: skills/app-store-assets/references/evidence-providers.yml
   providers:
     - build-record

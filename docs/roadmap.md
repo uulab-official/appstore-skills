@@ -92,6 +92,7 @@ reviewable commits.
 - Opt-in freshness gates for terminal review evidence, with future timestamps
   treated as invalid
 - Opt-in freshness gates for provider-backed build and simulator evidence
+- Optional current-project Git revision binding for build evidence
 - Optional project-owned evidence integrations that remain user-approved and
   read-only
 

@@ -53,6 +53,39 @@ captures:
     )
 
 
+def init_git_project(project: Path) -> str:
+    (project / "app.txt").write_text("fixture\n", encoding="utf-8")
+    subprocess.run(
+        ["git", "-C", str(project), "-c", "init.defaultBranch=main", "init", "-q"],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    subprocess.run(
+        ["git", "-C", str(project), "add", "app.txt"],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    subprocess.run(
+        [
+            "git", "-C", str(project),
+            "-c", "user.name=Fixture", "-c", "user.email=fixture@example.com",
+            "commit", "-qm", "fixture",
+        ],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    result = subprocess.run(
+        ["git", "-C", str(project), "rev-parse", "HEAD"],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    return result.stdout.strip()
+
+
 class InspectEvidenceProvidersTests(unittest.TestCase):
     def run_inspector(self, *args: str) -> subprocess.CompletedProcess[str]:
         return subprocess.run(
@@ -189,6 +222,68 @@ class InspectEvidenceProvidersTests(unittest.TestCase):
 
             self.assertEqual(result.returncode, 2)
             self.assertIn("must be zero or greater", result.stderr)
+
+    def test_build_revision_can_match_current_git_revision(self) -> None:
+        with TemporaryDirectory() as directory:
+            project = Path(directory) / "app"
+            output = project / "store-assets"
+            project.mkdir()
+            output.mkdir()
+            revision = init_git_project(project)
+            create_evidence(output)
+            build = output / "evidence" / "build.yml"
+            build.write_text(
+                build.read_text(encoding="utf-8").replace("abc1234", revision[:12]),
+                encoding="utf-8",
+            )
+
+            result = self.run_inspector(
+                "--provider-file", str(PROVIDER_FILE),
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--provider", "build-record",
+                "--require-current-revision",
+                "--fail-on-blocked",
+            )
+
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertIn("pass: build-record", result.stdout)
+
+            build.write_text(
+                build.read_text(encoding="utf-8").replace(revision[:12], "deadbeef"),
+                encoding="utf-8",
+            )
+            mismatch = self.run_inspector(
+                "--provider-file", str(PROVIDER_FILE),
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--provider", "build-record",
+                "--require-current-revision",
+                "--fail-on-blocked",
+            )
+
+            self.assertEqual(mismatch.returncode, 1)
+            self.assertIn("revision does not match current project revision", mismatch.stdout)
+
+    def test_revision_binding_blocks_without_git_project(self) -> None:
+        with TemporaryDirectory() as directory:
+            project = Path(directory) / "app"
+            output = project / "store-assets"
+            project.mkdir()
+            output.mkdir()
+            create_evidence(output)
+
+            result = self.run_inspector(
+                "--provider-file", str(PROVIDER_FILE),
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--provider", "build-record",
+                "--require-current-revision",
+                "--fail-on-blocked",
+            )
+
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("current project revision is unavailable", result.stdout)
 
 
 if __name__ == "__main__":

@@ -98,6 +98,9 @@ changes.
 - Provider-backed build and simulator evidence must remain read-only and
   opt-in; when freshness is enabled, stale or future-dated `inspected_at` and
   `captured_at` values must block the handoff.
+- When current-revision binding is enabled, build evidence must match the
+  project's Git `HEAD`; mismatched or unavailable source revisions must block
+  rather than being silently treated as equivalent.
 
 ## Skill acceptance criteria
 

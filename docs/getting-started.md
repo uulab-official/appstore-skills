@@ -109,6 +109,7 @@ python scripts/prepare_release_handoff.py \
   --provider build-record \
   --provider simulator-source-captures \
   --max-evidence-age-days 30 \
+  --require-current-revision \
   --approval-file ./store-assets/release-approval.yml \
   --format summary
 ```
@@ -125,3 +126,5 @@ defined cadence; this gate is opt-in.
 The same option can be passed to the provider-backed release handoff to block
 stale build or simulator evidence; without it, timestamp checks remain
 format-only.
+Add `--require-current-revision` when the build evidence must correspond to
+the current Git checkout; this strict source binding is also opt-in.

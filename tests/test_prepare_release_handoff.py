@@ -56,6 +56,39 @@ captures:
         )
 
 
+def init_git_project(project: Path) -> str:
+    (project / "app.txt").write_text("fixture\n", encoding="utf-8")
+    subprocess.run(
+        ["git", "-C", str(project), "-c", "init.defaultBranch=main", "init", "-q"],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    subprocess.run(
+        ["git", "-C", str(project), "add", "app.txt"],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    subprocess.run(
+        [
+            "git", "-C", str(project),
+            "-c", "user.name=Fixture", "-c", "user.email=fixture@example.com",
+            "commit", "-qm", "fixture",
+        ],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    result = subprocess.run(
+        ["git", "-C", str(project), "rev-parse", "HEAD"],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    return result.stdout.strip()
+
+
 def create_approval(root: Path, status: str = "approved") -> Path:
     path = root / "release-approval.yml"
     if status == "approved":
@@ -138,6 +171,7 @@ class PrepareReleaseHandoffTests(unittest.TestCase):
             self.assertIn('publish_status: "not-run"', result.stdout)
             self.assertIn("evidence_max_age_days: null", result.stdout)
             self.assertIn("platforms: []", result.stdout)
+            self.assertIn("require_current_revision: false", result.stdout)
             self.assertEqual(result.stdout.count('provider_mode: "opt-in-read-only"'), 1)
             self.assertEqual(result.stdout.count("provider_file:"), 1)
 
@@ -262,6 +296,51 @@ class PrepareReleaseHandoffTests(unittest.TestCase):
 
             self.assertEqual(result.returncode, 2)
             self.assertIn("must be zero or greater", result.stderr)
+
+    def test_current_revision_binding_is_forwarded_to_handoff(self) -> None:
+        with TemporaryDirectory() as directory:
+            project = Path(directory) / "app"
+            output = project / "store-assets"
+            project.mkdir()
+            output.mkdir()
+            (project / "package.json").write_text("{}\n", encoding="utf-8")
+            create_output(output, with_evidence=True, with_capture=True)
+            revision = init_git_project(project)
+            build = output / "evidence" / "build.yml"
+            build.write_text(
+                build.read_text(encoding="utf-8").replace("test-revision", revision[:12]),
+                encoding="utf-8",
+            )
+
+            result = self.run_script(
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--provider", "build-record",
+                "--require-current-revision",
+                "--format", "summary",
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn("Release handoff: pending_approval", result.stdout)
+            self.assertIn("Revision binding: required", result.stdout)
+            self.assertIn("pass: build-identity — provider build-record", result.stdout)
+
+            build.write_text(
+                build.read_text(encoding="utf-8").replace(revision[:12], "deadbeef"),
+                encoding="utf-8",
+            )
+            mismatch = self.run_script(
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--provider", "build-record",
+                "--require-current-revision",
+                "--format", "summary",
+            )
+
+            self.assertEqual(mismatch.returncode, 0, mismatch.stderr)
+            self.assertIn("Release handoff: blocked", mismatch.stdout)
+            self.assertIn("revision does not match current project revision", mismatch.stdout)
+            self.assertIn("Regenerate evidence/build.yml", mismatch.stdout)
 
 
 if __name__ == "__main__":

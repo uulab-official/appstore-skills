@@ -68,3 +68,11 @@ python scripts/inspect_evidence_providers.py \
 `--provider`, it performs its existing filesystem checks and does not invoke a
 provider. With a provider selected, the provider remains read-only and its
 validated result replaces the corresponding handoff check.
+
+Use `--max-age-days <days>` with the inspector or
+`--max-evidence-age-days <days>` with the handoff when build and capture
+evidence must be refreshed on a cadence. These options are opt-in and block
+stale or future-dated timestamps. To bind `build-record` to the current Git
+checkout, add `--require-current-revision` to either command. Exact revisions
+and unambiguous hexadecimal prefixes are accepted; a non-Git project or a
+mismatch remains blocked in this strict mode.

@@ -8,6 +8,7 @@ from datetime import datetime, timedelta, timezone
 import json
 from pathlib import Path
 import re
+import subprocess
 import sys
 
 from validate_provider_specs import provider_records, validate as validate_provider_registry
@@ -112,6 +113,35 @@ def freshness_error(label: str, value: str, max_age_days: int | None) -> str | N
     return None
 
 
+def current_git_revision(project_root: Path) -> str | None:
+    try:
+        result = subprocess.run(
+            ["git", "-C", str(project_root), "rev-parse", "HEAD"],
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+    revision = result.stdout.strip()
+    return revision if result.returncode == 0 and revision else None
+
+
+def revisions_match(recorded: str, current: str | None) -> bool:
+    if current is None:
+        return False
+    recorded = recorded.strip().lower()
+    current = current.strip().lower()
+    if recorded == current:
+        return True
+    if len(recorded) < 7 or len(current) < 7:
+        return False
+    if not all(character in "0123456789abcdef" for character in recorded + current):
+        return False
+    return current.startswith(recorded) or recorded.startswith(current)
+
+
 def image_error(path: Path) -> str | None:
     if path.suffix.lower() not in IMAGE_SUFFIXES:
         return f"unsupported image extension: {path.name}"
@@ -142,6 +172,8 @@ def inspect_build(
     provider: dict[str, str],
     output_root: Path,
     max_age_days: int | None = None,
+    expected_revision: str | None = None,
+    require_current_revision: bool = False,
 ) -> dict[str, object]:
     provider_id = provider["id"]
     evidence_path = output_root / provider["evidence_path"]
@@ -162,6 +194,16 @@ def inspect_build(
         )
         if stale_error:
             errors.append(stale_error)
+    if require_current_revision:
+        recorded_revision = fields.get("revision", "")
+        if recorded_revision:
+            if expected_revision is None:
+                errors.append("build evidence revision cannot be matched because current project revision is unavailable")
+            elif not revisions_match(recorded_revision, expected_revision):
+                errors.append(
+                    "build evidence revision does not match current project revision "
+                    f"(recorded: {recorded_revision}, current: {expected_revision})"
+                )
     if errors:
         return result(provider_id, "build", "blocked", "; ".join(errors))
     return result(provider_id, "build", "pass", f"validated {provider['evidence_path']}")
@@ -233,8 +275,9 @@ def inspect_provider(
     output_root: Path,
     provider_file: Path,
     max_age_days: int | None = None,
+    expected_revision: str | None = None,
+    require_current_revision: bool = False,
 ) -> dict[str, object]:
-    del project_root
     provider_file = provider_file.resolve()
     registry_errors = validate_provider_registry(provider_file)
     if registry_errors:
@@ -244,7 +287,16 @@ def inspect_provider(
     if provider is None:
         return result(provider_id, "unknown", "blocked", "provider is not declared in the registry")
     if provider["kind"] == "build":
-        return inspect_build(provider, output_root.resolve(), max_age_days=max_age_days)
+        current_revision = expected_revision
+        if require_current_revision and current_revision is None:
+            current_revision = current_git_revision(project_root)
+        return inspect_build(
+            provider,
+            output_root.resolve(),
+            max_age_days=max_age_days,
+            expected_revision=current_revision,
+            require_current_revision=require_current_revision,
+        )
     return inspect_simulator(provider, output_root.resolve(), max_age_days=max_age_days)
 
 
@@ -265,6 +317,11 @@ def main() -> int:
         "--max-age-days",
         type=int,
         help="Optionally block build/capture evidence older than this many days.",
+    )
+    parser.add_argument(
+        "--require-current-revision",
+        action="store_true",
+        help="Require build evidence revision to match the project Git revision.",
     )
     parser.add_argument("--format", choices=("summary", "json"), default="summary")
     parser.add_argument("--fail-on-blocked", action="store_true")
@@ -287,6 +344,7 @@ def main() -> int:
             args.output_root,
             args.provider_file,
             max_age_days=args.max_age_days,
+            require_current_revision=args.require_current_revision,
         )
         for provider_id in args.provider
     ]

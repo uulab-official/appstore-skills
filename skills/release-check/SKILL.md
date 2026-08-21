@@ -108,6 +108,9 @@ When provider evidence must be refreshed on a cadence, pass
 `--max-evidence-age-days <days>` to the handoff command. This opt-in gate
 blocks stale or future-dated build and simulator evidence; the default leaves
 existing provider behavior unchanged.
+For a reproducible build handoff, add `--require-current-revision` to require
+the recorded build revision to match the current Git `HEAD`; short hexadecimal
+prefixes are accepted, but non-Git or mismatched projects remain blocked.
 For optional policy, accessibility, and privacy review, read
 [`references/review-adapters.md`](references/review-adapters.md) and select
 only the adapters that have a designated reviewer and evidence path.

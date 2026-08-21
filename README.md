@@ -148,6 +148,7 @@ validation tooling:
 - explicit approval records and approval-gated handoff states
 - opt-in, read-only build and simulator evidence providers
 - opt-in freshness gates for build and simulator evidence in release handoffs
+- optional current-project Git revision binding for build evidence
 - locale plans and terminology QA that preserve review blockers
 - reversible store-copy experiment records with approval history
 - diff-friendly reviewer handoff summaries with manifest and reviewer-assignment baselines
@@ -203,6 +204,7 @@ python scripts/prepare_release_handoff.py \
   --provider build-record \
   --provider simulator-source-captures \
   --max-evidence-age-days 30 \
+  --require-current-revision \
   --approval-file ./my-app/store-assets/release-approval.yml \
   --format summary
 python -m unittest discover -s tests

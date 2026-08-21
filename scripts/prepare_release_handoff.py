@@ -163,11 +163,13 @@ def prepare_handoff(
     provider_file: Path | None = None,
     providers: list[str] | None = None,
     max_evidence_age_days: int | None = None,
+    require_current_revision: bool = False,
 ) -> dict[str, object]:
     project_root = project_root.resolve()
     output_root = output_root.resolve()
     build_signals = find_build_signals(project_root) if project_root.is_dir() else []
     captures = find_capture_files(project_root, output_root)
+    source_revision = git_revision(project_root) if project_root.is_dir() else "unavailable"
     build_evidence = first_existing(
         output_root,
         ("evidence/build.yml", "evidence/build.json", "build-evidence.yml", "build.yml"),
@@ -183,6 +185,8 @@ def prepare_handoff(
                 output_root,
                 selected_provider_file,
                 max_age_days=max_evidence_age_days,
+                expected_revision=source_revision if source_revision != "unavailable" else None,
+                require_current_revision=require_current_revision,
             )
     checks: list[dict[str, str]] = []
 
@@ -283,6 +287,11 @@ def prepare_handoff(
         next_actions.append("Fix or replace the release approval record before handoff.")
     if any(item["status"] == "blocked" for item in provider_results.values()):
         next_actions.append("Resolve blocked opt-in evidence provider checks before handoff.")
+    build_provider_details = str(provider_results.get("build-record", {}).get("details", ""))
+    if "revision does not match" in build_provider_details:
+        next_actions.append("Regenerate evidence/build.yml from the current project revision before handoff.")
+    elif "current project revision is unavailable" in build_provider_details:
+        next_actions.append("Run the revision-bound handoff from a Git project with a readable HEAD revision.")
     if not next_actions:
         next_actions.append("Handoff is approved for read-only execution review; publishing remains disabled.")
 
@@ -301,10 +310,11 @@ def prepare_handoff(
             "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
             "project_root": str(project_root),
             "output_root": str(output_root),
-            "source_revision": git_revision(project_root) if project_root.is_dir() else "unavailable",
+            "source_revision": source_revision,
             "platforms": platforms,
             "provider_mode": "opt-in-read-only",
             "evidence_max_age_days": max_evidence_age_days,
+            "require_current_revision": require_current_revision,
             "provider_file": str((provider_file or DEFAULT_PROVIDER_FILE).resolve())
             if selected_providers
             else "not-supplied",
@@ -330,6 +340,7 @@ def render_yaml(report: dict[str, object]) -> str:
         "source_revision",
         "provider_mode",
         "evidence_max_age_days",
+        "require_current_revision",
         "provider_file",
         "approval_file",
         "publish_status",
@@ -342,6 +353,8 @@ def render_yaml(report: dict[str, object]) -> str:
                 if value is None
                 else f"  evidence_max_age_days: {value}"
             )
+        elif isinstance(value, bool):
+            lines.append(f"  {key}: {'true' if value else 'false'}")
         else:
             lines.append(f"  {key}: null" if value is None else f"  {key}: {quote(str(value))}")
     platforms = handoff["platforms"]
@@ -379,6 +392,7 @@ def render_summary(report: dict[str, object]) -> str:
             if handoff["evidence_max_age_days"] is not None
             else "Evidence max age: disabled"
         ),
+        f"Revision binding: {'required' if handoff['require_current_revision'] else 'disabled'}",
         f"Approval file: {handoff['approval_file']}",
         "Checks:",
     ]
@@ -404,6 +418,11 @@ def main() -> int:
         type=int,
         help="Optionally block selected build/capture evidence older than this many days.",
     )
+    parser.add_argument(
+        "--require-current-revision",
+        action="store_true",
+        help="Require selected build evidence revision to match the project Git revision.",
+    )
     parser.add_argument("--approval-file", type=Path)
     parser.add_argument("--fail-on-blocked", action="store_true")
     parser.add_argument("--fail-on-pending-approval", action="store_true")
@@ -427,6 +446,7 @@ def main() -> int:
         provider_file=args.provider_file,
         providers=args.provider,
         max_evidence_age_days=args.max_evidence_age_days,
+        require_current_revision=args.require_current_revision,
     )
     rendered = render_yaml(report) if args.format == "yaml" else render_summary(report)
     if args.output:
