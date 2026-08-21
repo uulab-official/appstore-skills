@@ -10,8 +10,11 @@
 
 ## Passed
 
-- Icon concept is square, centered, text-free, and visually consistent with
-  the example brand context.
+- Six independent icon candidates were preserved and compared at 32×32.
+- A2 was selected for the demo because its rounded visibility window and
+  checkmark remain the clearest small-size silhouette.
+- The selected icon is square, centered, text-free, and visually consistent
+  with the example brand context.
 - Icon exports were resized from one selected master.
 - Favicon and OG SVGs use the same cobalt/coral visual system.
 - OG copy is exact SVG text, the PNG export is 1200×630, and both include a

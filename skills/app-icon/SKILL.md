@@ -78,8 +78,13 @@ step, select the strongest direction, record the decision, and continue.
 
 ### 3. Generate candidate concepts
 
-Generate six candidates by default: two variants for each direction. Keep
-every candidate:
+Generate six independent candidates by default: two variants for each
+direction. Label them `A1`, `A2`, `B1`, `B2`, `C1`, and `C2`, and preserve each
+full-resolution result separately. Never ask the image model for a contact
+sheet and never discard a returned candidate silently. Keep a candidate sheet
+only as an additional preview.
+
+Keep every candidate:
 
 - square and centered with a deliberate safe area
 - recognizable as a silhouette at 32×32 pixels
@@ -88,9 +93,46 @@ every candidate:
   decorative background elements
 - consistent with the shared brand context
 
-Use an image-generation or image-editing tool when available. Use an existing
-logo as a reference only when the user has the right to use it. Do not copy
-third-party trademarks, stock art, or another app's distinctive icon.
+Use an image-generation or image-editing tool when available. For prompt-based
+generation, describe the visual as one clean square image rather than asking
+for a logo, brand mark, app icon, or icon asset; those terms often encourage
+mockups, text, borders, and presentation frames. Keep the surrounding Skill
+and delivery report explicit about the store-asset purpose.
+
+Use an existing logo as a reference only when the user has the right to use
+it. Do not copy third-party trademarks, stock art, or another app's distinctive
+icon.
+
+### Candidate design contract
+
+Apply this compact visual budget before generating a batch:
+
+- Build one dominant silhouette from roughly four to seven broad shapes.
+- Use no more than two semantic subject colors plus the background unless the
+  user supplies a different brand rule.
+- Keep one defining feature; remove repeated texture, tiny highlights, thin
+  outlines, and decorative marks.
+- Use thick rounded forms and clear negative space. Avoid sharp tips, fragile
+  lines, bevels, photorealistic materials, device frames, and external shadows.
+- Check the black silhouette and the smallest export before recommending a
+  candidate.
+
+Use a prompt structure like this for each independent candidate:
+
+```text
+Create one complete full-bleed 1:1 square image.
+Background: use <named brand background color> in every open area.
+Subject: one extremely simplified <symbol or character> expressing <product connection>.
+Complexity: 4–7 broad shapes, one defining feature, no tiny details, readable at 32×32.
+Color: two purposeful subject colors plus the background; maintain clear separation.
+Composition: centered with a deliberate safe area; keep the mark dominant and upright.
+Finish: clean graphic treatment, crisp rounded forms, no text or presentation frame.
+Constraints: no words, letters, numbers, watermark, UI, border, device mockup,
+photorealistic material, sharp tips, thin lines, or external shadow.
+```
+
+Change only the candidate's direction, subject treatment, or palette mapping
+between calls so the six outputs remain useful for comparison.
 
 ### 4. Evaluate and select
 
@@ -140,4 +182,3 @@ report success when a requested export or validation step was skipped.
 
 For the detailed review checklist, read
 [references/icon-qa.md](references/icon-qa.md).
-

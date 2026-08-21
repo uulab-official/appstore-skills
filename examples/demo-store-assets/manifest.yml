@@ -8,8 +8,56 @@ assets:
     kind: app-icon-master
     platform: shared
     status: review
-    source: imagegen concept generated from examples/brand-context.yml
-    checks: [square, small-size-review, concept-labeled]
+    source: icon/concepts/A2.png
+    checks: [square, small-size-review, selected-A2, concept-labeled]
+  - path: icon/selection.md
+    kind: app-icon-selection
+    platform: shared
+    status: review
+    source: icon/concepts/A1.png through C2.png
+    checks: [candidate-comparison, rationale-recorded]
+  - path: icon/concepts/A1.png
+    kind: app-icon-candidate
+    platform: shared
+    status: review
+    source: imagegen direction A1
+    checks: [independent-candidate, preserved]
+  - path: icon/concepts/A2.png
+    kind: app-icon-candidate
+    platform: shared
+    status: review
+    source: imagegen direction A2
+    checks: [independent-candidate, selected, preserved]
+  - path: icon/concepts/B1.png
+    kind: app-icon-candidate
+    platform: shared
+    status: review
+    source: imagegen direction B1
+    checks: [independent-candidate, preserved]
+  - path: icon/concepts/B2.png
+    kind: app-icon-candidate
+    platform: shared
+    status: review
+    source: imagegen direction B2
+    checks: [independent-candidate, preserved]
+  - path: icon/concepts/C1.png
+    kind: app-icon-candidate
+    platform: shared
+    status: review
+    source: imagegen direction C1
+    checks: [independent-candidate, preserved]
+  - path: icon/concepts/C2.png
+    kind: app-icon-candidate
+    platform: shared
+    status: review
+    source: imagegen direction C2
+    checks: [independent-candidate, preserved]
+  - path: icon/concepts/legacy-v1.png
+    kind: app-icon-previous-concept
+    platform: shared
+    status: review
+    source: initial demo draw
+    checks: [preserved-for-comparison]
   - path: icon/icon-1024.png
     kind: app-icon-export
     platform: shared

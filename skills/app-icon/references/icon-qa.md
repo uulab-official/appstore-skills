@@ -3,6 +3,15 @@
 Use this checklist after selecting a candidate and before calling an export
 submission-ready.
 
+## Candidate-set checks
+
+- Confirm the batch contains the requested independent candidates, labeled
+  `A1` through `C2` by direction when the default six-candidate workflow is
+  used.
+- Preserve every returned candidate and its prompt or direction rationale;
+  do not silently filter or overwrite a candidate.
+- Compare candidates at the same scale and against the same brand context.
+
 ## Visual checks
 
 - Confirm the canvas is square and the subject has a deliberate safe area.
@@ -30,4 +39,3 @@ submission-ready.
 - Confirm every requested export exists at the path recorded in the report.
 - Verify dimensions against current official platform documentation.
 - Record unresolved issues as blockers instead of silently shipping them.
-
