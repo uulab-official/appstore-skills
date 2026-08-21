@@ -508,6 +508,91 @@ captures:
             self.assertEqual(result.returncode, 1)
             self.assertIn("capture 2 path is duplicated: screenshots/source/home.png", result.stdout)
 
+    def test_project_owned_registry_can_be_selected_inside_project_root(self) -> None:
+        with TemporaryDirectory() as directory:
+            project = Path(directory) / "app"
+            output = project / "store-assets"
+            project.mkdir()
+            output.mkdir()
+            create_evidence(output)
+            registry = project / "evidence-providers.yml"
+            registry.write_text(
+                PROVIDER_FILE.read_text(encoding="utf-8").replace(
+                    "  owner: repository\n", "  owner: project\n", 1
+                ),
+                encoding="utf-8",
+            )
+
+            result = self.run_inspector(
+                "--provider-file", str(registry),
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--provider", "build-record",
+                "--provider", "simulator-source-captures",
+                "--fail-on-blocked",
+            )
+
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_project_owned_registry_outside_project_root_is_blocked(self) -> None:
+        with TemporaryDirectory() as directory:
+            project = Path(directory) / "app"
+            output = project / "store-assets"
+            project.mkdir()
+            output.mkdir()
+            create_evidence(output)
+            registry = Path(directory) / "evidence-providers.yml"
+            registry.write_text(
+                PROVIDER_FILE.read_text(encoding="utf-8").replace(
+                    "  owner: repository\n", "  owner: project\n", 1
+                ),
+                encoding="utf-8",
+            )
+
+            result = self.run_inspector(
+                "--provider-file", str(registry),
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--provider", "build-record",
+                "--fail-on-blocked",
+            )
+
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("project-owned provider registry must be inside the project root", result.stdout)
+
+    def test_provider_symlink_cannot_escape_output_root(self) -> None:
+        with TemporaryDirectory() as directory:
+            project = Path(directory) / "app"
+            output = project / "store-assets"
+            outside = Path(directory) / "outside"
+            project.mkdir()
+            output.mkdir()
+            outside.mkdir()
+            create_evidence(output)
+            (output / "evidence" / "link").symlink_to(outside, target_is_directory=True)
+            registry = project / "evidence-providers.yml"
+            registry.write_text(
+                PROVIDER_FILE.read_text(encoding="utf-8")
+                .replace("  owner: repository\n", "  owner: project\n", 1)
+                .replace(
+                    "    evidence_path: evidence/build.yml\n",
+                    "    evidence_path: evidence/link/build.yml\n",
+                    1,
+                ),
+                encoding="utf-8",
+            )
+
+            result = self.run_inspector(
+                "--provider-file", str(registry),
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--provider", "build-record",
+                "--fail-on-blocked",
+            )
+
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("provider build-record evidence_path must stay inside the output root", result.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()

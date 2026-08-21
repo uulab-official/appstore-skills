@@ -11,6 +11,7 @@ import subprocess
 import sys
 
 from inspect_evidence_providers import inspect_provider
+from validate_provider_specs import section_values
 from validate_release_approval import parse_approval, validate as validate_approval
 
 
@@ -181,8 +182,19 @@ def prepare_handoff(
     )
     selected_providers = providers or []
     provider_results: dict[str, dict[str, object]] = {}
+    provider_registry_owner = "not-supplied"
+    provider_selection = "not-supplied"
     if selected_providers:
         selected_provider_file = provider_file or DEFAULT_PROVIDER_FILE
+        try:
+            provider_set = section_values(
+                selected_provider_file.read_text(encoding="utf-8"),
+                "provider_set",
+            )
+        except (OSError, UnicodeDecodeError):
+            provider_set = {}
+        provider_registry_owner = provider_set.get("owner", "unknown")
+        provider_selection = provider_set.get("selection", "unknown")
         for provider_id in selected_providers:
             provider_results[provider_id] = inspect_provider(
                 provider_id,
@@ -336,6 +348,8 @@ def prepare_handoff(
             "device_families": requested_device_families,
             "require_scope_coverage": require_scope_coverage,
             "provider_mode": "opt-in-read-only",
+            "provider_registry_owner": provider_registry_owner,
+            "provider_selection": provider_selection,
             "evidence_max_age_days": max_evidence_age_days,
             "require_current_revision": require_current_revision,
             "provider_file": str((provider_file or DEFAULT_PROVIDER_FILE).resolve())
@@ -365,6 +379,8 @@ def render_yaml(report: dict[str, object]) -> str:
         "evidence_max_age_days",
         "require_current_revision",
         "require_scope_coverage",
+        "provider_registry_owner",
+        "provider_selection",
         "provider_file",
         "approval_file",
         "publish_status",
@@ -431,6 +447,7 @@ def render_summary(report: dict[str, object]) -> str:
             else "Evidence max age: disabled"
         ),
         f"Revision binding: {'required' if handoff['require_current_revision'] else 'disabled'}",
+        f"Provider registry: {handoff['provider_registry_owner']} ({handoff['provider_selection']})",
         f"Locales: {', '.join(handoff['locales']) or 'none specified'}",
         f"Device families: {', '.join(handoff['device_families']) or 'none specified'}",
         f"Scope coverage: {'required' if handoff['require_scope_coverage'] else 'disabled'}",

@@ -155,6 +155,8 @@ validation tooling:
 - optional Cartesian scope-coverage gates for simulator evidence
 - duplicate source-capture path checks that prevent relabeled files from
   masquerading as multiple scope combinations
+- project-owned provider registries with explicit selection and output-root
+  path containment checks
 - locale plans and terminology QA that preserve review blockers
 - reversible store-copy experiment records with approval history
 - diff-friendly reviewer handoff summaries with manifest and reviewer-assignment baselines

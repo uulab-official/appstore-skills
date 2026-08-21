@@ -36,6 +36,34 @@ class ValidateProviderSpecsTests(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("side_effects must be none", result.stdout)
 
+    def test_provider_registry_requires_explicit_selection(self) -> None:
+        source = REGISTRY.read_text(encoding="utf-8")
+        invalid = source.replace("  selection: explicit\n", "  selection: automatic\n", 1)
+        with TemporaryDirectory() as directory:
+            path = Path(directory) / "invalid-providers.yml"
+            path.write_text(invalid, encoding="utf-8")
+
+            result = self.run_validator(path)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("provider_set.selection must be explicit", result.stdout)
+
+    def test_provider_paths_cannot_escape_output_root(self) -> None:
+        source = REGISTRY.read_text(encoding="utf-8")
+        invalid = source.replace(
+            "    evidence_path: evidence/build.yml\n",
+            "    evidence_path: ../../outside.yml\n",
+            1,
+        )
+        with TemporaryDirectory() as directory:
+            path = Path(directory) / "invalid-providers.yml"
+            path.write_text(invalid, encoding="utf-8")
+
+            result = self.run_validator(path)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("evidence_path must stay inside the output root", result.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()

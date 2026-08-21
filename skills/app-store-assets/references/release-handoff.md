@@ -23,6 +23,10 @@ Provider-backed checks are opt-in. Use `build-record` for a recorded build
 identity and `simulator-source-captures` for a capture manifest plus real image
 files. The providers only read existing files; they never invoke a build,
 simulator, upload, or publish command.
+For a project-owned provider registry, keep the file under the project root,
+set `provider_set.owner: project` and `provider_set.selection: explicit`, and
+pass it with `--provider-file`. The generated handoff records this ownership
+and selection metadata; it never auto-discovers project providers.
 
 The handoff is `blocked` when build identity or simulator evidence is missing,
 or when the approval record is invalid, rejected, or expired. If technical

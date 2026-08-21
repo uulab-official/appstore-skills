@@ -139,3 +139,10 @@ Add `--device-family` when captures must correspond to a named iPhone, iPad,
 or Android device family; no family is inferred when omitted.
 Add `--require-scope-coverage` when every requested platform/locale/device
 family combination must have a source capture.
+
+For project-owned evidence integrations, keep `evidence-providers.yml` under
+the project root with `provider_set.owner: project` and
+`provider_set.selection: explicit`. Pass it with `--provider-file` and select
+each provider explicitly. The inspector records the registry metadata, blocks
+registries outside the project root, and rejects evidence paths that escape
+the output root.

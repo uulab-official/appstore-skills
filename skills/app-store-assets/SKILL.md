@@ -128,7 +128,9 @@ approval-gated handoff guidance in
 [`references/approval-gated-handoff.md`](references/approval-gated-handoff.md).
 For provider-backed checks, select only the providers that are in scope and
 keep their registry in review until the evidence fields and source fidelity
-have been checked.
+have been checked. If the project owns the registry, keep it inside the
+project root, mark it `owner: project` with `selection: explicit`, and pass it
+explicitly; never auto-discover or execute project-owned providers.
 
 ### 6. Verify platform rules and package outputs
 

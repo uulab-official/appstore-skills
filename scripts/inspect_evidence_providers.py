@@ -12,7 +12,11 @@ import re
 import subprocess
 import sys
 
-from validate_provider_specs import provider_records, validate as validate_provider_registry
+from validate_provider_specs import (
+    provider_records,
+    section_values,
+    validate as validate_provider_registry,
+)
 from validate_store_output import read_png_metadata
 
 
@@ -259,6 +263,23 @@ def result(provider_id: str, kind: str, status: str, details: str) -> dict[str, 
     return {"id": provider_id, "kind": kind, "status": status, "details": details}
 
 
+def provider_path_error(provider: dict[str, str], output_root: Path) -> str | None:
+    output_resolved = output_root.resolve()
+    for field in ("evidence_path", "capture_root"):
+        value = provider.get(field, "")
+        if not value:
+            continue
+        relative = Path(value)
+        if relative.is_absolute() or ".." in relative.parts:
+            return f"provider {provider['id']} {field} must stay inside the output root"
+        resolved = (output_root / relative).resolve()
+        try:
+            resolved.relative_to(output_resolved)
+        except ValueError:
+            return f"provider {provider['id']} {field} must stay inside the output root"
+    return None
+
+
 def inspect_build(
     provider: dict[str, str],
     output_root: Path,
@@ -431,9 +452,23 @@ def inspect_provider(
     if registry_errors:
         return result(provider_id, "unknown", "blocked", "invalid provider registry: " + "; ".join(registry_errors))
     text = provider_file.read_text(encoding="utf-8")
+    provider_set = section_values(text, "provider_set")
+    if provider_set.get("owner") == "project":
+        try:
+            provider_file.relative_to(project_root.resolve())
+        except ValueError:
+            return result(
+                provider_id,
+                "unknown",
+                "blocked",
+                "project-owned provider registry must be inside the project root",
+            )
     provider = next((item for item in provider_records(text) if item.get("id") == provider_id), None)
     if provider is None:
         return result(provider_id, "unknown", "blocked", "provider is not declared in the registry")
+    path_error = provider_path_error(provider, output_root)
+    if path_error:
+        return result(provider_id, provider["kind"], "blocked", path_error)
     if provider["kind"] == "build":
         current_revision = expected_revision
         if require_current_revision and current_revision is None:

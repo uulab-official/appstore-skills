@@ -76,6 +76,10 @@ For existing build and source-capture evidence, optionally select the
 read-only providers in [`evidence-providers.yml`](evidence-providers.yml).
 Their registry is `opt-in` and `enabled_by_default: false`; a provider may
 validate evidence but must never execute a project command.
+If a project supplies its own registry, keep it under the project root with
+`provider_set.owner: project` and `provider_set.selection: explicit`. Select
+it explicitly with `--provider-file` and `--provider`; provider paths must stay
+inside the output root.
 
 Optionally preserve the read-only handoff result as `release-handoff.yml`.
 Keep `mode: dry-run` and `publish_status: not-run`; a handoff report is a

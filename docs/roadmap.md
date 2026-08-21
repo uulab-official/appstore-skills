@@ -98,8 +98,8 @@ reviewable commits.
 - Optional requested-device-family binding for simulator evidence
 - Optional Cartesian scope-coverage gates for simulator evidence
 - Source-capture manifest uniqueness checks that protect scope coverage
-- Optional project-owned evidence integrations that remain user-approved and
-  read-only
+- Project-owned evidence registries with explicit selection, project-root
+  ownership checks, and output-root path containment
 
 ## Longer term
 

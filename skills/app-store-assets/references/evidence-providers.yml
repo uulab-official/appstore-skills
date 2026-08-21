@@ -5,6 +5,8 @@ provider_set:
   mode: read-only
   execution: opt-in
   source_of_truth: evidence-adapters.yml
+  owner: repository
+  selection: explicit
 providers:
   - id: build-record
     kind: build

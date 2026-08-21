@@ -10,6 +10,7 @@ import re
 
 ALLOWED_KINDS = {"build", "simulator"}
 ALLOWED_STATUSES = {"draft", "review", "verified", "blocked"}
+ALLOWED_OWNERS = {"repository", "project"}
 FIELD_LINE = re.compile(r"^\s{4}([a-z][a-z0-9_-]*):\s*(.*?)\s*$")
 SECTION_FIELD_LINE = re.compile(r"^\s{2}([a-z][a-z0-9_-]*):\s*(.*?)\s*$")
 PROVIDER_LINE = re.compile(r"^\s{2}-\s+id:\s*(\S+)\s*$")
@@ -69,7 +70,7 @@ def validate(path: Path) -> list[str]:
         errors.append(f"{path}: must declare schema_version: 1")
 
     provider_set = section_values(text, "provider_set")
-    for key in ("id", "status", "mode", "execution", "source_of_truth"):
+    for key in ("id", "status", "mode", "execution", "source_of_truth", "owner", "selection"):
         if not provider_set.get(key):
             errors.append(f"{path}: provider_set.{key} is required")
     if provider_set.get("status") not in ALLOWED_STATUSES:
@@ -78,6 +79,10 @@ def validate(path: Path) -> list[str]:
         errors.append(f"{path}: provider_set.mode must be read-only")
     if provider_set.get("execution") != "opt-in":
         errors.append(f"{path}: provider_set.execution must be opt-in")
+    if provider_set.get("owner") not in ALLOWED_OWNERS:
+        errors.append(f"{path}: provider_set.owner must be one of {sorted(ALLOWED_OWNERS)}")
+    if provider_set.get("selection") != "explicit":
+        errors.append(f"{path}: provider_set.selection must be explicit")
 
     records = provider_records(text)
     if not records:
@@ -119,6 +124,12 @@ def validate(path: Path) -> list[str]:
             errors.append(f"{prefix}.side_effects must be none")
         if "command" in record or "commands" in record:
             errors.append(f"{prefix}: command fields are not allowed")
+        for field in ("evidence_path", "capture_root"):
+            if field not in record:
+                continue
+            relative = Path(record[field])
+            if relative.is_absolute() or ".." in relative.parts:
+                errors.append(f"{prefix}.{field} must stay inside the output root")
         if kind == "simulator" and not record.get("capture_root"):
             errors.append(f"{prefix}.capture_root is required for simulator providers")
 

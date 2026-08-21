@@ -19,7 +19,8 @@ screen captures.
 - a project/build/simulator/release evidence map that keeps missing real-app
   evidence blocked
 - an opt-in, read-only evidence provider registry that keeps missing build and
-  capture manifests blocked
+  capture manifests blocked, with the project-owned registry selected
+  explicitly and kept inside the fixture root
 - a pending human-approval record and dry-run release handoff report with
   publishing permanently marked `not-run`
 - evidence-backed English store-copy draft

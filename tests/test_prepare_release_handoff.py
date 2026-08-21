@@ -222,6 +222,36 @@ class PrepareReleaseHandoffTests(unittest.TestCase):
             self.assertIn("pass: build-identity — provider build-record", result.stdout)
             self.assertIn("pass: simulator-captures — provider simulator-source-captures", result.stdout)
 
+    def test_project_owned_provider_registry_is_reported(self) -> None:
+        with TemporaryDirectory() as directory:
+            project = Path(directory) / "app"
+            output = project / "store-assets"
+            project.mkdir()
+            output.mkdir()
+            (project / "package.json").write_text("{}\n", encoding="utf-8")
+            create_output(output, with_evidence=True, with_capture=True)
+            registry = project / "evidence-providers.yml"
+            source = (ROOT / "skills/app-store-assets/references/evidence-providers.yml").read_text(
+                encoding="utf-8"
+            )
+            registry.write_text(
+                source.replace("  owner: repository\n", "  owner: project\n", 1),
+                encoding="utf-8",
+            )
+
+            result = self.run_script(
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--provider-file", str(registry),
+                "--provider", "build-record",
+                "--provider", "simulator-source-captures",
+                "--format", "yaml",
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn('provider_registry_owner: "project"', result.stdout)
+            self.assertIn('provider_selection: "explicit"', result.stdout)
+
     def test_fail_on_pending_approval_is_opt_in(self) -> None:
         with TemporaryDirectory() as directory:
             project = Path(directory) / "app"

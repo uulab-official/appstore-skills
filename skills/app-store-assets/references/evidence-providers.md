@@ -14,6 +14,25 @@ The registry in
   metadata, confirms each path stays under `screenshots/source/`, rejects
   duplicate manifest paths, and verifies basic PNG/JPEG/WebP file signatures.
 
+## Project-owned registries
+
+For a project-specific integration, keep a copy of the registry inside the
+project root and declare the ownership contract:
+
+```yaml
+provider_set:
+  owner: project
+  selection: explicit
+  mode: read-only
+  execution: opt-in
+```
+
+Pass that file explicitly with `--provider-file` and select each provider with
+`--provider`. The inspector never discovers or executes project commands. A
+project-owned registry outside the project root is blocked, as are provider
+paths that escape the output root; each provider must keep `side_effects: none`.
+The handoff report records the registry owner and explicit-selection contract.
+
 ## Build evidence
 
 Create `evidence/build.yml` from the inspected build, for example:
