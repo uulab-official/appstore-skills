@@ -1,0 +1,35 @@
+schema_version: 1
+experiment:
+  id: example-app-value-proposition-v1
+  status: review
+  source_locale: en-US
+  objective: Compare two evidence-backed value propositions during human review.
+  measurement: manual-review
+  variants:
+    - id: control
+      status: review
+      label: Current task-visibility draft
+      copy_file: metadata/store-copy.en-US.yml
+      hypothesis: Clear task visibility is the strongest first impression for busy people.
+      approval_status: pending
+      approval_owner: ""
+      decided_at: ""
+      evidence: []
+    - id: visibility-led
+      status: review
+      label: Next-action value proposition
+      copy_file: metadata/experiments/variant-visibility.en-US.yml
+      hypothesis: Leading with the next action makes the product's daily value clearer.
+      approval_status: pending
+      approval_owner: ""
+      decided_at: ""
+      evidence: []
+  history:
+    - at: 2026-08-21T00:00:00Z
+      action: created
+      actor: repository-fixture
+      note: Added two reversible review variants from the same evidence-backed product context.
+    - at: 2026-08-21T00:00:00Z
+      action: held
+      actor: repository-fixture
+      note: No store experiment, traffic allocation, or publishing action is authorized by this record.

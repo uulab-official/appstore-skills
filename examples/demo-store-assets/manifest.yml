@@ -439,6 +439,20 @@ assets:
     status: review
     source: product vocabulary and approved copy
     checks: [canonical-terms, locale-mappings, forbidden-terms, approval-state]
+  - path: metadata/copy-experiments.yml
+    kind: store-copy-experiment
+    platform: shared
+    locale: en-US
+    status: review
+    source: metadata/store-copy.en-US.yml and terminology.yml
+    checks: [reversible-variants, hypothesis-recorded, manual-measurement, approval-history]
+  - path: metadata/experiments/variant-visibility.en-US.yml
+    kind: store-copy-experiment-variant
+    platform: shared
+    locale: en-US
+    status: review
+    source: metadata/copy-experiments.yml
+    checks: [source-locale, evidence-backed, review-only, not-published]
 assumptions:
   - The product and all visual assets are fictional review fixtures.
   - No real app UI or device captures are available.

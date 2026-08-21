@@ -49,10 +49,10 @@ reviewable commits.
 - Opt-in, read-only build and simulator capture evidence providers with field,
   path, timestamp, and image-signature checks
 
-### v0.8.0 — Localization and copy governance (in progress)
+### v0.8.0 — Localization and copy governance
 
 - Locale plans, terminology mappings, forbidden-term checks, and review-state
-  preservation for localized store copy (implemented)
+  preservation for localized store copy
 - Store-copy experiment records with approval history and reversible variants
 
 ### Operational tooling
@@ -69,10 +69,14 @@ reviewable commits.
 
 ## Next
 
+### v0.9.0 — Review workflow ergonomics
+
+- Structured reviewer handoff summaries and diff-friendly package reports
+- Optional project-specific policy and accessibility check adapters
+
 ## Longer term
 
 - More localization and terminology tooling
-- Store-copy experiments with approval history
 - Provider integrations for project-specific, user-approved evidence sources
 
 ## Scope rule

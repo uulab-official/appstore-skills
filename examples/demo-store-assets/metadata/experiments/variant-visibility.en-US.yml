@@ -1,0 +1,28 @@
+schema_version: 1
+status: review
+locale: en-US
+product: Example App
+apple:
+  name: Example App
+  subtitle: See what matters next
+  promotional_text: Capture the next task and keep your day moving.
+  description: |
+    Example App helps busy people see what matters next and make everyday
+    tasks easier to finish. Capture tasks quickly, set reminders, and keep
+    shared lists organized in one simple place.
+  keywords:
+    - next task
+    - reminders
+    - shared lists
+  whats_new: Experiment variant for review only. Do not publish without approval.
+google_play:
+  short_description: See what matters next and make everyday tasks easier to finish.
+  full_description: |
+    See what matters next with Example App. Capture tasks quickly, set
+    reminders, and keep shared lists organized in one simple place.
+evidence:
+  - source: ../brand-context.yml
+    supports: product name, audience, value proposition, and listed features
+assumptions:
+  - This is a reversible experiment variant, not approved store metadata.
+  - Measurement is manual review only; no store experiment or publish action ran.

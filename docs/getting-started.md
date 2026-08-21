@@ -85,6 +85,9 @@ python scripts/validate_localization_specs.py \
   ./store-assets/localization-plan.yml \
   ./store-assets/terminology.yml \
   --package-root ./store-assets
+python scripts/validate_copy_experiments.py \
+  ./store-assets/metadata/copy-experiments.yml \
+  --package-root ./store-assets
 python scripts/prepare_release_handoff.py \
   --project-root ./my-app \
   --output-root ./store-assets \

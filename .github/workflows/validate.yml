@@ -48,6 +48,10 @@ jobs:
           examples/demo-store-assets/terminology.yml
           --package-root examples/demo-store-assets
       - run: >-
+          python scripts/validate_copy_experiments.py
+          examples/demo-store-assets/metadata/copy-experiments.yml
+          --package-root examples/demo-store-assets
+      - run: >-
           python scripts/prepare_release_handoff.py
           --project-root .
           --output-root examples/demo-store-assets

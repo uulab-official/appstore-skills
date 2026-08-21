@@ -24,6 +24,8 @@ screen captures.
   publishing permanently marked `not-run`
 - evidence-backed English store-copy draft
 - English source copy, Korean review copy, locale plan, and terminology glossary
+- Two reversible English copy-experiment variants with manual-review approval
+  history
 - manifest, QA, and release-check output
 
 ## What is intentionally blocked
@@ -38,6 +40,9 @@ treating the package as submission-ready.
 The Korean listing is a translation draft. It is intentionally `review` until
 a native or designated reviewer checks meaning, tone, field fit, and any
 localized visual assets.
+
+The copy experiment is also review-only. It does not allocate traffic, call a
+store API, publish a variant, or claim performance results.
 
 Run the deterministic package check from the repository root:
 

@@ -16,6 +16,7 @@ warnings:
   - The release handoff is a dry-run report only; no build, simulator, upload, or publish action ran.
   - The release approval record is pending; no human decision is inferred from structural checks.
   - The ko-KR copy is a localization draft without native or designated reviewer approval.
+  - The copy experiment variants are review-only with pending approvals; no traffic allocation or store API action ran.
   - The icon design brief is still in review because product-owner approval is missing.
   - Platform requirements were not checked for a live submission.
 platform_docs_checked: []

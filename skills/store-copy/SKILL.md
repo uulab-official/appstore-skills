@@ -111,4 +111,7 @@ platform limits or product approval are missing.
 
 Read [references/store-copy-qa.md](references/store-copy-qa.md) for the review
 checklist.
-
+When comparing listing directions before release, read
+[references/copy-experiments.md](references/copy-experiments.md). Keep variants
+reversible, use manual measurement unless an approved measurement plan exists,
+and record human approval history before treating a variant as verified.
