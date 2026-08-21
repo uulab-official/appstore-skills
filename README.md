@@ -28,6 +28,7 @@ other store assets feel like one product.
 
 New here? Start with [`docs/getting-started.md`](docs/getting-started.md).
 Use [`docs/skill-map.md`](docs/skill-map.md) to choose the right workflow and
+[`docs/quality-bar.md`](docs/quality-bar.md) for acceptance criteria, and
 [`docs/roadmap.md`](docs/roadmap.md) to see what is implemented next.
 
 ## Quick start
@@ -133,6 +134,7 @@ metadata and generated output manifests:
 
 ```bash
 python scripts/validate_skills.py
+python scripts/validate_docs.py
 python -m unittest discover -s tests
 python scripts/validate_store_output.py ./store-assets
 ```

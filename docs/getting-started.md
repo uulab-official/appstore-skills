@@ -68,6 +68,7 @@ From the repository root:
 
 ```bash
 python scripts/validate_skills.py
+python scripts/validate_docs.py
 python -m unittest discover -s tests
 ```
 
@@ -76,4 +77,3 @@ To validate an actual generated package, run:
 ```bash
 python scripts/validate_store_output.py ./store-assets
 ```
-

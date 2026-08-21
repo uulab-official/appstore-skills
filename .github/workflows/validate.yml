@@ -16,4 +16,5 @@ jobs:
         with:
           python-version: "3.x"
       - run: python scripts/validate_skills.py
+      - run: python scripts/validate_docs.py
       - run: python -m unittest discover -s tests

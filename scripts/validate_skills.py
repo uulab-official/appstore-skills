@@ -9,6 +9,9 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 SKILLS = ROOT / "skills"
 NAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+LOCAL_LINK_RE = re.compile(r"\]\((?!https?://|mailto:|#)([^)#]+)\)")
+FRONTMATTER_KEY_RE = re.compile(r"^([A-Za-z_][A-Za-z0-9_-]*):", re.MULTILINE)
+MAX_SKILL_LINES = 500
 
 
 def fail(message: str, errors: list[str]) -> None:
@@ -38,16 +41,29 @@ def validate_skill(skill_dir: Path, errors: list[str]) -> None:
         return
 
     frontmatter, body = parts[1], parts[2]
+    frontmatter_keys = FRONTMATTER_KEY_RE.findall(frontmatter)
+    if set(frontmatter_keys) != {"name", "description"}:
+        fail(
+            f"{skill_file}: frontmatter must contain only name and description",
+            errors,
+        )
     frontmatter_names = re.findall(r"^name:\s*(\S+)\s*$", frontmatter, re.MULTILINE)
     descriptions = re.findall(r"^description:\s*(.+?)\s*$", frontmatter, re.MULTILINE)
     if frontmatter_names != [name]:
         fail(f"{skill_file}: frontmatter name must be {name!r}", errors)
     if len(descriptions) != 1 or descriptions[0].startswith("[TODO"):
         fail(f"{skill_file}: missing usable description", errors)
+    elif "Use when" not in descriptions[0]:
+        fail(f"{skill_file}: description must include a Use when trigger", errors)
     if re.search(r"\[TODO|\bTODO\s*:", body):
         fail(f"{skill_file}: contains TODO placeholder", errors)
+    if len(text.splitlines()) > MAX_SKILL_LINES:
+        fail(f"{skill_file}: exceeds {MAX_SKILL_LINES} lines", errors)
 
-    for relative in re.findall(r"\]\((references/[^)]+)\)", body):
+    for relative in LOCAL_LINK_RE.findall(text):
+        if relative.startswith("/"):
+            fail(f"{skill_file}: local links must be relative: {relative}", errors)
+            continue
         if not (skill_dir / relative).is_file():
             fail(f"{skill_file}: missing referenced file {relative}", errors)
 

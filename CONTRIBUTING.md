@@ -38,6 +38,9 @@ page when adding a Skill, changing an output contract, changing a validation
 command, or moving a roadmap item. Keep examples runnable and avoid claiming
 that a platform requirement is permanent.
 
+Use [`docs/quality-bar.md`](docs/quality-bar.md) as the acceptance checklist
+for implementation and documentation changes.
+
 ## Validation
 
 Run the repository checks that are available in your environment, including
