@@ -26,6 +26,8 @@ class GenerateReviewHandoffTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("review_status: blocked", result.stdout)
         self.assertIn("Baseline: `not-supplied`", result.stdout)
+        self.assertIn("## Reviewer assignment", result.stdout)
+        self.assertIn("Reviewer assignment is pending", result.stdout)
         self.assertIn("publish_status` is permanently `not-run`", result.stdout)
 
     def test_previous_manifest_reports_added_removed_and_changed(self) -> None:

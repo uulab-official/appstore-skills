@@ -113,6 +113,11 @@ with
 `python scripts/generate_review_handoff.py --package-root <store-assets> --output <store-assets>/review-handoff.md`.
 Read [the review handoff contract](references/review-handoff.md). This summary
 does not replace `release-report.md` and never implies approval or submission.
+When reviewer ownership or decision history must be explicit, start from
+[`references/review-assignment.yml`](references/review-assignment.yml), validate
+it with `scripts/validate_review_assignments.py`, and read
+[`references/review-assignments.md`](references/review-assignments.md). The
+handoff generator includes this record automatically when it is present.
 
 ## Non-goals
 

@@ -95,6 +95,8 @@ python scripts/generate_review_handoff.py \
   --adapter accessibility-review \
   --adapter privacy-review \
   --output ./store-assets/review-handoff.md
+python scripts/validate_review_assignments.py \
+  ./store-assets/review-assignment.yml
 python scripts/prepare_release_handoff.py \
   --project-root ./my-app \
   --output-root ./store-assets \

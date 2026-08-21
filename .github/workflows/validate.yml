@@ -64,6 +64,10 @@ jobs:
           skills/release-check/references/review-adapters.yml
           examples/demo-store-assets/review-adapters.yml
       - run: >-
+          python scripts/validate_review_assignments.py
+          skills/release-check/references/review-assignment.yml
+          examples/demo-store-assets/review-assignment.yml
+      - run: >-
           python scripts/inspect_review_adapters.py
           --adapter-file skills/release-check/references/review-adapters.yml
           --project-root .

@@ -28,6 +28,7 @@ screen captures.
   history
 - a diff-friendly reviewer handoff summary that keeps blockers and approval
   state visible
+- an explicit reviewer assignment record with chronological decision history
 - manifest, QA, and release-check output
 
 ## What is intentionally blocked
@@ -52,6 +53,10 @@ when a previous package is supplied and labels the demo as `blocked`.
 The optional policy, accessibility, and privacy adapters are registered in
 `review-adapters.yml`; their missing evidence is `pending`, never an automatic
 pass.
+
+`review-assignment.yml` keeps required reviewers, assignment state, and
+decision history visible. Its unassigned reviewers intentionally keep the demo
+in `pending` review state.
 
 Run the deterministic package check from the repository root:
 

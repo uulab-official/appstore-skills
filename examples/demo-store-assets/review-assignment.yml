@@ -1,0 +1,43 @@
+schema_version: 1
+review_assignment:
+  id: demo-store-assets-review
+  package: demo-store-assets
+  status: pending
+  owner: ""
+  reviewers:
+    - id: product-owner
+      role: product
+      required: true
+      status: pending
+      assigned_to: ""
+      assigned_at: ""
+      decision: pending
+      decided_at: ""
+      evidence: []
+      notes: Product scope and claims review is not assigned.
+    - id: native-locale-reviewer
+      role: localization
+      required: true
+      status: pending
+      assigned_to: ""
+      assigned_at: ""
+      decision: pending
+      decided_at: ""
+      evidence: []
+      notes: Native-language copy and visual fit review is not assigned.
+    - id: privacy-reviewer
+      role: privacy
+      required: true
+      status: pending
+      assigned_to: ""
+      assigned_at: ""
+      decision: pending
+      decided_at: ""
+      evidence: []
+      notes: Privacy and disclosure review is not assigned.
+  history:
+    - at: 2026-08-21T00:00:00Z
+      action: created
+      actor: repository-fixture
+      reviewer: ""
+      note: Assignment record created for explicit human review.

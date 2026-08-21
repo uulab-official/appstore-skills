@@ -150,7 +150,8 @@ validation tooling:
 - locale plans and terminology QA that preserve review blockers
 - reversible store-copy experiment records with approval history
 - diff-friendly reviewer handoff summaries
-- opt-in policy and accessibility review adapters with pending-visible states
+- opt-in policy, accessibility, and privacy review adapters with pending-visible states
+- reviewer assignment records with chronological decision history
 
 The repository also includes deterministic, dependency-free checks for skill
 metadata and generated output manifests:
@@ -185,6 +186,8 @@ python scripts/generate_review_handoff.py \
   --output ./store-assets/review-handoff.md
 python scripts/validate_review_adapter_specs.py \
   skills/release-check/references/review-adapters.yml
+python scripts/validate_review_assignments.py \
+  ./store-assets/review-assignment.yml
 python scripts/prepare_release_handoff.py \
   --project-root ./my-app \
   --output-root ./my-app/store-assets \

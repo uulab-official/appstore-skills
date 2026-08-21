@@ -13,6 +13,7 @@ import sys
 from annotate_release_report import parse_report
 from inspect_review_adapters import inspect_adapter
 from validate_release_approval import parse_approval, validate as validate_approval
+from validate_review_assignments import summarize as summarize_assignment
 
 
 ASSET_PATH_LINE = re.compile(r"^\s+-\s+path:\s*(.*?)\s*$")
@@ -105,11 +106,27 @@ def release_report_data(package_root: Path) -> tuple[str, list[str], list[str]]:
     return status, [message for _, message in lists["blockers"]], [message for _, message in lists["warnings"]]
 
 
+def review_assignment_data(package_root: Path, assignment_file: Path | None = None) -> dict[str, object]:
+    path = assignment_file or package_root / "review-assignment.yml"
+    if not path.is_file():
+        return {
+            "status": "not-supplied",
+            "details": "no review-assignment.yml supplied",
+            "owner": "not assigned",
+            "reviewers": [],
+            "history_events": 0,
+        }
+    result = summarize_assignment(path)
+    result["path"] = str(path)
+    return result
+
+
 def build_summary(
     package_root: Path,
     previous_package_root: Path | None,
     adapter_file: Path | None = None,
     adapters: list[str] | None = None,
+    assignment_file: Path | None = None,
 ) -> dict[str, object]:
     manifest_path = package_root / "manifest.yml"
     blockers: list[str] = []
@@ -151,6 +168,17 @@ def build_summary(
             elif adapter["status"] == "pending":
                 warnings.append(f"{adapter['id']} review adapter is pending: {adapter['details']}")
 
+    review_assignment = review_assignment_data(package_root, assignment_file)
+    if review_assignment["status"] == "invalid":
+        blockers.append(f"review assignment is invalid: {review_assignment['details']}")
+    elif review_assignment["status"] in {"pending", "in_review"}:
+        warnings.append(
+            "Reviewer assignment is "
+            f"{review_assignment['status']}: required human decisions are not complete."
+        )
+    elif review_assignment["status"] == "blocked":
+        blockers.append("Reviewer assignment contains a blocked required review.")
+
     status_counts = Counter(record.get("status", "unknown") for record in current_records)
     review_statuses = sum(status_counts.get(status, 0) for status in ("review", "draft"))
     if status_counts.get("blocked", 0):
@@ -160,6 +188,8 @@ def build_summary(
     elif approval in {"pending", "not-supplied"}:
         review_status = "pending_approval"
     elif any(item["status"] == "pending" for item in review_adapters):
+        review_status = "review"
+    elif review_assignment["status"] in {"pending", "in_review"}:
         review_status = "review"
     elif review_statuses:
         review_status = "review"
@@ -175,7 +205,9 @@ def build_summary(
     if review_statuses:
         next_actions.append(f"Review {review_statuses} draft/review asset(s) with the product owner.")
     if any(item["status"] == "pending" for item in review_adapters):
-        next_actions.append("Complete the selected policy/accessibility adapter reviews.")
+        next_actions.append("Complete the selected policy, accessibility, and privacy adapter reviews.")
+    if review_assignment["status"] in {"pending", "in_review"}:
+        next_actions.append("Assign and complete the required reviewer decisions in review-assignment.yml.")
     if not next_actions:
         next_actions.append("Complete final human review; publish_status remains not-run.")
 
@@ -193,6 +225,7 @@ def build_summary(
         "blockers": sorted(dict.fromkeys(blockers)),
         "warnings": sorted(dict.fromkeys(warnings)),
         "review_adapters": review_adapters,
+        "review_assignment": review_assignment,
         "next_actions": next_actions,
         "baseline": previous_package_root.name if previous_package_root is not None else "not-supplied",
     }
@@ -256,7 +289,31 @@ def render_markdown(summary: dict[str, object]) -> str:
             )
         )
     else:
-        lines.append("No optional policy/accessibility adapters selected.")
+        lines.append("No optional policy/accessibility/privacy adapters selected.")
+    assignment = summary["review_assignment"]
+    assert isinstance(assignment, dict)
+    lines.extend(["", "## Reviewer assignment", ""])
+    lines.append(f"- Status: `{assignment['status']}`")
+    lines.append(f"- Owner: `{assignment.get('owner', 'not assigned')}`")
+    lines.append(f"- History events: `{assignment.get('history_events', 0)}`")
+    if assignment["status"] == "not-supplied":
+        lines.append("- No review-assignment.yml was supplied.")
+    elif assignment["status"] == "invalid":
+        lines.append(f"- Invalid record: {assignment['details']}")
+    else:
+        reviewers = assignment.get("reviewers", [])
+        assert isinstance(reviewers, list)
+        lines.extend(["", *markdown_table([
+            {
+                "id": str(item.get("id", "")),
+                "role": str(item.get("role", "")),
+                "required": str(item.get("required", "")),
+                "status": str(item.get("status", "")),
+                "assigned_to": str(item.get("assigned_to", "")),
+                "decision": str(item.get("decision", "")),
+            }
+            for item in reviewers
+        ], ("id", "role", "required", "status", "assigned_to", "decision"))])
     for heading, key in (("Blockers", "blockers"), ("Warnings", "warnings")):
         lines.extend(["", f"## {heading}", ""])
         values = summary[key]
@@ -277,6 +334,7 @@ def main() -> int:
     parser.add_argument("--previous-package-root", type=Path)
     parser.add_argument("--adapter-file", type=Path)
     parser.add_argument("--adapter", action="append", default=[])
+    parser.add_argument("--assignment-file", type=Path)
     parser.add_argument("--format", choices=("markdown", "json"), default="markdown")
     parser.add_argument("--output", type=Path)
     parser.add_argument("--overwrite", action="store_true")
@@ -293,6 +351,7 @@ def main() -> int:
         args.previous_package_root.resolve() if args.previous_package_root else None,
         adapter_file=args.adapter_file.resolve() if args.adapter_file else None,
         adapters=args.adapter,
+        assignment_file=args.assignment_file.resolve() if args.assignment_file else None,
     )
     rendered = render_markdown(summary) if args.format == "markdown" else json.dumps(summary, indent=2, ensure_ascii=False)
     rendered += "\n" if not rendered.endswith("\n") else ""

@@ -464,7 +464,13 @@ assets:
     platform: shared
     status: review
     source: release-report.md and human review owners
-    checks: [policy-scope, accessibility-scope, opt-in, read-only, pending-visible]
+    checks: [policy-scope, accessibility-scope, privacy-scope, opt-in, read-only, pending-visible]
+  - path: review-assignment.yml
+    kind: reviewer-assignment
+    platform: shared
+    status: review
+    source: release-report.md and human review owners
+    checks: [required-reviewers, decision-history, chronological-events, pending-visible]
 assumptions:
   - The product and all visual assets are fictional review fixtures.
   - No real app UI or device captures are available.

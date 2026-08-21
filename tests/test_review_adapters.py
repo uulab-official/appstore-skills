@@ -87,6 +87,38 @@ review:
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertIn('"status": "pass"', result.stdout)
 
+    def test_privacy_record_uses_the_same_evidence_contract(self) -> None:
+        with TemporaryDirectory() as directory:
+            project = Path(directory) / "app"
+            output = project / "store-assets"
+            evidence = output / "evidence"
+            project.mkdir()
+            evidence.mkdir(parents=True)
+            (evidence / "privacy-review.yml").write_text(
+                """schema_version: 1
+review:
+  status: pass
+  reviewer: Privacy reviewer
+  scope: [collection, disclosure]
+  reviewed_at: 2026-08-21T10:00:00Z
+  evidence:
+    - privacy-review-ticket
+  notes: reviewed
+""",
+                encoding="utf-8",
+            )
+
+            result = self.run_inspector(
+                "--adapter-file", str(REGISTRY),
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--adapter", "privacy-review",
+                "--format", "json",
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn('"status": "pass"', result.stdout)
+
     def test_invalid_terminal_record_can_gate(self) -> None:
         with TemporaryDirectory() as directory:
             project = Path(directory) / "app"

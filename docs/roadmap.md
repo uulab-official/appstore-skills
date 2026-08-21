@@ -74,12 +74,20 @@ reviewable commits.
 - Optional project-specific policy and accessibility review adapters with
   pending-visible, read-only states
 
-## Next
-
 ### v1.0.0 — Evidence-backed review extensions
 
 - Project-specific policy, accessibility, and privacy evidence templates
-- Reviewer assignment and decision-history ergonomics without automatic approval
+- Reviewer assignment and chronological decision-history ergonomics without
+  automatic approval
+
+## Next
+
+### v1.1.0 — Review packet quality
+
+- More granular reviewer scopes and evidence references across platform,
+  localization, privacy, and accessibility review
+- Optional project-owned evidence integrations that remain user-approved and
+  read-only
 
 ## Longer term
 
