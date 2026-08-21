@@ -41,6 +41,7 @@ python scripts/prepare_release_handoff.py \
   --platform google-play \
   --locale en-US \
   --device-family iphone \
+  --require-scope-coverage \
   --provider-file ./skills/app-store-assets/references/evidence-providers.yml \
   --provider build-record \
   --provider simulator-source-captures \
@@ -67,4 +68,6 @@ is omitted. Any `--locale` values are forwarded to source-capture evidence;
 separator variants such as `en_US` and `en-US` are normalized, while omitted
 locale scope remains explicitly unchecked. Any `--device-family` values are
 forwarded to source-capture evidence and must match the named capture family;
-omitted device-family scope remains explicitly unchecked.
+omitted device-family scope remains explicitly unchecked. Use
+`--require-scope-coverage` to require a source capture for every requested
+platform × locale × device-family combination; it is opt-in.

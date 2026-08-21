@@ -166,6 +166,7 @@ def prepare_handoff(
     require_current_revision: bool = False,
     locales: list[str] | None = None,
     device_families: list[str] | None = None,
+    require_scope_coverage: bool = False,
 ) -> dict[str, object]:
     project_root = project_root.resolve()
     output_root = output_root.resolve()
@@ -194,6 +195,7 @@ def prepare_handoff(
                 expected_platforms=platforms,
                 expected_locales=requested_locales,
                 expected_device_families=requested_device_families,
+                require_scope_coverage=require_scope_coverage,
             )
     checks: list[dict[str, str]] = []
 
@@ -308,6 +310,8 @@ def prepare_handoff(
         next_actions.append("Capture source images for a requested locale before handoff.")
     if "device family does not match requested device families" in simulator_provider_details:
         next_actions.append("Capture source images for a requested device family before handoff.")
+    if "scope coverage is incomplete" in simulator_provider_details:
+        next_actions.append("Add source captures for every requested platform, locale, and device-family scope.")
     if not next_actions:
         next_actions.append("Handoff is approved for read-only execution review; publishing remains disabled.")
 
@@ -330,6 +334,7 @@ def prepare_handoff(
             "platforms": platforms,
             "locales": requested_locales,
             "device_families": requested_device_families,
+            "require_scope_coverage": require_scope_coverage,
             "provider_mode": "opt-in-read-only",
             "evidence_max_age_days": max_evidence_age_days,
             "require_current_revision": require_current_revision,
@@ -359,6 +364,7 @@ def render_yaml(report: dict[str, object]) -> str:
         "provider_mode",
         "evidence_max_age_days",
         "require_current_revision",
+        "require_scope_coverage",
         "provider_file",
         "approval_file",
         "publish_status",
@@ -427,6 +433,7 @@ def render_summary(report: dict[str, object]) -> str:
         f"Revision binding: {'required' if handoff['require_current_revision'] else 'disabled'}",
         f"Locales: {', '.join(handoff['locales']) or 'none specified'}",
         f"Device families: {', '.join(handoff['device_families']) or 'none specified'}",
+        f"Scope coverage: {'required' if handoff['require_scope_coverage'] else 'disabled'}",
         f"Approval file: {handoff['approval_file']}",
         "Checks:",
     ]
@@ -469,6 +476,11 @@ def main() -> int:
         default=[],
         help="Optionally require selected source captures to match a requested device family.",
     )
+    parser.add_argument(
+        "--require-scope-coverage",
+        action="store_true",
+        help="Require selected source captures for every requested scope combination.",
+    )
     parser.add_argument("--approval-file", type=Path)
     parser.add_argument("--fail-on-blocked", action="store_true")
     parser.add_argument("--fail-on-pending-approval", action="store_true")
@@ -483,6 +495,9 @@ def main() -> int:
     if args.max_evidence_age_days is not None and args.max_evidence_age_days < 0:
         print("--max-evidence-age-days must be zero or greater", file=sys.stderr)
         return 2
+    if args.require_scope_coverage and not (args.platform or args.locale or args.device_family):
+        print("--require-scope-coverage requires at least one scope flag", file=sys.stderr)
+        return 2
 
     report = prepare_handoff(
         args.project_root,
@@ -495,6 +510,7 @@ def main() -> int:
         require_current_revision=args.require_current_revision,
         locales=args.locale,
         device_families=args.device_family,
+        require_scope_coverage=args.require_scope_coverage,
     )
     rendered = render_yaml(report) if args.format == "yaml" else render_summary(report)
     if args.output:

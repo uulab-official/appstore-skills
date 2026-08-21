@@ -409,6 +409,70 @@ class InspectEvidenceProvidersTests(unittest.TestCase):
             self.assertEqual(mismatch.returncode, 1)
             self.assertIn("capture 1 device family does not match requested device families", mismatch.stdout)
 
+    def test_scope_coverage_can_gate_missing_capture_combinations(self) -> None:
+        with TemporaryDirectory() as directory:
+            project = Path(directory) / "app"
+            output = project / "store-assets"
+            project.mkdir()
+            output.mkdir()
+            create_evidence(output)
+            source = output / "screenshots" / "source"
+            (source / "google.png").write_bytes((source / "home.png").read_bytes())
+            (output / "evidence" / "captures.yml").write_text(
+                """schema_version: 1
+captures:
+  - path: screenshots/source/home.png
+    platform: apple
+    device_family: iphone
+    locale: en-US
+    captured_at: 2026-08-21T10:05:00Z
+    provenance: ios-simulator
+  - path: screenshots/source/google.png
+    platform: google-play
+    device_family: iphone
+    locale: en-US
+    captured_at: 2026-08-21T10:06:00Z
+    provenance: android-emulator
+""",
+                encoding="utf-8",
+            )
+
+            result = self.run_inspector(
+                "--provider-file", str(PROVIDER_FILE),
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--provider", "simulator-source-captures",
+                "--platform", "apple",
+                "--platform", "google-play",
+                "--locale", "en-US",
+                "--locale", "ko-KR",
+                "--device-family", "iphone",
+                "--require-scope-coverage",
+                "--fail-on-blocked",
+            )
+
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("source capture scope coverage is incomplete", result.stdout)
+            self.assertIn("platform=apple, locale=ko-KR, device_family=iphone", result.stdout)
+
+    def test_scope_coverage_requires_a_scope_flag(self) -> None:
+        with TemporaryDirectory() as directory:
+            project = Path(directory) / "app"
+            output = project / "store-assets"
+            project.mkdir()
+            output.mkdir()
+
+            result = self.run_inspector(
+                "--provider-file", str(PROVIDER_FILE),
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--provider", "simulator-source-captures",
+                "--require-scope-coverage",
+            )
+
+            self.assertEqual(result.returncode, 2)
+            self.assertIn("requires at least one scope flag", result.stderr)
+
 
 if __name__ == "__main__":
     unittest.main()

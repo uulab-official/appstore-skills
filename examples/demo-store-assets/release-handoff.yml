@@ -9,6 +9,7 @@ handoff:
   provider_mode: opt-in-read-only
   evidence_max_age_days: null
   require_current_revision: false
+  require_scope_coverage: false
   provider_file: skills/app-store-assets/references/evidence-providers.yml
   providers:
     - build-record

@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 from datetime import datetime, timedelta, timezone
+from itertools import product
 import json
 from pathlib import Path
 import re
@@ -161,6 +162,48 @@ def device_family_matches(recorded: str, expected: list[str]) -> bool:
     return False
 
 
+def scope_coverage_missing(
+    records: list[dict[str, str]],
+    expected_platforms: list[str],
+    expected_locales: list[str],
+    expected_device_families: list[str],
+) -> list[tuple[str | None, str | None, str | None]]:
+    dimensions = (
+        ("platform", expected_platforms, platform_matches),
+        ("locale", expected_locales, locale_matches),
+        ("device_family", expected_device_families, device_family_matches),
+    )
+    if not any(values for _, values, _ in dimensions):
+        return []
+    options = [values or [None] for _, values, _ in dimensions]
+    covered: set[tuple[str | None, str | None, str | None]] = set()
+    for record in records:
+        matched: list[str | None] = []
+        valid = True
+        for field, expected, matcher in dimensions:
+            if not expected:
+                matched.append(None)
+                continue
+            recorded = record.get(field, "")
+            match = next((item for item in expected if matcher(recorded, [item])), None)
+            if match is None:
+                valid = False
+                break
+            matched.append(match)
+        if valid:
+            covered.add(tuple(matched))
+    return [combination for combination in product(*options) if combination not in covered]
+
+
+def format_scope_combination(combination: tuple[str | None, str | None, str | None]) -> str:
+    labels = ("platform", "locale", "device_family")
+    return ", ".join(
+        f"{label}={value}"
+        for label, value in zip(labels, combination)
+        if value is not None
+    )
+
+
 def current_git_revision(project_root: Path) -> str | None:
     try:
         result = subprocess.run(
@@ -271,6 +314,7 @@ def inspect_simulator(
     expected_platforms: list[str] | None = None,
     expected_locales: list[str] | None = None,
     expected_device_families: list[str] | None = None,
+    require_scope_coverage: bool = False,
 ) -> dict[str, object]:
     provider_id = provider["id"]
     evidence_path = output_root / provider["evidence_path"]
@@ -338,6 +382,19 @@ def inspect_simulator(
         )
         if stale_error:
             errors.append(stale_error)
+    if require_scope_coverage and records:
+        missing_scope = scope_coverage_missing(
+            records,
+            expected_platforms or [],
+            expected_locales or [],
+            expected_device_families or [],
+        )
+        if missing_scope:
+            preview = "; ".join(format_scope_combination(item) for item in missing_scope[:12])
+            remainder = len(missing_scope) - 12
+            if remainder > 0:
+                preview += f"; ... and {remainder} more"
+            errors.append(f"source capture scope coverage is incomplete (missing: {preview})")
     if errors:
         return result(provider_id, "simulator", "blocked", "; ".join(errors))
     return result(
@@ -359,6 +416,7 @@ def inspect_provider(
     expected_platforms: list[str] | None = None,
     expected_locales: list[str] | None = None,
     expected_device_families: list[str] | None = None,
+    require_scope_coverage: bool = False,
 ) -> dict[str, object]:
     provider_file = provider_file.resolve()
     registry_errors = validate_provider_registry(provider_file)
@@ -387,6 +445,7 @@ def inspect_provider(
         expected_platforms=expected_platforms,
         expected_locales=expected_locales,
         expected_device_families=expected_device_families,
+        require_scope_coverage=require_scope_coverage,
     )
 
 
@@ -431,6 +490,11 @@ def main() -> int:
         default=[],
         help="Optionally require source captures to match one requested device family.",
     )
+    parser.add_argument(
+        "--require-scope-coverage",
+        action="store_true",
+        help="Require source captures for every requested platform/locale/device-family combination.",
+    )
     parser.add_argument("--format", choices=("summary", "json"), default="summary")
     parser.add_argument("--fail-on-blocked", action="store_true")
     args = parser.parse_args()
@@ -444,6 +508,9 @@ def main() -> int:
     if args.max_age_days is not None and args.max_age_days < 0:
         print("--max-age-days must be zero or greater", file=sys.stderr)
         return 2
+    if args.require_scope_coverage and not (args.platform or args.locale or args.device_family):
+        print("--require-scope-coverage requires at least one scope flag", file=sys.stderr)
+        return 2
 
     results = [
         inspect_provider(
@@ -456,6 +523,7 @@ def main() -> int:
             expected_platforms=args.platform,
             expected_locales=args.locale,
             expected_device_families=args.device_family,
+            require_scope_coverage=args.require_scope_coverage,
         )
         for provider_id in args.provider
     ]

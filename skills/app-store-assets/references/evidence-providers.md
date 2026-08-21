@@ -62,6 +62,7 @@ python scripts/inspect_evidence_providers.py \
   --platform apple \
   --locale en-US \
   --device-family iphone \
+  --require-scope-coverage \
   --provider build-record \
   --provider simulator-source-captures \
   --format summary
@@ -89,3 +90,6 @@ normalized (`en_US` and `en-US` are equivalent), but locale scope is never
 inferred. Use `--device-family` to require a named capture family such as
 `iphone`, `ipad`, `android-phone`, or `android-tablet`; documented aliases such
 as `ios-phone` are normalized, while device-family scope is also never inferred.
+Add `--require-scope-coverage` when every requested platform × locale × device
+family combination must have a source capture. This stricter check is opt-in;
+without it, each capture only needs to match at least one requested value.

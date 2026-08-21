@@ -174,6 +174,7 @@ class PrepareReleaseHandoffTests(unittest.TestCase):
             self.assertIn("locales: []", result.stdout)
             self.assertIn("device_families: []", result.stdout)
             self.assertIn("require_current_revision: false", result.stdout)
+            self.assertIn("require_scope_coverage: false", result.stdout)
             self.assertEqual(result.stdout.count('provider_mode: "opt-in-read-only"'), 1)
             self.assertEqual(result.stdout.count("provider_file:"), 1)
 
@@ -475,6 +476,31 @@ class PrepareReleaseHandoffTests(unittest.TestCase):
             self.assertEqual(matching.returncode, 0, matching.stderr)
             self.assertIn("Release handoff: pending_approval", matching.stdout)
             self.assertIn("pass: simulator-captures — provider simulator-source-captures", matching.stdout)
+
+    def test_scope_coverage_is_forwarded_to_source_capture_checks(self) -> None:
+        with TemporaryDirectory() as directory:
+            project = Path(directory) / "app"
+            output = project / "store-assets"
+            project.mkdir()
+            output.mkdir()
+            (project / "package.json").write_text("{}\n", encoding="utf-8")
+            create_output(output, with_evidence=True, with_capture=True)
+
+            result = self.run_script(
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--locale", "en-US",
+                "--locale", "ko-KR",
+                "--require-scope-coverage",
+                "--provider", "simulator-source-captures",
+                "--format", "summary",
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn("Release handoff: blocked", result.stdout)
+            self.assertIn("Scope coverage: required", result.stdout)
+            self.assertIn("source capture scope coverage is incomplete", result.stdout)
+            self.assertIn("Add source captures for every requested platform, locale, and device-family scope", result.stdout)
 
 
 if __name__ == "__main__":

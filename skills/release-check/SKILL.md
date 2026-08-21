@@ -118,6 +118,9 @@ locale separators are normalized, but omitted locale scope must not be inferred.
 Pass `--device-family` values to bind source captures to a named device family;
 documented aliases are normalized, but omitted device-family scope must not be
 inferred.
+Use `--require-scope-coverage` when every requested platform, locale, and
+device-family combination must be represented by a source capture; this stricter
+coverage gate is opt-in.
 For optional policy, accessibility, and privacy review, read
 [`references/review-adapters.md`](references/review-adapters.md) and select
 only the adapters that have a designated reviewer and evidence path.

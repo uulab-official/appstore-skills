@@ -109,6 +109,7 @@ python scripts/prepare_release_handoff.py \
   --platform google-play \
   --locale en-US \
   --device-family iphone \
+  --require-scope-coverage \
   --provider-file ./store-assets/evidence-providers.yml \
   --provider build-record \
   --provider simulator-source-captures \
@@ -136,3 +137,5 @@ Add `--locale` when source captures must correspond to a specific localized
 listing; locale separators such as `en_US` and `en-US` are normalized.
 Add `--device-family` when captures must correspond to a named iPhone, iPad,
 or Android device family; no family is inferred when omitted.
+Add `--require-scope-coverage` when every requested platform/locale/device
+family combination must have a source capture.

@@ -110,6 +110,8 @@ changes.
 - When requested device families are supplied, source captures must match the
   declared family; an omitted device-family scope must never be treated as
   implicit coverage for every device surface.
+- When scope coverage is enabled, every requested platform × locale × device
+  family combination must have a source capture; partial coverage must block.
 
 ## Skill acceptance criteria
 
