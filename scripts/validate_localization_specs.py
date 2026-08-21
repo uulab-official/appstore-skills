@@ -15,6 +15,8 @@ LOCALE_LINE = re.compile(r"^\s{4}-\s+code:\s*(.*?)\s*$")
 LOCALE_FIELD_LINE = re.compile(r"^\s{6}([a-z][a-z0-9_-]*):\s*(.*?)\s*$")
 ENTRY_LINE = re.compile(r"^\s{4}-\s+id:\s*(.*?)\s*$")
 ENTRY_FIELD_LINE = re.compile(r"^\s{6}([a-z][a-z0-9_-]*):\s*(.*?)\s*$")
+COPY_FIELD_LINE = re.compile(r"^(\s{0,2})([a-z][a-z0-9_-]*):\s*(.*?)\s*$")
+COPY_PLATFORM_SECTIONS = {"apple", "google_play"}
 
 
 def unquote(value: str) -> str:
@@ -105,6 +107,23 @@ def copy_metadata(text: str) -> dict[str, str]:
     return values
 
 
+def copy_platform_fields(text: str) -> set[str]:
+    fields: set[str] = set()
+    current_section: str | None = None
+    for line in text.splitlines():
+        match = COPY_FIELD_LINE.match(line)
+        if not match:
+            continue
+        indentation, key, _ = match.groups()
+        if len(indentation) == 0:
+            current_section = key
+            if key in COPY_PLATFORM_SECTIONS:
+                fields.add(key)
+        elif len(indentation) == 2 and current_section in COPY_PLATFORM_SECTIONS:
+            fields.add(f"{current_section}.{key}")
+    return fields
+
+
 def validate(
     plan_path: Path,
     glossary_path: Path,
@@ -143,6 +162,8 @@ def validate(
         errors.append(f"{plan_path}: locale codes must be unique")
 
     copy_texts: dict[str, str] = {}
+    copy_paths: dict[str, Path] = {}
+    copy_platform_field_sets: dict[str, set[str]] = {}
     for locale in locales:
         code = str(locale.get("code", ""))
         prefix = f"{plan_path}: locale {code or '<unnamed>'}"
@@ -158,6 +179,8 @@ def validate(
             continue
         text = copy_path.read_text(encoding="utf-8")
         copy_texts[code] = text
+        copy_paths[code] = copy_path
+        copy_platform_field_sets[code] = copy_platform_fields(text)
         metadata = copy_metadata(text)
         if metadata.get("schema_version") != "1":
             errors.append(f"{copy_path}: must declare schema_version: 1")
@@ -165,6 +188,24 @@ def validate(
             errors.append(f"{copy_path}: locale must be {code}")
         if metadata.get("status") not in ALLOWED_COPY_STATUSES:
             errors.append(f"{copy_path}: unsupported copy status")
+
+    source_platform_fields = copy_platform_field_sets.get(source_locale, set())
+    if source_platform_fields:
+        for code, platform_fields in copy_platform_field_sets.items():
+            if code == source_locale:
+                continue
+            missing_fields = sorted(source_platform_fields - platform_fields)
+            extra_fields = sorted(platform_fields - source_platform_fields)
+            if missing_fields:
+                errors.append(
+                    f"{copy_paths[code]}: "
+                    f"missing platform copy fields from {source_locale}: {', '.join(missing_fields)}"
+                )
+            if extra_fields:
+                errors.append(
+                    f"{copy_paths[code]}: "
+                    f"unexpected platform copy fields relative to {source_locale}: {', '.join(extra_fields)}"
+                )
 
     seen_ids: set[str] = set()
     for entry in entries:

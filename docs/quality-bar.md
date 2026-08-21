@@ -70,6 +70,8 @@ changes.
 
 - Preserve the source meaning, claim strength, legal conditions, and product
   terminology.
+- Keep every target locale's Apple and Google Play metadata fields aligned with
+  the source locale; missing or untracked platform fields must block validation.
 - Recompose visual assets for text expansion, RTL layout, and localized UI.
 - Require the designated or native reviewer before marking a locale verified.
 

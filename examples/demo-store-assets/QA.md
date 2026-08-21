@@ -73,7 +73,8 @@
 - The provider registry snapshot is kept in the demo package so the exact
   read-only checks used by the handoff are inspectable.
 - The localization plan includes en-US source copy and a ko-KR review draft;
-  the terminology validator confirms required mappings and forbidden terms.
+  the terminology validator confirms required mappings, forbidden terms, and
+  matching Apple and Google Play field structure.
 - The copy experiment records two reversible variants, hypotheses, manual
   measurement, and an append-only review history; both approvals remain
   `pending`.

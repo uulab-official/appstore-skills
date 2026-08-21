@@ -18,6 +18,8 @@ The check verifies:
 
 - every planned locale has an existing copy file with a matching `locale`
 - the source locale is present exactly once
+- every target copy preserves the source locale's Apple and Google Play field
+  structure, with no silently missing or untracked platform fields
 - every glossary entry has a status, source term, and mapping for every locale
 - required localized terms occur in the corresponding copy file
 - `do_not_use` terms do not occur in the copy file

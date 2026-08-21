@@ -96,8 +96,9 @@ full checklist.
 For repeatable locale and terminology checks, read
 [references/localization-contract.md](references/localization-contract.md) and
 run `scripts/validate_localization_specs.py` against the plan, glossary, and
-package root. This check preserves `review` until a designated or native
-reviewer confirms the localized result.
+package root. This check also keeps every target locale's Apple and Google Play
+field structure aligned with the source locale. It preserves `review` until a
+designated or native reviewer confirms the localized result.
 
 ## Guardrails
 

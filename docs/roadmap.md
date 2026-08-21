@@ -103,7 +103,7 @@ reviewable commits.
 
 ## Longer term
 
-- More localization and terminology tooling
+- Localized copy field-parity checks across Apple and Google Play metadata
 - Project-facts provider for project-specific, user-approved product evidence
 
 ## Scope rule
