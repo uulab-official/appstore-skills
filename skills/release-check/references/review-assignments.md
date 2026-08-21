@@ -4,10 +4,14 @@
 checks. It is a small, reviewable record for who is expected to inspect a
 package, what decision each reviewer has made, and when the record changed.
 
-Each required reviewer remains `pending` until a named person is assigned and
-records a terminal decision with an ISO-8601 timestamp and evidence reference.
-The validator accepts pending records with empty assignment fields so an
-unassigned package is visible rather than falsely marked complete.
+Each reviewer must declare a non-empty `scope`, such as `privacy-disclosure`
+or `localized-store-copy`, before assignment. A required reviewer remains
+`pending` until a named person is assigned and records a terminal decision
+with an ISO-8601 timestamp and one or more evidence references. Evidence
+references can be ticket IDs, document paths, or other project-owned
+traceability links; the contract does not dereference or upload them. The
+validator accepts pending records with empty assignment and evidence fields so
+an unassigned package is visible rather than falsely marked complete.
 
 Supported reviewer states are `pending`, `in_review`, `approved`, `blocked`,
 and `not_applicable`. An assignment can only be `approved` when every required
@@ -24,5 +28,6 @@ python scripts/validate_review_assignments.py \
 
 The handoff generator automatically reads `review-assignment.yml` from the
 package root when it exists and renders the assignment state, reviewer rows,
-and history event count. This is informational only: it does not assign a
-person, approve a reviewer, send a notification, or publish a package.
+scope, evidence references, and history event count. This is informational
+only: it does not assign a person, approve a reviewer, send a notification, or
+publish a package.

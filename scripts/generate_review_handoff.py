@@ -309,11 +309,13 @@ def render_markdown(summary: dict[str, object]) -> str:
                 "role": str(item.get("role", "")),
                 "required": str(item.get("required", "")),
                 "status": str(item.get("status", "")),
+                "scope": ", ".join(str(scope) for scope in item.get("scope", [])) or "not declared",
                 "assigned_to": str(item.get("assigned_to", "")),
                 "decision": str(item.get("decision", "")),
+                "evidence": ", ".join(str(evidence) for evidence in item.get("evidence", [])) or "none",
             }
             for item in reviewers
-        ], ("id", "role", "required", "status", "assigned_to", "decision"))])
+        ], ("id", "role", "required", "scope", "status", "assigned_to", "decision", "evidence"))])
     for heading, key in (("Blockers", "blockers"), ("Warnings", "warnings")):
         lines.extend(["", f"## {heading}", ""])
         values = summary[key]

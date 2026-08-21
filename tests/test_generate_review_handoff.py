@@ -27,6 +27,8 @@ class GenerateReviewHandoffTests(unittest.TestCase):
         self.assertIn("review_status: blocked", result.stdout)
         self.assertIn("Baseline: `not-supplied`", result.stdout)
         self.assertIn("## Reviewer assignment", result.stdout)
+        self.assertIn("product-claims, metadata, visual-assets", result.stdout)
+        self.assertIn("evidence", result.stdout)
         self.assertIn("Reviewer assignment is pending", result.stdout)
         self.assertIn("publish_status` is permanently `not-run`", result.stdout)
 

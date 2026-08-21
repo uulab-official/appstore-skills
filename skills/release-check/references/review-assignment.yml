@@ -9,6 +9,7 @@ review_assignment:
       role: product
       required: true
       status: pending
+      scope: [product-claims, metadata, visual-assets]
       assigned_to: ""
       assigned_at: ""
       decision: pending
@@ -19,6 +20,7 @@ review_assignment:
       role: localization
       required: true
       status: pending
+      scope: [localized-store-copy, terminology, localized-layout]
       assigned_to: ""
       assigned_at: ""
       decision: pending
@@ -29,6 +31,7 @@ review_assignment:
       role: privacy
       required: true
       status: pending
+      scope: [data-collection, disclosures, permissions]
       assigned_to: ""
       assigned_at: ""
       decision: pending

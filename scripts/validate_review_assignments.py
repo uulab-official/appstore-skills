@@ -74,7 +74,7 @@ def parse_assignment(text: str) -> tuple[dict[str, str], list[dict[str, object]]
                 item_match = ITEM_FIELD_LINE.match(line)
                 if item_match:
                     key, value = item_match.groups()
-                    current_reviewer[key] = parse_list(value) if key == "evidence" else unquote(value)
+                    current_reviewer[key] = parse_list(value) if key in {"scope", "evidence"} else unquote(value)
         elif section == "history":
             history_match = HISTORY_LINE.match(line)
             if history_match:
@@ -136,7 +136,7 @@ def validate(path: Path) -> list[str]:
         if reviewer_id in seen_ids:
             errors.append(f"{prefix}: duplicate id")
         seen_ids.add(reviewer_id)
-        for key in ("role", "required", "status", "assigned_to", "assigned_at", "decision", "decided_at", "evidence", "notes"):
+        for key in ("role", "required", "status", "scope", "assigned_to", "assigned_at", "decision", "decided_at", "evidence", "notes"):
             if key not in reviewer:
                 errors.append(f"{prefix}.{key} is required")
         required = str(reviewer.get("required", ""))
@@ -151,9 +151,16 @@ def validate(path: Path) -> list[str]:
             approved_required_count += 1
         if status == "blocked":
             blocked_count += 1
+        scope = reviewer.get("scope", [])
+        if not isinstance(scope, list) or not scope or any(not str(item).strip() for item in scope):
+            errors.append(f"{prefix}.scope must be a non-empty list")
+        elif len(set(str(item) for item in scope)) != len(scope):
+            errors.append(f"{prefix}.scope must not contain duplicates")
         evidence = reviewer.get("evidence", [])
         if not isinstance(evidence, list):
             errors.append(f"{prefix}.evidence must be a list")
+        elif any(not str(item).strip() for item in evidence):
+            errors.append(f"{prefix}.evidence must not contain blank references")
         if status in TERMINAL_REVIEWER_STATUSES:
             if not str(reviewer.get("assigned_to", "")).strip():
                 errors.append(f"{prefix}: terminal reviewer decision requires assigned_to")
@@ -204,8 +211,10 @@ def summarize(path: Path) -> dict[str, object]:
             "role": str(item.get("role", "")),
             "required": str(item.get("required", "")),
             "status": str(item.get("status", "")),
+            "scope": [str(scope) for scope in item.get("scope", [])] if isinstance(item.get("scope", []), list) else [],
             "assigned_to": str(item.get("assigned_to", "")) or "not assigned",
             "decision": str(item.get("decision", "")),
+            "evidence": [str(evidence) for evidence in item.get("evidence", [])] if isinstance(item.get("evidence", []), list) else [],
         }
         for item in reviewers
     ]

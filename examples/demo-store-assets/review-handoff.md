@@ -101,11 +101,11 @@ This is a read-only reviewer aid. It does not approve, submit, upload, publish, 
 - Owner: `not assigned`
 - History events: `1`
 
-| id | role | required | status | assigned_to | decision |
-| --- | --- | --- | --- | --- | --- |
-| product-owner | product | true | pending | not assigned | pending |
-| native-locale-reviewer | localization | true | pending | not assigned | pending |
-| privacy-reviewer | privacy | true | pending | not assigned | pending |
+| id | role | required | scope | status | assigned_to | decision | evidence |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| product-owner | product | true | product-claims, metadata, visual-assets | pending | not assigned | pending | none |
+| native-locale-reviewer | localization | true | localized-store-copy, terminology, localized-layout | pending | not assigned | pending | none |
+| privacy-reviewer | privacy | true | data-collection, disclosures, permissions | pending | not assigned | pending | none |
 
 ## Blockers
 

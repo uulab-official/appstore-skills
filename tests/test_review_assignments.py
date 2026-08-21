@@ -39,6 +39,7 @@ review_assignment:
       role: product
       required: true
       status: approved
+      scope: [claims]
       assigned_to: Product owner
       assigned_at: 2026-08-21T10:00:00Z
       decision: approved
@@ -60,6 +61,43 @@ review_assignment:
             self.assertEqual(result.returncode, 1)
             self.assertIn("terminal reviewer decision requires evidence", result.stdout)
 
+    def test_reviewer_scope_is_required_even_before_assignment(self) -> None:
+        with TemporaryDirectory() as directory:
+            path = Path(directory) / "review-assignment.yml"
+            path.write_text(
+                """schema_version: 1
+review_assignment:
+  id: example
+  package: example
+  status: pending
+  owner: ""
+  reviewers:
+    - id: owner
+      role: product
+      required: true
+      status: pending
+      scope: []
+      assigned_to: ""
+      assigned_at: ""
+      decision: pending
+      decided_at: ""
+      evidence: []
+      notes: waiting
+  history:
+    - at: 2026-08-21T10:00:00Z
+      action: created
+      actor: owner
+      reviewer: owner
+      note: created
+""",
+                encoding="utf-8",
+            )
+
+            result = self.run_validator(path)
+
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("scope must be a non-empty list", result.stdout)
+
     def test_history_must_be_chronological(self) -> None:
         with TemporaryDirectory() as directory:
             path = Path(directory) / "review-assignment.yml"
@@ -75,6 +113,7 @@ review_assignment:
       role: product
       required: true
       status: pending
+      scope: [claims]
       assigned_to: ""
       assigned_at: ""
       decision: pending

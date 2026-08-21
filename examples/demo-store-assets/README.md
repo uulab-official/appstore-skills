@@ -55,8 +55,9 @@ The optional policy, accessibility, and privacy adapters are registered in
 pass.
 
 `review-assignment.yml` keeps required reviewers, assignment state, and
-decision history visible. Its unassigned reviewers intentionally keep the demo
-in `pending` review state.
+decision history visible. Each reviewer declares a scope before assignment;
+terminal decisions must include evidence references. Its unassigned reviewers
+intentionally keep the demo in `pending` review state.
 
 Run the deterministic package check from the repository root:
 
