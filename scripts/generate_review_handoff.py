@@ -193,6 +193,7 @@ def build_summary(
     adapters: list[str] | None = None,
     assignment_file: Path | None = None,
     previous_assignment_file: Path | None = None,
+    max_evidence_age_days: int | None = None,
 ) -> dict[str, object]:
     manifest_path = package_root / "manifest.yml"
     blockers: list[str] = []
@@ -232,6 +233,7 @@ def build_summary(
                 package_root,
                 selected_adapter_file,
                 assignment_file=assignment_for_adapters,
+                max_age_days=max_evidence_age_days,
             )
             for adapter_id in selected_adapters
         ]
@@ -313,6 +315,7 @@ def build_summary(
         "approval_status": approval,
         "approval_detail": approval_detail,
         "publish_status": "not-run",
+        "evidence_max_age_days": max_evidence_age_days,
         "asset_counts": dict(sorted(status_counts.items())),
         "assets_total": len(current_records),
         "changes": changes,
@@ -375,6 +378,11 @@ def render_markdown(summary: dict[str, object]) -> str:
     adapters = summary["review_adapters"]
     assert isinstance(adapters, list)
     if adapters:
+        if summary.get("evidence_max_age_days") is not None:
+            lines.append(
+                f"Evidence max age: `{summary['evidence_max_age_days']} days` (terminal records only)"
+            )
+            lines.append("")
         lines.extend(
             markdown_table(
                 [
@@ -478,6 +486,11 @@ def main() -> int:
     parser.add_argument("--adapter", action="append", default=[])
     parser.add_argument("--assignment-file", type=Path)
     parser.add_argument("--previous-assignment-file", type=Path)
+    parser.add_argument(
+        "--max-evidence-age-days",
+        type=int,
+        help="Optionally block selected terminal adapter evidence older than this many days.",
+    )
     parser.add_argument("--format", choices=("markdown", "json"), default="markdown")
     parser.add_argument("--output", type=Path)
     parser.add_argument("--overwrite", action="store_true")
@@ -492,6 +505,9 @@ def main() -> int:
     if args.previous_assignment_file and not args.previous_assignment_file.is_file():
         print(f"Previous assignment file does not exist: {args.previous_assignment_file}", file=sys.stderr)
         return 2
+    if args.max_evidence_age_days is not None and args.max_evidence_age_days < 0:
+        print("--max-evidence-age-days must be zero or greater", file=sys.stderr)
+        return 2
     summary = build_summary(
         args.package_root.resolve(),
         args.previous_package_root.resolve() if args.previous_package_root else None,
@@ -499,6 +515,7 @@ def main() -> int:
         adapters=args.adapter,
         assignment_file=args.assignment_file.resolve() if args.assignment_file else None,
         previous_assignment_file=args.previous_assignment_file.resolve() if args.previous_assignment_file else None,
+        max_evidence_age_days=args.max_evidence_age_days,
     )
     rendered = render_markdown(summary) if args.format == "markdown" else json.dumps(summary, indent=2, ensure_ascii=False)
     rendered += "\n" if not rendered.endswith("\n") else ""

@@ -92,7 +92,9 @@ changes.
   instead of hiding it. Any selected evidence provider must be explicitly
   opt-in, read-only, and backed by a registry with `side_effects: none`.
 - Policy and accessibility adapters may report `pending`, `pass`, or `blocked`,
-  but must never infer human approval or legal/accessibility compliance.
+  but must never infer human approval or legal/accessibility compliance. When
+  freshness is enabled, stale or future-dated terminal evidence must remain
+  blocked rather than being treated as current.
 
 ## Skill acceptance criteria
 

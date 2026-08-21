@@ -152,6 +152,7 @@ validation tooling:
 - diff-friendly reviewer handoff summaries with manifest and reviewer-assignment baselines
 - opt-in policy, accessibility, and privacy review adapters with pending-visible states
 - terminal adapter evidence cross-checked against assigned reviewer coverage
+- opt-in freshness gates for terminal adapter evidence in review handoffs
 - reviewer assignment records with reviewer scopes, adapter coverage, deterministic status, evidence references, and chronological decision history
 
 The repository also includes deterministic, dependency-free checks for skill
@@ -184,6 +185,7 @@ python scripts/generate_review_handoff.py \
   --adapter policy-review \
   --adapter accessibility-review \
   --adapter privacy-review \
+  --max-evidence-age-days 30 \
   --output ./store-assets/review-handoff.md
 python scripts/validate_review_adapter_specs.py \
   skills/release-check/references/review-adapters.yml

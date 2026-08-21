@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 import argparse
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 import json
 from pathlib import Path
 import re
@@ -70,12 +70,12 @@ def read_review(path: Path) -> tuple[dict[str, object], list[str]]:
     return values, errors
 
 
-def valid_timestamp(value: str) -> bool:
+def parse_timestamp(value: str) -> datetime | None:
     try:
-        datetime.fromisoformat(value.strip().replace("Z", "+00:00"))
+        parsed = datetime.fromisoformat(value.strip().replace("Z", "+00:00"))
     except ValueError:
-        return False
-    return True
+        return None
+    return parsed.replace(tzinfo=timezone.utc) if parsed.tzinfo is None else parsed
 
 
 def inspect_adapter(
@@ -83,6 +83,7 @@ def inspect_adapter(
     output_root: Path,
     adapter_file: Path,
     assignment_file: Path | None = None,
+    max_age_days: int | None = None,
 ) -> dict[str, object]:
     registry_errors = validate_registry(adapter_file)
     if registry_errors:
@@ -106,8 +107,15 @@ def inspect_adapter(
     if status in {"pass", "block"}:
         if not str(values.get("reviewer", "")).strip():
             errors.append("terminal review requires reviewer")
-        if not valid_timestamp(str(values.get("reviewed_at", ""))):
+        reviewed_at = parse_timestamp(str(values.get("reviewed_at", "")))
+        if reviewed_at is None:
             errors.append("terminal review requires ISO-8601 reviewed_at")
+        elif max_age_days is not None:
+            age = datetime.now(timezone.utc) - reviewed_at
+            if age.total_seconds() < 0:
+                errors.append("terminal review reviewed_at cannot be in the future")
+            elif age > timedelta(days=max_age_days):
+                errors.append(f"terminal review is older than max age ({max_age_days} days)")
         if not isinstance(values.get("evidence"), list) or not values["evidence"]:
             errors.append("terminal review requires evidence")
         if assignment_file is not None and not errors:
@@ -139,6 +147,11 @@ def main() -> int:
     parser.add_argument("--project-root", type=Path, required=True)
     parser.add_argument("--output-root", type=Path, required=True)
     parser.add_argument("--assignment-file", type=Path)
+    parser.add_argument(
+        "--max-age-days",
+        type=int,
+        help="Optionally block terminal evidence older than this many days.",
+    )
     parser.add_argument("--adapter", action="append", required=True)
     parser.add_argument("--format", choices=("summary", "json"), default="summary")
     parser.add_argument("--fail-on-blocked", action="store_true")
@@ -150,13 +163,22 @@ def main() -> int:
     if not args.output_root.is_dir():
         print(f"Output root does not exist: {args.output_root}", file=sys.stderr)
         return 2
+    if args.max_age_days is not None and args.max_age_days < 0:
+        print("--max-age-days must be zero or greater", file=sys.stderr)
+        return 2
     if args.assignment_file and not args.assignment_file.is_file():
         print(f"Assignment file does not exist: {args.assignment_file}", file=sys.stderr)
         return 2
     adapter_file = args.adapter_file.resolve()
     assignment_file = args.assignment_file.resolve() if args.assignment_file else None
     results = [
-        inspect_adapter(adapter_id, args.output_root.resolve(), adapter_file, assignment_file=assignment_file)
+        inspect_adapter(
+            adapter_id,
+            args.output_root.resolve(),
+            adapter_file,
+            assignment_file=assignment_file,
+            max_age_days=args.max_age_days,
+        )
         for adapter_id in args.adapter
     ]
     if args.format == "json":

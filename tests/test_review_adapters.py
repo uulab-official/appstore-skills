@@ -198,6 +198,88 @@ review:
             self.assertEqual(blocked.returncode, 1)
             self.assertIn("terminal review reviewer is not assigned", blocked.stdout)
 
+    def test_stale_terminal_evidence_can_gate(self) -> None:
+        with TemporaryDirectory() as directory:
+            project = Path(directory) / "app"
+            output = project / "store-assets"
+            evidence = output / "evidence"
+            project.mkdir()
+            evidence.mkdir(parents=True)
+            (evidence / "policy-review.yml").write_text(
+                """schema_version: 1
+review:
+  status: pass
+  reviewer: Product reviewer
+  scope: [claims]
+  reviewed_at: 2000-01-01T00:00:00Z
+  evidence: [old-review-ticket]
+  notes: reviewed
+""",
+                encoding="utf-8",
+            )
+
+            result = self.run_inspector(
+                "--adapter-file", str(REGISTRY),
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--adapter", "policy-review",
+                "--max-age-days", "30",
+                "--fail-on-blocked",
+            )
+
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("older than max age (30 days)", result.stdout)
+
+    def test_negative_max_age_is_rejected(self) -> None:
+        with TemporaryDirectory() as directory:
+            project = Path(directory) / "app"
+            output = project / "store-assets"
+            project.mkdir()
+            output.mkdir()
+
+            result = self.run_inspector(
+                "--adapter-file", str(REGISTRY),
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--adapter", "policy-review",
+                "--max-age-days", "-1",
+            )
+
+            self.assertEqual(result.returncode, 2)
+            self.assertIn("must be zero or greater", result.stderr)
+
+    def test_future_terminal_evidence_can_gate(self) -> None:
+        with TemporaryDirectory() as directory:
+            project = Path(directory) / "app"
+            output = project / "store-assets"
+            evidence = output / "evidence"
+            project.mkdir()
+            evidence.mkdir(parents=True)
+            (evidence / "policy-review.yml").write_text(
+                """schema_version: 1
+review:
+  status: pass
+  reviewer: Product reviewer
+  scope: [claims]
+  reviewed_at: 2999-01-01T00:00:00Z
+  evidence: [future-review-ticket]
+  notes: reviewed
+""",
+                encoding="utf-8",
+            )
+
+            result = self.run_inspector(
+                "--adapter-file", str(REGISTRY),
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--adapter", "policy-review",
+                "--max-age-days", "30",
+                "--fail-on-blocked",
+            )
+
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("reviewed_at cannot be in the future", result.stdout)
+
     def test_invalid_terminal_record_can_gate(self) -> None:
         with TemporaryDirectory() as directory:
             project = Path(directory) / "app"

@@ -49,6 +49,50 @@ class GenerateReviewHandoffTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("policy-review | covered | product-owner (pending)", result.stdout)
 
+    def test_evidence_age_gate_is_forwarded_to_selected_adapters(self) -> None:
+        with TemporaryDirectory() as directory:
+            package = Path(directory) / "package"
+            evidence = package / "evidence"
+            package.mkdir()
+            evidence.mkdir()
+            (package / "manifest.yml").write_text(
+                "schema_version: 1\nassets:\n  - path: icon.png\n    status: review\n    kind: app-icon\n",
+                encoding="utf-8",
+            )
+            (evidence / "policy-review.yml").write_text(
+                """schema_version: 1
+review:
+  status: pass
+  reviewer: Product reviewer
+  scope: [claims]
+  reviewed_at: 2000-01-01T00:00:00Z
+  evidence: [old-review-ticket]
+  notes: reviewed
+""",
+                encoding="utf-8",
+            )
+
+            result = self.run_script(
+                "--package-root", str(package),
+                "--adapter", "policy-review",
+                "--max-evidence-age-days", "30",
+                "--format", "json",
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            summary = json.loads(result.stdout)
+            self.assertEqual(summary["evidence_max_age_days"], 30)
+            self.assertTrue(any("older than max age (30 days)" in blocker for blocker in summary["blockers"]))
+
+    def test_negative_evidence_age_is_rejected(self) -> None:
+        result = self.run_script(
+            "--package-root", str(DEMO),
+            "--max-evidence-age-days", "-1",
+        )
+
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("must be zero or greater", result.stderr)
+
     def test_previous_manifest_reports_added_removed_and_changed(self) -> None:
         with TemporaryDirectory() as directory:
             root = Path(directory)

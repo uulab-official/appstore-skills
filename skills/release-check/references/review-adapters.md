@@ -30,6 +30,7 @@ python scripts/inspect_review_adapters.py \
   --assignment-file ./store-assets/review-assignment.yml \
   --project-root ./my-app \
   --output-root ./store-assets \
+  --max-age-days 30 \
   --adapter policy-review \
   --adapter accessibility-review \
   --adapter privacy-review
@@ -40,5 +41,9 @@ The default is informational. Use `--fail-on-pending` or
 When `--assignment-file` is supplied, terminal evidence must name a reviewer
 who is assigned to and covers the selected adapter. Missing or mismatched
 ownership is blocked; pending records remain pending.
+`--max-age-days` is optional and applies only to terminal `pass`/`block`
+records. It blocks evidence older than the configured age and also blocks a
+future `reviewed_at` timestamp; pending records are not aged out. The default
+does not enforce freshness.
 The adapters never run scanners, open a simulator, call a store API, upload,
 publish, or approve on behalf of a reviewer.

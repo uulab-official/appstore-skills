@@ -89,6 +89,8 @@ reviewable commits.
 - Baseline-aware reviewer assignment deltas for status, ownership, scope,
   evidence, and history changes
 - Review-adapter coverage matrices that expose unowned selected checks
+- Opt-in freshness gates for terminal review evidence, with future timestamps
+  treated as invalid
 - Optional project-owned evidence integrations that remain user-approved and
   read-only
 

@@ -94,6 +94,7 @@ python scripts/generate_review_handoff.py \
   --adapter policy-review \
   --adapter accessibility-review \
   --adapter privacy-review \
+  --max-evidence-age-days 30 \
   --output ./store-assets/review-handoff.md
 python scripts/validate_review_assignments.py \
   --adapter-file ./skills/release-check/references/review-adapters.yml \
@@ -117,4 +118,6 @@ use `--fail-on-blockers` when a workflow should gate on unresolved blockers.
 The release handoff command is also informational by default and never runs a
 build, simulator, upload, or publish action; use `--fail-on-blocked` only when
 that gate is intentional. Use `--fail-on-pending-approval` when CI must have an
-explicit human decision record.
+explicit human decision record. Add `--max-evidence-age-days` when a project
+needs terminal policy, accessibility, or privacy evidence to be refreshed on a
+defined cadence; this gate is opt-in.
