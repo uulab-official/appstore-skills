@@ -45,7 +45,8 @@ source with a placeholder.
 
 Keep release handoff code read-only by default. Tests must demonstrate that it
 does not invoke build, simulator, upload, or publish commands, and that
-`publish_status` remains `not-run`.
+`publish_status` remains `not-run`. A pending, rejected, or expired approval
+must not be bypassed by technical checks.
 
 Release reports can be surfaced in pull requests with
 `annotate_release_report.py`; keep blocker and warning annotations factual and

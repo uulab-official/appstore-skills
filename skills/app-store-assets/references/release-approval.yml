@@ -1,0 +1,14 @@
+schema_version: 1
+approval:
+  status: pending
+  owner: ""
+  scope:
+    - icon
+    - screenshots
+    - promotional
+    - feature-graphic
+    - metadata
+  decision: ""
+  decided_at: ""
+  evidence: []
+  notes: Explicit product-owner approval is required before a handoff can proceed.

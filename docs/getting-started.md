@@ -79,9 +79,11 @@ python scripts/validate_store_output.py ./store-assets
 python scripts/annotate_release_report.py ./store-assets/release-report.md
 python scripts/validate_adapter_specs.py ./store-assets/platform-adapters.yml
 python scripts/validate_evidence_specs.py ./store-assets/evidence-adapters.yml
+python scripts/validate_release_approval.py ./store-assets/release-approval.yml
 python scripts/prepare_release_handoff.py \
   --project-root ./my-app \
   --output-root ./store-assets \
+  --approval-file ./store-assets/release-approval.yml \
   --format summary
 ```
 
@@ -90,4 +92,5 @@ pull-request annotations. The annotation command is informational by default;
 use `--fail-on-blockers` when a workflow should gate on unresolved blockers.
 The release handoff command is also informational by default and never runs a
 build, simulator, upload, or publish action; use `--fail-on-blocked` only when
-that gate is intentional.
+that gate is intentional. Use `--fail-on-pending-approval` when CI must have an
+explicit human decision record.

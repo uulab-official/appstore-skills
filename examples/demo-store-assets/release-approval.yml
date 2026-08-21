@@ -1,0 +1,14 @@
+schema_version: 1
+approval:
+  status: pending
+  owner: ""
+  scope:
+    - icon
+    - screenshots
+    - promotional
+    - feature-graphic
+    - metadata
+  decision: ""
+  decided_at: ""
+  evidence: []
+  notes: Fictional fixture; product-owner approval is intentionally pending.

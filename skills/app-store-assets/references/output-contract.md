@@ -76,6 +76,12 @@ Optionally preserve the read-only handoff result as `release-handoff.yml`.
 Keep `mode: dry-run` and `publish_status: not-run`; a handoff report is a
 review aid, not a submission or upload record.
 
+For an approval-gated handoff, preserve `release-approval.yml` beside the
+package or provide it with `--approval-file`. A `pending`, `rejected`, or
+`expired` record cannot be treated as approval. Only a valid `approved` record
+with a named owner, explicit scope, ISO-8601 decision time, and evidence can
+move a technically complete handoff to `ready_for_handoff`.
+
 ## Recommended layout
 
 ```text
@@ -95,6 +101,7 @@ store-assets/
 ├── metadata/
 │   └── store-copy.en-US.yml
 ├── locales/
+├── release-approval.yml
 ├── release-report.md
 └── QA.md
 ```

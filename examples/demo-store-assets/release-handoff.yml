@@ -6,6 +6,7 @@ handoff:
   project_root: .
   output_root: examples/demo-store-assets
   source_revision: fixture-not-applicable
+  approval_file: examples/demo-store-assets/release-approval.yml
   platforms:
     - apple
     - google-play
@@ -30,7 +31,10 @@ handoff:
     - id: release-report
       status: pass
       details: blockers, warnings, and human review state are recorded
+    - id: human-approval
+      status: pending
+      details: approval is pending for fictional demo scope
   next_actions:
     - Provide the real app project and inspected build revision.
     - Capture real iOS/Android screens under screenshots/source/.
-    - Run current platform checks and request human release approval.
+    - Record an explicit product-owner decision in release-approval.yml.

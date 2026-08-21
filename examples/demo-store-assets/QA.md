@@ -41,6 +41,8 @@
   `blocked`.
 - The release handoff was exercised in dry-run mode; it reports blockers and
   never runs a build, simulator, upload, or publish action.
+- The release approval record is explicit and remains `pending`; technical
+  checks cannot infer or bypass product-owner approval.
 - Every manifest asset exists and is non-empty.
 
 ## Blocked or review-required
@@ -59,6 +61,10 @@
   no app project, build artifact, or real device capture.
 - The handoff remains `blocked` until build identity and real source captures
   are supplied.
+- Even after those checks pass, the handoff remains `pending_approval` until
+  the approval record is completed.
+- The release approval record has no owner, decision, decision time, or
+  evidence because this fixture intentionally has no approving human.
 - Store copy is a draft and has not passed product, policy, or platform field
   review.
 

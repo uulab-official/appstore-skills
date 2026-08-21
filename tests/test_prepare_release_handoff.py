@@ -22,6 +22,43 @@ def create_output(root: Path, with_evidence: bool, with_capture: bool) -> None:
         (root / "screenshots" / "source" / "home.png").write_bytes(b"capture")
 
 
+def create_approval(root: Path, status: str = "approved") -> Path:
+    path = root / "release-approval.yml"
+    if status == "approved":
+        path.write_text(
+            """schema_version: 1
+approval:
+  status: approved
+  owner: Product Owner
+  scope:
+    - apple
+    - google-play
+  decision: approved
+  decided_at: 2026-08-21T10:00:00Z
+  evidence:
+    - review-ticket-123
+  notes: approved for handoff test
+""",
+            encoding="utf-8",
+        )
+    else:
+        path.write_text(
+            """schema_version: 1
+approval:
+  status: pending
+  owner: ""
+  scope:
+    - apple
+  decision: ""
+  decided_at: ""
+  evidence: []
+  notes: waiting
+""",
+            encoding="utf-8",
+        )
+    return path
+
+
 class PrepareReleaseHandoffTests(unittest.TestCase):
     def run_script(self, *args: str) -> subprocess.CompletedProcess[str]:
         return subprocess.run(
@@ -49,7 +86,7 @@ class PrepareReleaseHandoffTests(unittest.TestCase):
             self.assertIn("Publish: not-run", result.stdout)
             self.assertIn("simulator-captures", result.stdout)
 
-    def test_complete_evidence_is_ready_for_review(self) -> None:
+    def test_complete_evidence_waits_for_approval(self) -> None:
         with TemporaryDirectory() as directory:
             project = Path(directory) / "app"
             output = project / "store-assets"
@@ -63,8 +100,48 @@ class PrepareReleaseHandoffTests(unittest.TestCase):
             )
 
             self.assertEqual(result.returncode, 0, result.stderr)
-            self.assertIn('status: "ready_for_review"', result.stdout)
+            self.assertIn('status: "pending_approval"', result.stdout)
             self.assertIn('publish_status: "not-run"', result.stdout)
+
+    def test_approved_evidence_is_ready_for_handoff(self) -> None:
+        with TemporaryDirectory() as directory:
+            project = Path(directory) / "app"
+            output = project / "store-assets"
+            project.mkdir()
+            output.mkdir()
+            (project / "package.json").write_text("{}\n", encoding="utf-8")
+            create_output(output, with_evidence=True, with_capture=True)
+            approval = create_approval(output)
+
+            result = self.run_script(
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--approval-file", str(approval),
+                "--format", "summary",
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn("Release handoff: ready_for_handoff", result.stdout)
+            self.assertIn("pass: human-approval", result.stdout)
+
+    def test_fail_on_pending_approval_is_opt_in(self) -> None:
+        with TemporaryDirectory() as directory:
+            project = Path(directory) / "app"
+            output = project / "store-assets"
+            project.mkdir()
+            output.mkdir()
+            (project / "package.json").write_text("{}\n", encoding="utf-8")
+            create_output(output, with_evidence=True, with_capture=True)
+            approval = create_approval(output, status="pending")
+
+            result = self.run_script(
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--approval-file", str(approval),
+                "--fail-on-pending-approval",
+            )
+
+            self.assertEqual(result.returncode, 1)
 
     def test_fail_on_blocked_is_opt_in(self) -> None:
         with TemporaryDirectory() as directory:

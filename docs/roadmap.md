@@ -56,9 +56,10 @@ reviewable commits.
 
 ## Next
 
-### v0.7.0 — Approval-gated handoff
+### v0.7.0 — Approval-gated handoff (in progress)
 
-- Optional human-approved submission handoff checks without automatic publishing
+- Explicit human approval records and `blocked` → `pending_approval` →
+  `ready_for_handoff` states without automatic publishing (implemented)
 - Build and simulator capture providers that remain opt-in and read-only
 
 ## Longer term

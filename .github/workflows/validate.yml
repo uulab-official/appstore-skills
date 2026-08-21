@@ -28,8 +28,13 @@ jobs:
           python scripts/validate_evidence_specs.py
           skills/app-store-assets/references/evidence-adapters.yml
       - run: >-
+          python scripts/validate_release_approval.py
+          skills/app-store-assets/references/release-approval.yml
+          examples/demo-store-assets/release-approval.yml
+      - run: >-
           python scripts/prepare_release_handoff.py
           --project-root .
           --output-root examples/demo-store-assets
+          --approval-file examples/demo-store-assets/release-approval.yml
           --format summary
       - run: python -m unittest discover -s tests

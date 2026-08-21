@@ -116,7 +116,11 @@ before calling the package ready for human submission review.
 If the project and release evidence are available, run the read-only handoff
 described in
 [`references/release-handoff.md`](references/release-handoff.md). Never treat
-its output as an upload or submission result.
+its output as an upload or submission result. When technical evidence is
+complete, require an explicit decision record based on
+[`references/release-approval.yml`](references/release-approval.yml) and the
+approval-gated handoff guidance in
+[`references/approval-gated-handoff.md`](references/approval-gated-handoff.md).
 
 ### 6. Verify platform rules and package outputs
 
@@ -151,6 +155,10 @@ assumptions: []
 Use statuses such as `draft`, `review`, `verified`, and `blocked`. Only mark
 an asset `verified` when its source fidelity, dimensions, and current platform
 requirements have actually been checked.
+
+Keep the release decision separate from asset status. A package may pass
+structural checks while the handoff remains `pending_approval` until a named
+owner records scope, decision time, and evidence.
 
 For every rendered promotional or feature-graphic image, declare `format` and
 `dimensions` in the manifest. Validate filled template specs with

@@ -10,6 +10,8 @@ from pathlib import Path
 import subprocess
 import sys
 
+from validate_release_approval import parse_approval, validate as validate_approval
+
 
 IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg", ".webp"}
 BUILD_SIGNAL_NAMES = (
@@ -88,10 +90,71 @@ def check(check_id: str, status: str, details: str) -> dict[str, str]:
     return {"id": check_id, "status": status, "details": details}
 
 
+def human_approval_check(
+    approval_file: Path | None,
+) -> tuple[dict[str, str], str]:
+    if approval_file is None:
+        return (
+            check(
+                "human-approval",
+                "pending",
+                "no release-approval.yml supplied",
+            ),
+            "not-supplied",
+        )
+
+    approval_file = approval_file.resolve()
+    if not approval_file.is_file():
+        return (
+            check("human-approval", "blocked", f"approval file is missing: {approval_file}"),
+            str(approval_file),
+        )
+
+    errors = validate_approval(approval_file)
+    if errors:
+        return (
+            check(
+                "human-approval",
+                "blocked",
+                "invalid approval record: " + "; ".join(errors),
+            ),
+            str(approval_file),
+        )
+
+    approval = parse_approval(approval_file)
+    status = str(approval.get("status", "pending"))
+    scope = approval.get("scope", [])
+    scope_text = ", ".join(str(item) for item in scope) if isinstance(scope, list) else "unknown"
+    if status == "approved":
+        owner = str(approval.get("owner", "unknown"))
+        return (
+            check(
+                "human-approval",
+                "pass",
+                f"approved by {owner} for scope: {scope_text}",
+            ),
+            str(approval_file),
+        )
+    if status == "pending":
+        return (
+            check(
+                "human-approval",
+                "pending",
+                f"approval is pending for scope: {scope_text}",
+            ),
+            str(approval_file),
+        )
+    return (
+        check("human-approval", "blocked", f"approval status is {status}"),
+        str(approval_file),
+    )
+
+
 def prepare_handoff(
     project_root: Path,
     output_root: Path,
     platforms: list[str],
+    approval_file: Path | None = None,
 ) -> dict[str, object]:
     project_root = project_root.resolve()
     output_root = output_root.resolve()
@@ -153,7 +216,10 @@ def prepare_handoff(
     else:
         checks.append(check("release-report", "blocked", "release-report.md is missing"))
 
+    approval_check, approval_path = human_approval_check(approval_file)
+    checks.append(approval_check)
     blocked = any(item["status"] == "blocked" for item in checks)
+    pending_approval = any(item["status"] == "pending" for item in checks)
     next_actions: list[str] = []
     if not build_evidence:
         next_actions.append("Record the inspected build revision and artifact identity in evidence/build.yml.")
@@ -161,19 +227,34 @@ def prepare_handoff(
         next_actions.append("Capture real iOS/Android screens and place source images under screenshots/source/.")
     if missing_output:
         next_actions.append("Complete the store package contract before handoff.")
+    if approval_check["status"] == "pending":
+        if approval_file is None:
+            next_actions.append("Record an explicit human decision in release-approval.yml.")
+        else:
+            next_actions.append("Record the product-owner decision in the supplied approval file.")
+    elif approval_check["status"] == "blocked":
+        next_actions.append("Fix or replace the release approval record before handoff.")
     if not next_actions:
-        next_actions.append("Run current platform checks and request human release approval.")
+        next_actions.append("Handoff is approved for read-only execution review; publishing remains disabled.")
+
+    if blocked:
+        handoff_status = "blocked"
+    elif pending_approval:
+        handoff_status = "pending_approval"
+    else:
+        handoff_status = "ready_for_handoff"
 
     return {
         "schema_version": 1,
         "handoff": {
             "mode": "dry-run",
-            "status": "blocked" if blocked else "ready_for_review",
+            "status": handoff_status,
             "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
             "project_root": str(project_root),
             "output_root": str(output_root),
             "source_revision": git_revision(project_root) if project_root.is_dir() else "unavailable",
             "platforms": platforms,
+            "approval_file": approval_path,
             "publish_status": "not-run",
             "checks": checks,
             "next_actions": next_actions,
@@ -192,6 +273,7 @@ def render_yaml(report: dict[str, object]) -> str:
         "project_root",
         "output_root",
         "source_revision",
+        "approval_file",
         "publish_status",
     )
     for key in scalar_keys:
@@ -219,6 +301,7 @@ def render_summary(report: dict[str, object]) -> str:
         f"Mode: {handoff['mode']}",
         f"Publish: {handoff['publish_status']}",
         f"Source revision: {handoff['source_revision']}",
+        f"Approval file: {handoff['approval_file']}",
         "Checks:",
     ]
     for item in handoff["checks"]:
@@ -236,7 +319,9 @@ def main() -> int:
     parser.add_argument("--format", choices=("yaml", "summary"), default="yaml")
     parser.add_argument("--output", type=Path)
     parser.add_argument("--overwrite", action="store_true")
+    parser.add_argument("--approval-file", type=Path)
     parser.add_argument("--fail-on-blocked", action="store_true")
+    parser.add_argument("--fail-on-pending-approval", action="store_true")
     args = parser.parse_args()
 
     if not args.project_root.is_dir():
@@ -246,7 +331,12 @@ def main() -> int:
         print(f"Output root does not exist: {args.output_root}", file=sys.stderr)
         return 2
 
-    report = prepare_handoff(args.project_root, args.output_root, args.platform)
+    report = prepare_handoff(
+        args.project_root,
+        args.output_root,
+        args.platform,
+        approval_file=args.approval_file,
+    )
     rendered = render_yaml(report) if args.format == "yaml" else render_summary(report)
     if args.output:
         if args.output.exists() and not args.overwrite:
@@ -261,6 +351,8 @@ def main() -> int:
     handoff = report["handoff"]
     assert isinstance(handoff, dict)
     if args.fail_on_blocked and handoff["status"] == "blocked":
+        return 1
+    if args.fail_on_pending_approval and handoff["status"] == "pending_approval":
         return 1
     return 0
 

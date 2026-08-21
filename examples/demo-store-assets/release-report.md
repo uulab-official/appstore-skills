@@ -13,10 +13,13 @@ warnings:
   - Build and simulator evidence adapters are blocked because no real app project or device captures are present.
   - Amazon Appstore and Samsung Galaxy Store profiles are documentation-linked concepts, not verified submissions.
   - The release handoff is a dry-run report only; no build, simulator, upload, or publish action ran.
+  - The release approval record is pending; no human decision is inferred from structural checks.
   - The icon design brief is still in review because product-owner approval is missing.
   - Platform requirements were not checked for a live submission.
 platform_docs_checked: []
 human_review_required: true
+approval_file: release-approval.yml
+approval_status: pending
 ```
 
 The package passes structural validation but is not ready for store

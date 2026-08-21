@@ -94,10 +94,13 @@ runner provides `GITHUB_STEP_SUMMARY`; use `--fail-on-blockers` only when the
 workflow should gate on the report status.
 
 For a final read-only handoff, run
-`python scripts/prepare_release_handoff.py --project-root <app> --output-root <store-assets> --format summary`.
+`python scripts/prepare_release_handoff.py --project-root <app> --output-root <store-assets> --approval-file <store-assets>/release-approval.yml --format summary`.
 Read [the handoff contract](../app-store-assets/references/release-handoff.md)
-before using it. It must remain a dry-run and must never be treated as a
-submission record.
+and [the approval-gated handoff](../app-store-assets/references/approval-gated-handoff.md)
+before using it. A technically complete package without an explicit approval
+record remains `pending_approval`. It must remain a dry-run and must never be
+treated as a submission record. Use `--fail-on-pending-approval` only when the
+workflow intentionally requires the human decision.
 
 ## Non-goals
 
