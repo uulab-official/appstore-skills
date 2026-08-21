@@ -376,6 +376,34 @@ class PrepareReleaseHandoffTests(unittest.TestCase):
             self.assertIn("Release handoff: pending_approval", matching.stdout)
             self.assertIn("pass: build-identity — provider build-record", matching.stdout)
 
+    def test_platform_scope_blocks_mismatched_source_capture(self) -> None:
+        with TemporaryDirectory() as directory:
+            project = Path(directory) / "app"
+            output = project / "store-assets"
+            project.mkdir()
+            output.mkdir()
+            (project / "package.json").write_text("{}\n", encoding="utf-8")
+            create_output(output, with_evidence=True, with_capture=True)
+            build = output / "evidence" / "build.yml"
+            build.write_text(
+                build.read_text(encoding="utf-8").replace("platform: apple", "platform: google-play"),
+                encoding="utf-8",
+            )
+
+            result = self.run_script(
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--platform", "google-play",
+                "--provider", "build-record",
+                "--provider", "simulator-source-captures",
+                "--format", "summary",
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn("Release handoff: blocked", result.stdout)
+            self.assertIn("capture 1 platform does not match requested platforms", result.stdout)
+            self.assertIn("Capture source images for a requested target platform", result.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()

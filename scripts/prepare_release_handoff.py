@@ -295,6 +295,9 @@ def prepare_handoff(
         next_actions.append("Run the revision-bound handoff from a Git project with a readable HEAD revision.")
     if "platform does not match requested platforms" in build_provider_details:
         next_actions.append("Record build evidence for a requested target platform before handoff.")
+    simulator_provider_details = str(provider_results.get("simulator-source-captures", {}).get("details", ""))
+    if "platform does not match requested platforms" in simulator_provider_details:
+        next_actions.append("Capture source images for a requested target platform before handoff.")
     if not next_actions:
         next_actions.append("Handoff is approved for read-only execution review; publishing remains disabled.")
 

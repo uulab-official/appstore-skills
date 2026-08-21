@@ -239,6 +239,7 @@ def inspect_simulator(
     provider: dict[str, str],
     output_root: Path,
     max_age_days: int | None = None,
+    expected_platforms: list[str] | None = None,
 ) -> dict[str, object]:
     provider_id = provider["id"]
     evidence_path = output_root / provider["evidence_path"]
@@ -276,6 +277,12 @@ def inspect_simulator(
         image_problem = image_error(capture_path)
         if image_problem:
             errors.append(f"capture {index} {record['path']}: {image_problem}")
+        recorded_platform = record.get("platform", "")
+        if expected_platforms and recorded_platform and not platform_matches(recorded_platform, expected_platforms):
+            errors.append(
+                f"capture {index} platform does not match requested platforms "
+                f"(recorded: {recorded_platform}, requested: {', '.join(expected_platforms)})"
+            )
         if not valid_timestamp(record["captured_at"]):
             errors.append(f"capture {index} captured_at is not an ISO-8601 timestamp")
         stale_error = freshness_error(
@@ -325,7 +332,12 @@ def inspect_provider(
             require_current_revision=require_current_revision,
             expected_platforms=expected_platforms,
         )
-    return inspect_simulator(provider, output_root.resolve(), max_age_days=max_age_days)
+    return inspect_simulator(
+        provider,
+        output_root.resolve(),
+        max_age_days=max_age_days,
+        expected_platforms=expected_platforms,
+    )
 
 
 def render_summary(results: list[dict[str, object]]) -> str:

@@ -101,9 +101,9 @@ changes.
 - When current-revision binding is enabled, build evidence must match the
   project's Git `HEAD`; mismatched or unavailable source revisions must block
   rather than being silently treated as equivalent.
-- When requested platforms are supplied, build evidence must match the
-  declared platform scope; an omitted platform scope must never be treated as
-  implicit coverage for every store.
+- When requested platforms are supplied, build evidence and source captures
+  must match the declared platform scope; an omitted platform scope must never
+  be treated as implicit coverage for every store.
 
 ## Skill acceptance criteria
 

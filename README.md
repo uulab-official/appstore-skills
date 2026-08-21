@@ -149,7 +149,7 @@ validation tooling:
 - opt-in, read-only build and simulator evidence providers
 - opt-in freshness gates for build and simulator evidence in release handoffs
 - optional current-project Git revision binding for build evidence
-- optional requested-platform binding for build evidence
+- optional requested-platform binding for build and simulator evidence
 - locale plans and terminology QA that preserve review blockers
 - reversible store-copy experiment records with approval history
 - diff-friendly reviewer handoff summaries with manifest and reviewer-assignment baselines

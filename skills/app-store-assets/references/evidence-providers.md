@@ -80,4 +80,5 @@ mismatch remains blocked in this strict mode.
 When `--platform` is supplied, the build record must match at least one
 requested platform. The built-in compatibility aliases include `apple`/`ios`
 and `google-play`/`android`; omit the flag when platform scope is intentionally
-not being checked.
+not being checked. The same scope is applied to every simulator source
+capture, so an iOS capture cannot satisfy a Google Play-only handoff.

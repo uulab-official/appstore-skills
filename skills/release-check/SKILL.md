@@ -111,6 +111,8 @@ existing provider behavior unchanged.
 For a reproducible build handoff, add `--require-current-revision` to require
 the recorded build revision to match the current Git `HEAD`; short hexadecimal
 prefixes are accepted, but non-Git or mismatched projects remain blocked.
+Pass `--platform` values to bind both build records and source captures to the
+requested store surfaces; an omitted platform scope must not be inferred.
 For optional policy, accessibility, and privacy review, read
 [`references/review-adapters.md`](references/review-adapters.md) and select
 only the adapters that have a designated reviewer and evidence path.
