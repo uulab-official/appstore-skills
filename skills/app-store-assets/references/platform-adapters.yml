@@ -39,3 +39,29 @@ adapters:
       og-image: Preserve page metadata and keep the social-preview crop readable.
       promotional: Adapt the shared template to the page and channel context.
     required_checks: [page-evidence, dimensions, light-dark-contrast, public-url]
+  - id: amazon-appstore
+    platform: amazon-appstore
+    status: review
+    source_root: icon/icon-master.png
+    output_root: amazon-appstore/
+    surfaces: [icon, screenshots, promotional]
+    transformations:
+      icon: Create Amazon-specific small and large icon exports from the approved master.
+      screenshots: Adapt real Android/Fire device captures; do not reuse a phone crop without review.
+      promotional: Adapt the shared marketing template to Amazon's promotional surface.
+    required_checks: [current-official-docs, dimensions, transparency, device-fidelity]
+    documentation_url: https://developer.amazon.com/docs/app-submission/appstore-details.html
+    documentation_checked_at: "2026-08-21"
+  - id: samsung-galaxy-store
+    platform: samsung-galaxy-store
+    status: review
+    source_root: icon/icon-master.png
+    output_root: samsung-galaxy-store/
+    surfaces: [icon, screenshots, hero-image]
+    transformations:
+      icon: Create the Galaxy Store icon/logo export from the approved master.
+      screenshots: Adapt real Android captures to the Galaxy Store device context.
+      hero-image: Create only when the target category and current Seller Portal rules require it.
+    required_checks: [current-official-docs, dimensions, readable-text, device-fidelity]
+    documentation_url: https://developer.samsung.com/galaxy-store/galaxy-store-developer-api/content-publish-api/reference.html
+    documentation_checked_at: "2026-08-21"

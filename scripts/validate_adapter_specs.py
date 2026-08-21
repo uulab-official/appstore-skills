@@ -9,7 +9,13 @@ import re
 import sys
 
 
-ALLOWED_PLATFORMS = {"apple", "google-play", "web"}
+ALLOWED_PLATFORMS = {
+    "amazon-appstore",
+    "apple",
+    "google-play",
+    "samsung-galaxy-store",
+    "web",
+}
 ALLOWED_STATUSES = {"draft", "review", "verified", "blocked"}
 FIELD_LINE = re.compile(r"^\s{4}([a-z][a-z0-9_-]*):\s*(.*?)\s*$")
 SECTION_FIELD_LINE = re.compile(r"^\s{2}([a-z][a-z0-9_-]*):\s*(.*?)\s*$")

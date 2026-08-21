@@ -34,6 +34,8 @@
   those specs and reviewed at full size and thumbnail size.
 - The platform adapter map separates Apple, Google Play, and Web branches and
   records execution-time checks without claiming current platform acceptance.
+- Amazon Appstore and Samsung Galaxy Store profiles are included as blocked,
+  documentation-linked adapters; no live store submission is claimed.
 - The evidence adapter map separates project facts, build identity, simulator
   captures, and release review; unavailable build and simulator evidence stays
   `blocked`.

@@ -14,6 +14,8 @@ screen captures.
   rendered SVG concept masters
 - an Apple, Google Play, and Web adapter map that keeps shared masters and
   platform branches explicit
+- Amazon Appstore and Samsung Galaxy Store adapter profiles with
+  execution-time documentation checks
 - a project/build/simulator/release evidence map that keeps missing real-app
   evidence blocked
 - evidence-backed English store-copy draft

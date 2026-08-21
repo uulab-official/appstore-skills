@@ -31,6 +31,12 @@ reviewable commits.
 - GitHub Actions annotations and Step Summary for release reports
 - Apple, Google Play, and Web platform adapter maps
 
+### v0.5.0 — Extended platform integrations
+
+- Amazon Appstore and Samsung Galaxy Store adapter profiles with current
+  documentation references
+- Project, build, simulator, and release-system evidence adapters
+
 ### Operational tooling
 
 - Dependency-free Skill metadata validator
@@ -45,17 +51,15 @@ reviewable commits.
 
 ## Next
 
-### v0.5.0 — Extended platform integrations
+### v0.6.0 — Safe release-system handoff
 
-- Additional platform-specific adapters beyond the shared Apple, Google Play,
-  and Web map
-- Build, simulator, and release-system evidence adapters
+- Optional dry-run integrations with build, simulator, and release systems
+- Additional platform profiles when a current official workflow is available
 
 ## Longer term
 
 - More localization and terminology tooling
 - Store-copy experiments with approval history
-- Safe integrations with build, simulator, and release systems
 - Optional submission handoff checks without automatic publishing
 
 ## Scope rule

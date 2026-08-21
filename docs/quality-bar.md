@@ -44,6 +44,8 @@ changes.
   image type, and metadata field in scope.
 - Record the documentation URL and date checked.
 - Do not label an output `verified` from memory or from a previous project.
+- For non-core platform adapters, record the official documentation URL and
+  check date; keep dimensions and limits execution-time rather than permanent.
 
 ### 4. Asset integrity
 

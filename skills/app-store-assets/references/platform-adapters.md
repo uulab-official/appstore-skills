@@ -27,6 +27,8 @@ that a platform accepts an asset.
 5. Check platform documentation, crop/safe-area behavior, and source fidelity.
 6. Record the result in `manifest.yml`, `QA.md`, and `release-report.md`.
 
-Use the Apple, Google Play, and Web records in the reference map as starting
-points. Add a new adapter only when its source fidelity, output family, and
-verification checks can be described explicitly.
+Use the Apple, Google Play, Web, Amazon Appstore, and Samsung Galaxy Store
+records in the reference map as starting points. The Amazon and Samsung
+profiles include documentation URLs checked on 2026-08-21, but their rules
+remain execution-time checks. Add a new adapter only when its source fidelity,
+output family, and verification checks can be described explicitly.

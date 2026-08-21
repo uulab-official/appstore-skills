@@ -124,7 +124,7 @@ guarantee store approval, or replace legal and accessibility review.
 
 ## Status
 
-The current public milestone is `v0.4.0` development with operational
+The current public milestone is `v0.5.0` with operational
 validation tooling:
 
 - app icon generation workflow
@@ -141,7 +141,8 @@ validation tooling:
 - SVG `viewBox` and optional PNG color-type validation
 - reusable promotional and Google Play feature-graphic template contracts
 - GitHub Actions annotations for release-report blockers and warnings
-- Apple, Google Play, and Web platform adapter maps with execution-time checks
+- Apple, Google Play, Web, Amazon Appstore, and Samsung Galaxy Store adapter
+  maps with execution-time checks
 - project, build, simulator, and release evidence adapter maps
 
 The repository also includes deterministic, dependency-free checks for skill
