@@ -108,6 +108,14 @@ store-assets/
 Exact platform sizes and submission rules must be checked against the current
 official Apple and Google documentation at execution time.
 
+## Example output
+
+[`examples/demo-store-assets/`](examples/demo-store-assets/) contains a real
+review fixture with generated icon exports, favicon, OG SVG/PNG, store-copy
+draft, manifest, QA, and release report. It is deliberately marked as a demo
+and blocked because this repository has no real app screens. Use it to inspect
+the output contract and validator behavior, not as a production submission.
+
 ## Scope and non-goals
 
 This project focuses on the last-mile design and packaging work after an app

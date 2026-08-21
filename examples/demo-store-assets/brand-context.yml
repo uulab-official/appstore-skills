@@ -1,0 +1,33 @@
+schema_version: 1
+status: demo
+brand:
+  name: Example App
+  personality:
+    - friendly
+    - simple
+    - modern
+product:
+  category: productivity
+  audience: busy people organizing everyday tasks
+  value_proposition: Keep important tasks visible and easy to finish.
+  core_features:
+    - quick capture
+    - reminders
+    - shared lists
+visual:
+  style: minimal
+  typography: modern sans serif
+  radius: rounded
+  density: spacious
+colors:
+  primary: "#315CFF"
+  secondary: "#FF786B"
+  background: "#F6F8FF"
+  text: "#17203A"
+evidence:
+  - source: ../brand-context.yml
+    notes: Example product, audience, features, and visual direction
+assumptions:
+  - This is a fictional product used only as a review fixture.
+  - No real app screens are available in this repository.
+

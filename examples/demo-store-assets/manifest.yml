@@ -1,0 +1,76 @@
+schema_version: 1
+project: Example App
+generated_at: "2026-08-21T00:00:00Z"
+status: blocked
+platforms: [shared, apple, google-play, web]
+assets:
+  - path: icon/icon-master.png
+    kind: app-icon-master
+    platform: shared
+    status: review
+    source: imagegen concept generated from examples/brand-context.yml
+    checks: [square, small-size-review, concept-labeled]
+  - path: icon/icon-1024.png
+    kind: app-icon-export
+    platform: shared
+    status: review
+    source: icon/icon-master.png
+    checks: [dimensions, concept-labeled]
+  - path: icon/icon-512.png
+    kind: app-icon-export
+    platform: shared
+    status: review
+    source: icon/icon-master.png
+    checks: [dimensions, concept-labeled]
+  - path: icon/icon-192.png
+    kind: app-icon-export
+    platform: shared
+    status: review
+    source: icon/icon-master.png
+    checks: [dimensions, concept-labeled]
+  - path: icon/icon-180.png
+    kind: app-icon-export
+    platform: shared
+    status: review
+    source: icon/icon-master.png
+    checks: [dimensions, concept-labeled]
+  - path: web-assets/favicon/favicon.svg
+    kind: favicon
+    platform: web
+    status: review
+    source: icon/icon-master.png
+    checks: [square, vector, concept-labeled]
+  - path: web-assets/favicon/favicon-32x32.png
+    kind: favicon-export
+    platform: web
+    status: review
+    source: icon/icon-master.png
+    checks: [32x32, small-size-review, concept-labeled]
+  - path: web-assets/favicon/favicon-16x16.png
+    kind: favicon-export
+    platform: web
+    status: review
+    source: icon/icon-master.png
+    checks: [16x16, small-size-review, concept-labeled]
+  - path: web-assets/og/og-image.svg
+    kind: og-image
+    platform: web
+    status: review
+    source: examples/brand-context.yml
+    checks: [exact-copy, aspect-ratio, concept-labeled]
+  - path: web-assets/og/og-image.png
+    kind: og-image-export
+    platform: web
+    status: review
+    source: web-assets/og/og-image.svg
+    checks: [1200x630, exact-copy, concept-labeled]
+  - path: metadata/store-copy.en-US.yml
+    kind: store-copy
+    platform: shared
+    locale: en-US
+    status: review
+    source: brand-context.yml
+    checks: [evidence-backed, draft-labeled]
+assumptions:
+  - The product and all visual assets are fictional review fixtures.
+  - No real app UI or device captures are available.

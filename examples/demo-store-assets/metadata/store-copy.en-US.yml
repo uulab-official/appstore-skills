@@ -1,0 +1,28 @@
+schema_version: 1
+status: review
+locale: en-US
+product: Example App
+apple:
+  name: Example App
+  subtitle: Keep everyday tasks in view
+  promotional_text: Capture the next thing and keep moving.
+  description: |
+    Example App helps busy people keep everyday tasks visible and easy to finish.
+    Capture tasks quickly, set reminders, and keep shared lists in one simple place.
+  keywords:
+    - tasks
+    - reminders
+    - lists
+  whats_new: Demo copy only. Replace with the approved release notes.
+google_play:
+  short_description: Keep everyday tasks visible and easy to finish.
+  full_description: |
+    Keep your everyday tasks in view with Example App. Capture tasks quickly,
+    set reminders, and keep shared lists organized in one simple place.
+evidence:
+  - source: ../brand-context.yml
+    supports: product name, audience, value proposition, and listed features
+assumptions:
+  - Platform field limits and policy review have not been checked for a real submission.
+  - This copy is a review draft, not approved store metadata.
+
