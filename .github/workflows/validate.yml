@@ -74,6 +74,7 @@ jobs:
       - run: >-
           python scripts/inspect_review_adapters.py
           --adapter-file skills/release-check/references/review-adapters.yml
+          --assignment-file examples/demo-store-assets/review-assignment.yml
           --project-root .
           --output-root examples/demo-store-assets
           --adapter policy-review

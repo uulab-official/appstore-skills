@@ -27,6 +27,7 @@ Inspect selected adapters with:
 ```bash
 python scripts/inspect_review_adapters.py \
   --adapter-file skills/release-check/references/review-adapters.yml \
+  --assignment-file ./store-assets/review-assignment.yml \
   --project-root ./my-app \
   --output-root ./store-assets \
   --adapter policy-review \
@@ -36,5 +37,8 @@ python scripts/inspect_review_adapters.py \
 
 The default is informational. Use `--fail-on-pending` or
 `--fail-on-blocked` only when the workflow intentionally gates on human review.
+When `--assignment-file` is supplied, terminal evidence must name a reviewer
+who is assigned to and covers the selected adapter. Missing or mismatched
+ownership is blocked; pending records remain pending.
 The adapters never run scanners, open a simulator, call a store API, upload,
 publish, or approve on behalf of a reviewer.

@@ -224,8 +224,15 @@ def build_summary(
     review_adapters: list[dict[str, object]] = []
     if selected_adapters:
         selected_adapter_file = adapter_file or DEFAULT_ADAPTER_FILE
+        selected_assignment_file = assignment_file or package_root / "review-assignment.yml"
+        assignment_for_adapters = selected_assignment_file if selected_assignment_file.is_file() else None
         review_adapters = [
-            inspect_adapter(adapter_id, package_root, selected_adapter_file)
+            inspect_adapter(
+                adapter_id,
+                package_root,
+                selected_adapter_file,
+                assignment_file=assignment_for_adapters,
+            )
             for adapter_id in selected_adapters
         ]
         for adapter in review_adapters:

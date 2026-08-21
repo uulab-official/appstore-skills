@@ -11,6 +11,7 @@ import re
 import sys
 
 from validate_review_adapter_specs import adapter_records, validate as validate_registry
+from validate_review_assignments import parse_assignment, validate as validate_assignment
 
 
 DEFAULT_ADAPTER_FILE = Path(__file__).resolve().parents[1] / "skills/release-check/references/review-adapters.yml"
@@ -77,7 +78,12 @@ def valid_timestamp(value: str) -> bool:
     return True
 
 
-def inspect_adapter(adapter_id: str, output_root: Path, adapter_file: Path) -> dict[str, object]:
+def inspect_adapter(
+    adapter_id: str,
+    output_root: Path,
+    adapter_file: Path,
+    assignment_file: Path | None = None,
+) -> dict[str, object]:
     registry_errors = validate_registry(adapter_file)
     if registry_errors:
         return {"id": adapter_id, "status": "blocked", "details": "invalid registry: " + "; ".join(registry_errors)}
@@ -104,6 +110,23 @@ def inspect_adapter(adapter_id: str, output_root: Path, adapter_file: Path) -> d
             errors.append("terminal review requires ISO-8601 reviewed_at")
         if not isinstance(values.get("evidence"), list) or not values["evidence"]:
             errors.append("terminal review requires evidence")
+        if assignment_file is not None and not errors:
+            assignment_errors = validate_assignment(assignment_file)
+            if assignment_errors:
+                errors.append("review assignment is invalid: " + "; ".join(assignment_errors))
+            else:
+                _, reviewers, _ = parse_assignment(assignment_file.read_text(encoding="utf-8"))
+                reviewer_name = str(values.get("reviewer", "")).strip()
+                matched = any(
+                    str(reviewer.get("assigned_to", "")).strip() == reviewer_name
+                    and adapter_id in reviewer.get("coverage", [])
+                    for reviewer in reviewers
+                    if isinstance(reviewer.get("coverage", []), list)
+                )
+                if not matched:
+                    errors.append(
+                        "terminal review reviewer is not assigned and covered for this adapter"
+                    )
     if errors:
         return {"id": adapter_id, "kind": adapter["kind"], "status": "blocked", "details": "; ".join(errors)}
     result_status = "pass" if status in {"pass", "not_applicable"} else "pending"
@@ -115,6 +138,7 @@ def main() -> int:
     parser.add_argument("--adapter-file", type=Path, default=DEFAULT_ADAPTER_FILE)
     parser.add_argument("--project-root", type=Path, required=True)
     parser.add_argument("--output-root", type=Path, required=True)
+    parser.add_argument("--assignment-file", type=Path)
     parser.add_argument("--adapter", action="append", required=True)
     parser.add_argument("--format", choices=("summary", "json"), default="summary")
     parser.add_argument("--fail-on-blocked", action="store_true")
@@ -126,8 +150,15 @@ def main() -> int:
     if not args.output_root.is_dir():
         print(f"Output root does not exist: {args.output_root}", file=sys.stderr)
         return 2
+    if args.assignment_file and not args.assignment_file.is_file():
+        print(f"Assignment file does not exist: {args.assignment_file}", file=sys.stderr)
+        return 2
     adapter_file = args.adapter_file.resolve()
-    results = [inspect_adapter(adapter_id, args.output_root.resolve(), adapter_file) for adapter_id in args.adapter]
+    assignment_file = args.assignment_file.resolve() if args.assignment_file else None
+    results = [
+        inspect_adapter(adapter_id, args.output_root.resolve(), adapter_file, assignment_file=assignment_file)
+        for adapter_id in args.adapter
+    ]
     if args.format == "json":
         print(json.dumps(results, indent=2, ensure_ascii=False))
     else:

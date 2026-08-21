@@ -119,6 +119,85 @@ review:
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertIn('"status": "pass"', result.stdout)
 
+    def test_terminal_evidence_must_match_assigned_adapter_reviewer(self) -> None:
+        with TemporaryDirectory() as directory:
+            project = Path(directory) / "app"
+            output = project / "store-assets"
+            evidence = output / "evidence"
+            project.mkdir()
+            evidence.mkdir(parents=True)
+            assignment = output / "review-assignment.yml"
+            assignment.write_text(
+                """schema_version: 1
+review_assignment:
+  id: example
+  package: example
+  status: approved
+  owner: Product owner
+  reviewers:
+    - id: product-owner
+      role: product
+      required: true
+      status: approved
+      scope: [claims]
+      coverage: [policy-review]
+      assigned_to: Product owner
+      assigned_at: 2026-08-21T10:00:00Z
+      decision: approved
+      decided_at: 2026-08-21T11:00:00Z
+      evidence: [approval-ticket]
+      notes: approved
+  history:
+    - at: 2026-08-21T10:00:00Z
+      action: decided
+      actor: Product owner
+      reviewer: product-owner
+      note: approved
+""",
+                encoding="utf-8",
+            )
+            evidence_file = evidence / "policy-review.yml"
+            evidence_file.write_text(
+                """schema_version: 1
+review:
+  status: pass
+  reviewer: Product owner
+  scope: [claims]
+  reviewed_at: 2026-08-21T12:00:00Z
+  evidence: [policy-ticket]
+  notes: reviewed
+""",
+                encoding="utf-8",
+            )
+
+            result = self.run_inspector(
+                "--adapter-file", str(REGISTRY),
+                "--assignment-file", str(assignment),
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--adapter", "policy-review",
+                "--format", "json",
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn('"status": "pass"', result.stdout)
+
+            evidence_file.write_text(
+                evidence_file.read_text(encoding="utf-8").replace("reviewer: Product owner", "reviewer: Unassigned reviewer"),
+                encoding="utf-8",
+            )
+            blocked = self.run_inspector(
+                "--adapter-file", str(REGISTRY),
+                "--assignment-file", str(assignment),
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--adapter", "policy-review",
+                "--fail-on-blocked",
+            )
+
+            self.assertEqual(blocked.returncode, 1)
+            self.assertIn("terminal review reviewer is not assigned", blocked.stdout)
+
     def test_invalid_terminal_record_can_gate(self) -> None:
         with TemporaryDirectory() as directory:
             project = Path(directory) / "app"
