@@ -18,7 +18,8 @@ baseline, the report labels every current asset as `baseline` rather than
 pretending that additions and removals are known. When both packages contain
 `review-assignment.yml`, the same baseline comparison also reports reviewer
 additions, removals, scope changes, status/assignment changes, evidence
-reference changes, and history-event count changes. Use
+reference changes, and event-level history additions, removals, or rewrites.
+It also flags any baseline history that is no longer an unchanged prefix. Use
 `--previous-assignment-file` when the previous assignment record is stored
 outside the previous package root.
 

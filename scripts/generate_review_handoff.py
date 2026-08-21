@@ -274,7 +274,15 @@ def build_summary(
     elif review_assignment_diff["status"] == "unavailable":
         warnings.append(f"Reviewer assignment baseline is unavailable: {review_assignment_diff['details']}")
     elif review_assignment_diff.get("changes"):
-        warnings.append(f"{review_assignment_diff['details']}; review the assignment delta before handoff.")
+        assignment_changes = review_assignment_diff["changes"]
+        if isinstance(assignment_changes, list) and any(
+            item.get("field") == "append_only" for item in assignment_changes if isinstance(item, dict)
+        ):
+            warnings.append(
+                "Reviewer assignment history is not append-only; restore the baseline history prefix before handoff."
+            )
+        else:
+            warnings.append(f"{review_assignment_diff['details']}; review the assignment delta before handoff.")
     if review_assignment_coverage["status"] == "missing":
         warnings.append(f"Reviewer adapter coverage is incomplete: {review_assignment_coverage['details']}.")
     elif review_assignment_coverage["status"] == "unavailable":
@@ -310,7 +318,13 @@ def build_summary(
     if review_assignment["status"] in {"pending", "in_review"}:
         next_actions.append("Assign and complete the required reviewer decisions in review-assignment.yml.")
     if review_assignment_diff.get("changes"):
-        next_actions.append("Review the reviewer assignment delta against the supplied baseline.")
+        assignment_changes = review_assignment_diff["changes"]
+        if isinstance(assignment_changes, list) and any(
+            item.get("field") == "append_only" for item in assignment_changes if isinstance(item, dict)
+        ):
+            next_actions.append("Restore the reviewer assignment history's append-only baseline prefix.")
+        else:
+            next_actions.append("Review the reviewer assignment delta against the supplied baseline.")
     if review_assignment_coverage["status"] == "missing":
         next_actions.append("Assign reviewer coverage for every selected review adapter.")
     if not next_actions:

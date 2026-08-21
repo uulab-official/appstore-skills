@@ -241,6 +241,72 @@ review_assignment:
             }
             self.assertEqual(changed_fields, {"status", "assigned_to"})
 
+    def test_previous_assignment_reports_appended_history_events(self) -> None:
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            current = root / "current"
+            previous = root / "previous"
+            current.mkdir()
+            previous.mkdir()
+            manifest = "schema_version: 1\nassets:\n  - path: icon.png\n    status: review\n    kind: app-icon\n"
+            (current / "manifest.yml").write_text(manifest, encoding="utf-8")
+            (previous / "manifest.yml").write_text(manifest, encoding="utf-8")
+            previous_assignment = DEMO_ASSIGNMENT.read_text(encoding="utf-8")
+            current_assignment = previous_assignment + (
+                "    - at: 2026-08-21T01:00:00Z\n"
+                "      action: reviewed\n"
+                "      actor: Product owner\n"
+                "      reviewer: product-owner\n"
+                "      note: Product review started.\n"
+            )
+            (current / "review-assignment.yml").write_text(current_assignment, encoding="utf-8")
+            (previous / "review-assignment.yml").write_text(previous_assignment, encoding="utf-8")
+
+            result = self.run_script(
+                "--package-root", str(current),
+                "--previous-package-root", str(previous),
+                "--format", "json",
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            changes = json.loads(result.stdout)["review_assignment_diff"]["changes"]
+            self.assertIn(
+                {"change": "added", "reviewer": "<history>", "field": "event-2", "before": "", "after": "at=2026-08-21T01:00:00Z | action=reviewed | actor=Product owner | reviewer=product-owner | note=Product review started."},
+                changes,
+            )
+
+    def test_previous_assignment_reports_history_rewrite_even_with_same_event_count(self) -> None:
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            current = root / "current"
+            previous = root / "previous"
+            current.mkdir()
+            previous.mkdir()
+            manifest = "schema_version: 1\nassets:\n  - path: icon.png\n    status: review\n    kind: app-icon\n"
+            (current / "manifest.yml").write_text(manifest, encoding="utf-8")
+            (previous / "manifest.yml").write_text(manifest, encoding="utf-8")
+            previous_assignment = DEMO_ASSIGNMENT.read_text(encoding="utf-8")
+            current_assignment = previous_assignment.replace(
+                "Assignment record created for explicit human review.",
+                "History note was rewritten without an appended event.",
+                1,
+            )
+            (current / "review-assignment.yml").write_text(current_assignment, encoding="utf-8")
+            (previous / "review-assignment.yml").write_text(previous_assignment, encoding="utf-8")
+
+            result = self.run_script(
+                "--package-root", str(current),
+                "--previous-package-root", str(previous),
+                "--format", "json",
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            summary = json.loads(result.stdout)
+            changes = summary["review_assignment_diff"]["changes"]
+            self.assertTrue(any(item["field"] == "append_only" for item in changes))
+            self.assertTrue(any(item["field"] == "event-1" and item["change"] == "changed" for item in changes))
+            self.assertTrue(any("history is not append-only" in warning for warning in summary["warnings"]))
+
     def test_missing_adapter_coverage_is_visible(self) -> None:
         with TemporaryDirectory() as directory:
             package = Path(directory) / "package"

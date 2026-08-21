@@ -13,6 +13,10 @@ traceability links; the contract does not dereference or upload them. The
 validator accepts pending records with empty assignment and evidence fields so
 an unassigned package is visible rather than falsely marked complete.
 
+The `history` list is append-only relative to a supplied baseline: previous
+events must remain an unchanged prefix. The handoff delta reports appended
+events and exposes rewritten or removed events as an append-only violation.
+
 Each reviewer also declares non-empty `coverage` entries using the IDs from
 the selected review-adapter registry, for example `privacy-review`. The handoff
 generator renders a coverage matrix and warns when a selected adapter has no

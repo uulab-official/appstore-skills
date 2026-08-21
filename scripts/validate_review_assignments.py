@@ -15,6 +15,7 @@ ALLOWED_ASSIGNMENT_STATUSES = {"pending", "in_review", "approved", "blocked"}
 ALLOWED_REVIEWER_STATUSES = {"pending", "in_review", "approved", "blocked", "not_applicable"}
 TERMINAL_REVIEWER_STATUSES = {"approved", "blocked", "not_applicable"}
 ASSIGNMENT_DIFF_FIELDS = ("role", "required", "scope", "coverage", "status", "assigned_to", "decision", "evidence")
+HISTORY_DIFF_FIELDS = ("at", "action", "actor", "reviewer", "note")
 TOP_FIELD_LINE = re.compile(r"^\s{2}([a-z][a-z0-9_-]*):\s*(.*?)\s*$")
 REVIEWER_LINE = re.compile(r"^\s{4}-\s+id:\s*(.*?)\s*$")
 HISTORY_LINE = re.compile(r"^\s{4}-\s+at:\s*(.*?)\s*$")
@@ -300,7 +301,7 @@ def summarize(path: Path, max_terminal_decision_age_days: int | None = None) -> 
 
 
 def compare_assignments(current_path: Path, previous_path: Path) -> tuple[list[dict[str, str]], list[str]]:
-    """Compare stable reviewer fields and history counts between two valid records."""
+    """Compare stable reviewer fields and append-only history between valid records."""
 
     errors = [*validate(current_path), *validate(previous_path)]
     if errors:
@@ -344,6 +345,51 @@ def compare_assignments(current_path: Path, previous_path: Path) -> tuple[list[d
                     "before": previous.get(field, ""),
                     "after": current.get(field, ""),
                 })
+    def history_text(event: dict[str, str]) -> str:
+        return " | ".join(f"{field}={event.get(field, '')}" for field in HISTORY_DIFF_FIELDS)
+
+    current_history_values = [tuple(event.get(field, "") for field in HISTORY_DIFF_FIELDS) for event in current_history]
+    previous_history_values = [tuple(event.get(field, "") for field in HISTORY_DIFF_FIELDS) for event in previous_history]
+    append_only = (
+        len(current_history_values) >= len(previous_history_values)
+        and current_history_values[: len(previous_history_values)] == previous_history_values
+    )
+    for index in range(max(len(current_history), len(previous_history))):
+        current_event = current_history[index] if index < len(current_history) else None
+        previous_event = previous_history[index] if index < len(previous_history) else None
+        if current_event is not None and previous_event is not None:
+            if current_history_values[index] != previous_history_values[index]:
+                changes.append({
+                    "change": "changed",
+                    "reviewer": "<history>",
+                    "field": f"event-{index + 1}",
+                    "before": history_text(previous_event),
+                    "after": history_text(current_event),
+                })
+        elif current_event is not None:
+            changes.append({
+                "change": "added",
+                "reviewer": "<history>",
+                "field": f"event-{index + 1}",
+                "before": "",
+                "after": history_text(current_event),
+            })
+        elif previous_event is not None:
+            changes.append({
+                "change": "removed",
+                "reviewer": "<history>",
+                "field": f"event-{index + 1}",
+                "before": history_text(previous_event),
+                "after": "",
+            })
+    if not append_only:
+        changes.append({
+            "change": "changed",
+            "reviewer": "<history>",
+            "field": "append_only",
+            "before": "previous history must remain an unchanged prefix",
+            "after": "current history rewrites or removes a previous event",
+        })
     if len(current_history) != len(previous_history):
         changes.append({
             "change": "changed",
