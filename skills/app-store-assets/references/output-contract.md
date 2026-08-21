@@ -54,6 +54,8 @@ store-assets/
 ├── promotional/
 ├── feature-graphic/
 ├── og/
+├── web-assets/
+│   └── favicon/
 ├── metadata/
 └── QA.md
 ```
@@ -61,4 +63,3 @@ store-assets/
 Keep generated output separate from the source app and never silently delete
 or overwrite a previous run. If a rerun is needed, use a new run directory or
 obtain explicit permission to replace files.
-

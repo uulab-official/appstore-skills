@@ -16,6 +16,9 @@ generation, platform adaptation, and QA.
 | [`app-icon`](skills/app-icon/SKILL.md) | Analyze an app and create a small-size legible icon direction and export plan. |
 | [`app-store-screenshots`](skills/app-store-screenshots/SKILL.md) | Turn real app screens into platform-specific marketing screenshot sets. |
 | [`app-store-assets`](skills/app-store-assets/SKILL.md) | Orchestrate the complete icon, screenshot, promotional, and metadata workflow. |
+| [`play-store-assets`](skills/play-store-assets/SKILL.md) | Prepare a Google Play-focused package with Android-specific outputs and QA. |
+| [`favicon`](skills/favicon/SKILL.md) | Create a compact browser, bookmark, and touch-icon family for web projects. |
+| [`og-image`](skills/og-image/SKILL.md) | Create branded link-preview images with grounded page metadata. |
 
 The skills share a `brand-context.yml` contract so the icon, screenshots, and
 other store assets feel like one product.
@@ -32,6 +35,12 @@ $app-icon
 $app-store-screenshots
 
 $app-store-assets
+
+$play-store-assets
+
+$favicon
+
+$og-image
 ```
 
 The agent should inspect the app project before proposing a direction. Provide
@@ -72,6 +81,9 @@ store-assets/
 │   └── google-play/
 ├── promotional/
 ├── feature-graphic/
+├── web-assets/
+│   ├── favicon/
+│   └── og/
 ├── metadata/
 └── QA.md
 ```
@@ -87,15 +99,24 @@ guarantee store approval, or replace legal and accessibility review.
 
 ## Status
 
-The first public milestone is `v0.1.0`:
+The current public milestone is `v0.2.0`:
 
 - app icon generation workflow
 - App Store and Google Play screenshot workflow
 - integrated asset orchestration workflow
 - shared brand context and output contracts
+- Google Play-focused asset workflow
+- favicon generation and optional web integration
+- OG image generation and optional metadata integration
 
-Future candidates include favicon and OG image generation, store copy,
-localization, promotional assets, and automated store-readiness checks.
+The next roadmap milestone is `v0.3.0`:
+
+- store copy and listing metadata
+- localization workflow
+- automated store-readiness checks
+
+Later candidates include richer promotional assets, release checklists, and
+platform-specific automation where the target agent can safely support it.
 
 ## Contributing
 
@@ -106,4 +127,3 @@ platform-specific rules current without hard-coding unstable requirements.
 ## License
 
 MIT. See [`LICENSE`](LICENSE).
-

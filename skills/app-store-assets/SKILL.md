@@ -92,6 +92,12 @@ Keep platform-specific content in separate folders. Treat copy and claims as
 product content: ground them in project evidence, preserve locale, and flag
 missing translations or approvals.
 
+For web outputs, read [`../favicon/SKILL.md`](../favicon/SKILL.md) and
+[`../og-image/SKILL.md`](../og-image/SKILL.md) instead of improvising browser or
+social-preview conventions. For a Google Play-only run, prefer
+[`../play-store-assets/SKILL.md`](../play-store-assets/SKILL.md) so Android
+screens, adaptive-icon sources, and Play-specific QA remain explicit.
+
 ### 6. Verify platform rules and package outputs
 
 Check current official Apple and Google documentation for every platform and
@@ -161,4 +167,3 @@ Do not call the package production-ready when any of these is true:
 
 For the detailed output and status contract, read
 [references/output-contract.md](references/output-contract.md).
-

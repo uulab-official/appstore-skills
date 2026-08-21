@@ -1,0 +1,4 @@
+interface:
+  display_name: "Play Store Assets"
+  short_description: "Prepare Android store assets and QA"
+  default_prompt: "Analyze this Android app and prepare a Google Play-focused asset package with icon, real screenshots, optional feature graphic, manifest, and QA."

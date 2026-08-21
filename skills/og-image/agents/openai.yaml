@@ -1,0 +1,4 @@
+interface:
+  display_name: "OG Image"
+  short_description: "Create branded link-preview images"
+  default_prompt: "Analyze this page and its brand context, then create a grounded OG image with optional metadata integration and QA."

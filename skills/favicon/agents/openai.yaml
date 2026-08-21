@@ -1,0 +1,4 @@
+interface:
+  display_name: "Favicon"
+  short_description: "Create a compact web icon family"
+  default_prompt: "Analyze this web project and create a recognizable favicon family with optional integration links and QA."
