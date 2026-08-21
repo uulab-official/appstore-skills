@@ -252,6 +252,42 @@ class PrepareReleaseHandoffTests(unittest.TestCase):
             self.assertIn('provider_registry_owner: "project"', result.stdout)
             self.assertIn('provider_selection: "explicit"', result.stdout)
 
+    def test_project_facts_provider_is_a_technical_handoff_check(self) -> None:
+        with TemporaryDirectory() as directory:
+            project = Path(directory) / "app"
+            output = project / "store-assets"
+            project.mkdir()
+            output.mkdir()
+            (project / "package.json").write_text("{}\n", encoding="utf-8")
+            (project / "README.md").write_text("# Example App\n", encoding="utf-8")
+            create_output(output, with_evidence=False, with_capture=False)
+            (output / "evidence").mkdir()
+            (output / "evidence" / "project-facts.yml").write_text(
+                """schema_version: 1
+project_name: Example App
+category: baseball companion
+audience: baseball fans
+features: [live scores]
+source_paths: [README.md, package.json]
+assumptions: []
+private_data_screen: pass
+inspected_at: 2026-08-21T12:00:00Z
+source: project-owned discovery record
+""",
+                encoding="utf-8",
+            )
+
+            result = self.run_script(
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--provider", "project-facts",
+                "--format", "summary",
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn("pass: project-evidence:project-facts", result.stdout)
+            self.assertIn("Release handoff: blocked", result.stdout)
+
     def test_fail_on_pending_approval_is_opt_in(self) -> None:
         with TemporaryDirectory() as directory:
             project = Path(directory) / "app"

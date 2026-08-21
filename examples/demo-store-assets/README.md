@@ -21,6 +21,8 @@ screen captures.
 - an opt-in, read-only evidence provider registry that keeps missing build and
   capture manifests blocked, with the project-owned registry selected
   explicitly and kept inside the fixture root
+- a project-facts evidence record that separates fictional facts, assumptions,
+  source paths, and privacy screening
 - a pending human-approval record and dry-run release handoff report with
   publishing permanently marked `not-run`
 - evidence-backed English store-copy draft

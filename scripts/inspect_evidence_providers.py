@@ -280,6 +280,76 @@ def provider_path_error(provider: dict[str, str], output_root: Path) -> str | No
     return None
 
 
+def inspect_project(
+    provider: dict[str, str],
+    project_root: Path,
+    output_root: Path,
+    max_age_days: int | None = None,
+) -> dict[str, object]:
+    provider_id = provider["id"]
+    evidence_path = output_root / provider["evidence_path"]
+    if not evidence_path.is_file():
+        return result(provider_id, "project", "blocked", f"missing {provider['evidence_path']}")
+    fields, errors = read_top_level_fields(evidence_path)
+    required = parse_list(provider.get("required_fields", ""))
+    missing = [field for field in required if not fields.get(field)]
+    if missing:
+        errors.append("missing fields: " + ", ".join(missing))
+
+    list_values: dict[str, list[str]] = {}
+    for field in ("features", "source_paths", "assumptions"):
+        raw_value = fields.get(field, "").strip()
+        if raw_value and not (raw_value.startswith("[") and raw_value.endswith("]")):
+            errors.append(f"{field} must be an explicit list")
+        list_values[field] = parse_list(raw_value)
+    if fields.get("features") and not list_values["features"]:
+        errors.append("features must contain at least one item")
+    if fields.get("source_paths") and not list_values["source_paths"]:
+        errors.append("source_paths must contain at least one item")
+
+    project_resolved = project_root.resolve()
+    seen_source_paths: set[str] = set()
+    for source_path in list_values["source_paths"]:
+        relative = Path(source_path)
+        path_key = relative.as_posix()
+        if path_key in seen_source_paths:
+            errors.append(f"source path is duplicated: {source_path}")
+        else:
+            seen_source_paths.add(path_key)
+        if relative.is_absolute() or ".." in relative.parts:
+            errors.append(f"source path escapes project root: {source_path}")
+            continue
+        resolved = (project_root / relative).resolve()
+        try:
+            resolved.relative_to(project_resolved)
+        except ValueError:
+            errors.append(f"source path escapes project root: {source_path}")
+            continue
+        if not resolved.exists():
+            errors.append(f"source path is missing: {source_path}")
+
+    if fields.get("private_data_screen") != "pass":
+        errors.append("private_data_screen must be pass")
+    if fields.get("inspected_at") and not valid_timestamp(fields["inspected_at"]):
+        errors.append("inspected_at is not an ISO-8601 timestamp")
+    if fields.get("inspected_at"):
+        stale_error = freshness_error(
+            "project evidence inspected_at",
+            fields["inspected_at"],
+            max_age_days,
+        )
+        if stale_error:
+            errors.append(stale_error)
+    if errors:
+        return result(provider_id, "project", "blocked", "; ".join(errors))
+    return result(
+        provider_id,
+        "project",
+        "pass",
+        f"validated {provider['evidence_path']} with {len(list_values['source_paths'])} source path(s)",
+    )
+
+
 def inspect_build(
     provider: dict[str, str],
     output_root: Path,
@@ -481,6 +551,13 @@ def inspect_provider(
             require_current_revision=require_current_revision,
             expected_platforms=expected_platforms,
         )
+    if provider["kind"] == "project":
+        return inspect_project(
+            provider,
+            project_root,
+            output_root.resolve(),
+            max_age_days=max_age_days,
+        )
     return inspect_simulator(
         provider,
         output_root.resolve(),
@@ -508,7 +585,7 @@ def main() -> int:
     parser.add_argument(
         "--max-age-days",
         type=int,
-        help="Optionally block build/capture evidence older than this many days.",
+        help="Optionally block selected build/project/capture evidence older than this many days.",
     )
     parser.add_argument(
         "--require-current-revision",

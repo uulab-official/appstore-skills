@@ -129,8 +129,8 @@ explicit human decision record. Add `--max-evidence-age-days` when a project
 needs terminal policy, accessibility, or privacy evidence to be refreshed on a
 defined cadence; this gate is opt-in.
 The same option can be passed to the provider-backed release handoff to block
-stale build or simulator evidence; without it, timestamp checks remain
-format-only.
+stale project, build, or simulator evidence; without it, timestamp checks
+remain format-only.
 Add `--require-current-revision` when the build evidence must correspond to
 the current Git checkout; this strict source binding is also opt-in.
 Add `--locale` when source captures must correspond to a specific localized
@@ -139,6 +139,10 @@ Add `--device-family` when captures must correspond to a named iPhone, iPad,
 or Android device family; no family is inferred when omitted.
 Add `--require-scope-coverage` when every requested platform/locale/device
 family combination must have a source capture.
+
+Add `--provider project-facts` when product discovery should be checked before
+generation. It validates `evidence/project-facts.yml`, including explicit
+assumptions, project-root source paths, and `private_data_screen: pass`.
 
 For project-owned evidence integrations, keep `evidence-providers.yml` under
 the project root with `provider_set.owner: project` and

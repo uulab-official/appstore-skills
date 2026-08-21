@@ -10,6 +10,9 @@ The registry in
 - `build-record` reads `evidence/build.yml` and checks that the inspected
   revision, artifact identity, target platform, source, and timestamp are
   recorded.
+- `project-facts` reads `evidence/project-facts.yml`, checks product facts and
+  assumptions are explicit, confirms source paths exist under the project
+  root, and requires a passing private-data screen.
 - `simulator-source-captures` reads `evidence/captures.yml`, checks capture
   metadata, confirms each path stays under `screenshots/source/`, rejects
   duplicate manifest paths, and verifies basic PNG/JPEG/WebP file signatures.
@@ -32,6 +35,28 @@ Pass that file explicitly with `--provider-file` and select each provider with
 project-owned registry outside the project root is blocked, as are provider
 paths that escape the output root; each provider must keep `side_effects: none`.
 The handoff report records the registry owner and explicit-selection contract.
+
+### Project facts evidence
+
+Create `evidence/project-facts.yml` when product discovery should be checked
+before generating store copy or visual directions:
+
+```yaml
+schema_version: 1
+project_name: Example App
+category: baseball companion
+audience: baseball fans
+features: [live scores, game alerts]
+source_paths: [README.md, package.json]
+assumptions: []
+private_data_screen: pass
+inspected_at: "2026-08-21T12:00:00Z"
+source: project-owned discovery record
+```
+
+The provider is structural evidence, not a product approval. Missing source
+files, duplicated or escaping paths, unrecorded assumptions, and a privacy
+screen other than `pass` remain blocked.
 
 ## Build evidence
 
@@ -96,9 +121,10 @@ provider. With a provider selected, the provider remains read-only and its
 validated result replaces the corresponding handoff check.
 
 Use `--max-age-days <days>` with the inspector or
-`--max-evidence-age-days <days>` with the handoff when build and capture
-evidence must be refreshed on a cadence. These options are opt-in and block
-stale or future-dated timestamps. To bind `build-record` to the current Git
+`--max-evidence-age-days <days>` with the handoff when selected build,
+project-facts, and capture evidence must be refreshed on a cadence. These
+options are opt-in and block stale or future-dated timestamps. To bind
+`build-record` to the current Git
 checkout, add `--require-current-revision` to either command. Exact revisions
 and unambiguous hexadecimal prefixes are accepted; a non-Git project or a
 mismatch remains blocked in this strict mode.

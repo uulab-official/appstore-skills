@@ -8,7 +8,8 @@ from pathlib import Path
 import re
 
 
-ALLOWED_KINDS = {"build", "simulator"}
+ALLOWED_KINDS = {"build", "project", "simulator"}
+REQUIRED_KINDS = {"build", "simulator"}
 ALLOWED_STATUSES = {"draft", "review", "verified", "blocked"}
 ALLOWED_OWNERS = {"repository", "project"}
 FIELD_LINE = re.compile(r"^\s{4}([a-z][a-z0-9_-]*):\s*(.*?)\s*$")
@@ -133,7 +134,7 @@ def validate(path: Path) -> list[str]:
         if kind == "simulator" and not record.get("capture_root"):
             errors.append(f"{prefix}.capture_root is required for simulator providers")
 
-    missing_kinds = ALLOWED_KINDS - seen_kinds
+    missing_kinds = REQUIRED_KINDS - seen_kinds
     if missing_kinds:
         errors.append(f"{path}: missing provider kinds {sorted(missing_kinds)}")
     return errors

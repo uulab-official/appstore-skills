@@ -42,6 +42,8 @@
 - The evidence provider registry is explicitly opt-in and read-only; its build
   and simulator providers report missing evidence without running a project
   command.
+- The project-facts provider validates the fictional product record, its two
+  project-owned source paths, explicit assumptions, and passing privacy screen.
 - The release handoff was exercised in dry-run mode; it reports blockers and
   never runs a build, simulator, upload, or publish action.
 - The release approval record is explicit and remains `pending`; technical

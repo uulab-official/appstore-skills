@@ -33,4 +33,6 @@ Pass the same evidence paths into `brand-context.yml`, `manifest.yml`,
 they do not replace current platform documentation or human approval. For
 existing build and capture records, use the opt-in readers in
 [`evidence-providers.yml`](evidence-providers.yml); they add field and file
-integrity checks without executing project commands.
+integrity checks without executing project commands. Use `project-facts` when
+the project discovery record should be checked for source paths, explicit
+assumptions, and a passing private-data screen before visual generation.

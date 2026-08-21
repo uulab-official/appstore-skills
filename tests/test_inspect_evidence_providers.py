@@ -53,6 +53,27 @@ captures:
     )
 
 
+def create_project_facts(project: Path, output: Path, private_data_screen: str = "pass") -> None:
+    (project / "README.md").write_text("# Example App\n", encoding="utf-8")
+    (project / "package.json").write_text("{}\n", encoding="utf-8")
+    evidence = output / "evidence"
+    evidence.mkdir(exist_ok=True)
+    (evidence / "project-facts.yml").write_text(
+        f"""schema_version: 1
+project_name: Example App
+category: baseball companion
+audience: baseball fans
+features: [live scores, game alerts]
+source_paths: [README.md, package.json]
+assumptions: []
+private_data_screen: {private_data_screen}
+inspected_at: 2026-08-21T12:00:00Z
+source: project-owned discovery record
+""",
+        encoding="utf-8",
+    )
+
+
 def init_git_project(project: Path) -> str:
     (project / "app.txt").write_text("fixture\n", encoding="utf-8")
     subprocess.run(
@@ -115,6 +136,99 @@ class InspectEvidenceProvidersTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             self.assertIn("pass: build-record", result.stdout)
             self.assertIn("pass: simulator-source-captures", result.stdout)
+
+    def test_project_facts_provider_passes_with_project_sources(self) -> None:
+        with TemporaryDirectory() as directory:
+            project = Path(directory) / "app"
+            output = project / "store-assets"
+            project.mkdir()
+            output.mkdir()
+            create_project_facts(project, output)
+
+            result = self.run_inspector(
+                "--provider-file", str(PROVIDER_FILE),
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--provider", "project-facts",
+                "--fail-on-blocked",
+            )
+
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertIn("pass: project-facts", result.stdout)
+            self.assertIn("2 source path(s)", result.stdout)
+
+    def test_project_facts_provider_blocks_missing_source_path(self) -> None:
+        with TemporaryDirectory() as directory:
+            project = Path(directory) / "app"
+            output = project / "store-assets"
+            project.mkdir()
+            output.mkdir()
+            create_project_facts(project, output)
+            facts = output / "evidence" / "project-facts.yml"
+            facts.write_text(
+                facts.read_text(encoding="utf-8").replace(
+                    "source_paths: [README.md, package.json]",
+                    "source_paths: [README.md, missing-screen.md]",
+                ),
+                encoding="utf-8",
+            )
+
+            result = self.run_inspector(
+                "--provider-file", str(PROVIDER_FILE),
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--provider", "project-facts",
+                "--fail-on-blocked",
+            )
+
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("source path is missing: missing-screen.md", result.stdout)
+
+    def test_project_facts_provider_blocks_source_path_escape(self) -> None:
+        with TemporaryDirectory() as directory:
+            project = Path(directory) / "app"
+            output = project / "store-assets"
+            project.mkdir()
+            output.mkdir()
+            create_project_facts(project, output)
+            facts = output / "evidence" / "project-facts.yml"
+            facts.write_text(
+                facts.read_text(encoding="utf-8").replace(
+                    "source_paths: [README.md, package.json]",
+                    "source_paths: [README.md, ../outside.txt]",
+                ),
+                encoding="utf-8",
+            )
+
+            result = self.run_inspector(
+                "--provider-file", str(PROVIDER_FILE),
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--provider", "project-facts",
+                "--fail-on-blocked",
+            )
+
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("source path escapes project root: ../outside.txt", result.stdout)
+
+    def test_project_facts_provider_blocks_unapproved_private_data_screen(self) -> None:
+        with TemporaryDirectory() as directory:
+            project = Path(directory) / "app"
+            output = project / "store-assets"
+            project.mkdir()
+            output.mkdir()
+            create_project_facts(project, output, private_data_screen="pending")
+
+            result = self.run_inspector(
+                "--provider-file", str(PROVIDER_FILE),
+                "--project-root", str(project),
+                "--output-root", str(output),
+                "--provider", "project-facts",
+                "--fail-on-blocked",
+            )
+
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("private_data_screen must be pass", result.stdout)
 
     def test_missing_capture_manifest_is_informational_by_default(self) -> None:
         with TemporaryDirectory() as directory:

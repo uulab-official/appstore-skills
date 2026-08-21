@@ -21,16 +21,18 @@ evidence; it does not build, launch a simulator, upload, submit, or publish.
 
 Provider-backed checks are opt-in. Use `build-record` for a recorded build
 identity and `simulator-source-captures` for a capture manifest plus real image
-files. The providers only read existing files; they never invoke a build,
+files. Use `project-facts` for a project-owned discovery record. The providers
+only read existing files; they never invoke a build,
 simulator, upload, or publish command.
 For a project-owned provider registry, keep the file under the project root,
 set `provider_set.owner: project` and `provider_set.selection: explicit`, and
 pass it with `--provider-file`. The generated handoff records this ownership
 and selection metadata; it never auto-discovers project providers.
 
-The handoff is `blocked` when build identity or simulator evidence is missing,
-or when the approval record is invalid, rejected, or expired. If technical
-checks pass but approval is not recorded, the status is `pending_approval`.
+The handoff is `blocked` when a selected technical provider is missing or
+invalid, when build identity or simulator evidence is missing, or when the
+approval record is invalid, rejected, or expired. If technical checks pass but
+approval is not recorded, the status is `pending_approval`.
 Only complete technical evidence plus a valid `approved` record produces
 `ready_for_handoff`; that status still does not mean submission or store
 acceptance.

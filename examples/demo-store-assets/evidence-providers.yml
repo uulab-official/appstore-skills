@@ -17,6 +17,15 @@ providers:
     proves: The inspected build identity and source revision are recorded without running a build.
     side_effects: none
     required_checks: [file-exists, required-fields, timestamp, revision-recorded]
+  - id: project-facts
+    kind: project
+    status: review
+    enabled_by_default: false
+    evidence_path: evidence/project-facts.yml
+    required_fields: [project_name, category, audience, features, source_paths, assumptions, private_data_screen, inspected_at, source]
+    proves: Product facts and assumptions are separated and grounded in project-owned source paths without executing project commands.
+    side_effects: none
+    required_checks: [file-exists, required-fields, source-paths, facts-separated-from-assumptions, private-data-screen, timestamp]
   - id: simulator-source-captures
     kind: simulator
     status: blocked

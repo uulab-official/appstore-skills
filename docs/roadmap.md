@@ -104,7 +104,7 @@ reviewable commits.
 ## Longer term
 
 - More localization and terminology tooling
-- Provider integrations for project-specific, user-approved evidence sources
+- Project-facts provider for project-specific, user-approved product evidence
 
 ## Scope rule
 

@@ -282,6 +282,15 @@ def prepare_handoff(
     approval_check, approval_path = human_approval_check(approval_file)
     checks.append(approval_check)
     for provider_id, provider_result in provider_results.items():
+        if provider_result["kind"] == "project":
+            checks.append(
+                check(
+                    f"project-evidence:{provider_id}",
+                    "pass" if provider_result["status"] == "pass" else "blocked",
+                    f"provider {provider_id}: {provider_result['details']}",
+                )
+            )
+    for provider_id, provider_result in provider_results.items():
         if provider_result["kind"] == "unknown":
             checks.append(
                 check(
@@ -474,7 +483,7 @@ def main() -> int:
     parser.add_argument(
         "--max-evidence-age-days",
         type=int,
-        help="Optionally block selected build/capture evidence older than this many days.",
+        help="Optionally block selected build/project/capture evidence older than this many days.",
     )
     parser.add_argument(
         "--require-current-revision",

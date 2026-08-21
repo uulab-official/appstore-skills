@@ -13,6 +13,9 @@ changes.
 - Mark assumptions and unknowns explicitly.
 - When available, record project, build, simulator, and release evidence with
   the evidence adapter map; missing evidence must remain visible as a blocker.
+- When `project-facts` is selected, product facts must name project-owned
+  source paths, separate assumptions, and pass the private-data screen before
+  they can support generated copy or visual directions.
 - Never present a concept, mockup, or synthetic UI as a shipped product screen.
 
 ### 1.1 User-input fidelity
@@ -95,9 +98,9 @@ changes.
   but must never infer human approval or legal/accessibility compliance. When
   freshness is enabled, stale or future-dated terminal evidence must remain
   blocked rather than being treated as current.
-- Provider-backed build and simulator evidence must remain read-only and
-  opt-in; when freshness is enabled, stale or future-dated `inspected_at` and
-  `captured_at` values must block the handoff.
+- Provider-backed project, build, and simulator evidence must remain read-only
+  and opt-in; when freshness is enabled, stale or future-dated `inspected_at`
+  and `captured_at` values must block the handoff.
 - Project-owned provider registries must be inside the project root, selected
   explicitly, and constrained to output-root-relative evidence paths; they
   must never execute project commands or read outside the package.

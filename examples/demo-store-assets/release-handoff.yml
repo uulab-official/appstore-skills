@@ -15,6 +15,7 @@ handoff:
   provider_file: examples/demo-store-assets/evidence-providers.yml
   providers:
     - build-record
+    - project-facts
     - simulator-source-captures
   approval_file: examples/demo-store-assets/release-approval.yml
   platforms:
@@ -34,6 +35,9 @@ handoff:
     - id: build-identity
       status: blocked
       details: provider build-record: missing evidence/build.yml
+    - id: project-evidence:project-facts
+      status: pass
+      details: provider project-facts: validated evidence/project-facts.yml with 2 source path(s)
     - id: simulator-captures
       status: blocked
       details: provider simulator-source-captures: missing evidence/captures.yml

@@ -80,6 +80,9 @@ If a project supplies its own registry, keep it under the project root with
 `provider_set.owner: project` and `provider_set.selection: explicit`. Select
 it explicitly with `--provider-file` and `--provider`; provider paths must stay
 inside the output root.
+The optional `project-facts` provider reads `evidence/project-facts.yml` to
+check product facts, assumptions, project-owned source paths, and the privacy
+screen before those facts are used for store copy or visual directions.
 
 Optionally preserve the read-only handoff result as `release-handoff.yml`.
 Keep `mode: dry-run` and `publish_status: not-run`; a handoff report is a

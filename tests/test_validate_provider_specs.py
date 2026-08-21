@@ -24,6 +24,19 @@ class ValidateProviderSpecsTests(unittest.TestCase):
 
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
+    def test_project_facts_provider_remains_optional(self) -> None:
+        source = REGISTRY.read_text(encoding="utf-8")
+        start = source.index("  - id: project-facts\n")
+        end = source.index("  - id: simulator-source-captures\n", start)
+        legacy = source[:start] + source[end:]
+        with TemporaryDirectory() as directory:
+            path = Path(directory) / "legacy-providers.yml"
+            path.write_text(legacy, encoding="utf-8")
+
+            result = self.run_validator(path)
+
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
     def test_side_effects_are_rejected(self) -> None:
         source = REGISTRY.read_text(encoding="utf-8")
         invalid = source.replace("    side_effects: none\n", "    side_effects: shell\n", 1)
