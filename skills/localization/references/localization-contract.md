@@ -26,6 +26,8 @@ The check verifies:
 - every glossary entry has a status, source term, and mapping for every locale
 - required localized terms occur in the corresponding copy file
 - `do_not_use` terms do not occur in the copy file
+- Latin and numeric terms use normalized token boundaries; CJK terms retain
+  substring matching so attached particles remain valid
 
 This is a terminology, structure, and review-record check, not a fluency or
 cultural review. The validator records fields; it cannot prove who performed

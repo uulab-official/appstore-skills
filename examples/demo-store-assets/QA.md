@@ -74,7 +74,9 @@
   read-only checks used by the handoff are inspectable.
 - The localization plan includes en-US source copy and a ko-KR review draft;
   the terminology validator confirms required mappings, forbidden terms, and
-  matching Apple and Google Play field structure.
+  matching Apple and Google Play field structure. Latin terminology uses token
+  boundaries while Korean terms continue to match naturally with attached
+  particles.
 - The copy experiment records two reversible variants, hypotheses, manual
   measurement, and an append-only review history; both approvals remain
   `pending`.

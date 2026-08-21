@@ -7,6 +7,7 @@ import argparse
 from datetime import datetime
 from pathlib import Path
 import re
+import unicodedata
 
 
 ALLOWED_PLAN_STATUSES = {"source", "draft", "review", "verified", "blocked"}
@@ -18,6 +19,7 @@ ENTRY_LINE = re.compile(r"^\s{4}-\s+id:\s*(.*?)\s*$")
 ENTRY_FIELD_LINE = re.compile(r"^\s{6}([a-z][a-z0-9_-]*):\s*(.*?)\s*$")
 COPY_FIELD_LINE = re.compile(r"^(\s{0,2})([a-z][a-z0-9_-]*):\s*(.*?)\s*$")
 COPY_PLATFORM_SECTIONS = {"apple", "google_play"}
+ASCII_ALNUM = re.compile(r"[a-z0-9]")
 
 
 def unquote(value: str) -> str:
@@ -25,6 +27,22 @@ def unquote(value: str) -> str:
     if len(value) >= 2 and value[0] == value[-1] and value[0] in {'"', "'"}:
         return value[1:-1]
     return value
+
+
+def normalize_for_matching(value: str) -> str:
+    return unicodedata.normalize("NFKC", value).casefold()
+
+
+def contains_term(text: str, term: str) -> bool:
+    """Match Latin/number terms by token while preserving CJK substring matching."""
+    normalized_text = normalize_for_matching(text)
+    normalized_term = normalize_for_matching(term).strip()
+    if not normalized_term:
+        return False
+    if ASCII_ALNUM.search(normalized_term):
+        pattern = rf"(?<![a-z0-9]){re.escape(normalized_term)}(?![a-z0-9])"
+        return re.search(pattern, normalized_text) is not None
+    return normalized_term in normalized_text
 
 
 def parse_list(value: str) -> list[str]:
@@ -248,15 +266,14 @@ def validate(
                 continue
             if str(entry.get("required", "false")).lower() != "true":
                 continue
-            copy_text = copy_texts.get(code, "").lower()
-            if str(localized).lower() not in copy_text:
+            copy_text = copy_texts.get(code, "")
+            if not contains_term(copy_text, str(localized)):
                 errors.append(f"{prefix}: required term missing from {code} copy")
         forbidden = entry.get("do_not_use", [])
         if isinstance(forbidden, list):
             for code, copy_text in copy_texts.items():
-                lower_copy = copy_text.lower()
                 for term in forbidden:
-                    if str(term).lower() in lower_copy:
+                    if contains_term(copy_text, str(term)):
                         errors.append(f"{prefix}: do_not_use term {term!r} found in {code} copy")
     return errors
 

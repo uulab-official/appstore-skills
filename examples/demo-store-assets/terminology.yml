@@ -6,7 +6,7 @@ glossary:
       status: approved
       required: true
       source: task
-      en-us: task
+      en-us: tasks
       ko-kr: 할 일
       do_not_use: [chore]
     - id: reminders

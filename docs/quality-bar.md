@@ -74,6 +74,8 @@ changes.
   the source locale; missing or untracked platform fields must block validation.
 - Treat `verified` as a review record, not a translation claim: require a named
   reviewer and ISO-8601 review timestamp for both locale and copy records.
+- Use normalized, token-aware terminology checks for Latin and numeric terms;
+  do not infer fluency or cultural fit from automated substring checks.
 - Recompose visual assets for text expansion, RTL layout, and localized UI.
 - Require the designated or native reviewer before marking a locale verified.
 

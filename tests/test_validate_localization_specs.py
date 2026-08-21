@@ -90,6 +90,38 @@ class ValidateLocalizationSpecsTests(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("do_not_use term 'task'", result.stdout)
 
+    def test_required_latin_term_does_not_match_inside_longer_word(self) -> None:
+        with TemporaryDirectory() as directory:
+            package = Path(directory)
+            plan, glossary = self.create_copy_fixture(package)
+            glossary.write_text(
+                glossary.read_text(encoding="utf-8").replace("en-us: tasks", "en-us: task"),
+                encoding="utf-8",
+            )
+            source = package / "metadata/store-copy.en-US.yml"
+            source.write_text(
+                source.read_text(encoding="utf-8").replace("tasks", "retasks"),
+                encoding="utf-8",
+            )
+
+            result = self.run_validator(plan, glossary, package)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("required term missing from en-US copy", result.stdout)
+
+    def test_forbidden_latin_term_does_not_match_inside_longer_word(self) -> None:
+        with TemporaryDirectory() as directory:
+            package = Path(directory)
+            plan, glossary = self.create_copy_fixture(package)
+            glossary.write_text(
+                glossary.read_text(encoding="utf-8").replace("do_not_use: [chore]", "do_not_use: [task]"),
+                encoding="utf-8",
+            )
+
+            result = self.run_validator(plan, glossary, package)
+
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
     def test_target_copy_must_preserve_source_platform_fields(self) -> None:
         with TemporaryDirectory() as directory:
             package = Path(directory)

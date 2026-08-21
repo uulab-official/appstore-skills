@@ -109,3 +109,5 @@ designated or native reviewer confirms the localized result.
 - Keep locale codes consistent with the target platform and project metadata.
 - Do not mark a locale or copy `verified` without a named reviewer and review
   timestamp in the corresponding records.
+- Treat automated glossary checks as structural terminology gates, not proof of
+  fluency, cultural fit, or final human approval.
