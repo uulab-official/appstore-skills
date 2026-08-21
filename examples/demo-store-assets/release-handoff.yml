@@ -1,0 +1,36 @@
+schema_version: 1
+handoff:
+  mode: dry-run
+  status: blocked
+  generated_at: "2026-08-21T00:00:00Z"
+  project_root: .
+  output_root: examples/demo-store-assets
+  source_revision: fixture-not-applicable
+  platforms:
+    - apple
+    - google-play
+    - web
+  publish_status: not-run
+  checks:
+    - id: project-root
+      status: pass
+      details: fictional review fixture is readable
+    - id: build-config
+      status: blocked
+      details: no real app build configuration is included
+    - id: build-identity
+      status: blocked
+      details: no real build revision or artifact identity is available
+    - id: simulator-captures
+      status: blocked
+      details: no real iOS or Android source captures are available
+    - id: store-output
+      status: pass
+      details: required package files exist
+    - id: release-report
+      status: pass
+      details: blockers, warnings, and human review state are recorded
+  next_actions:
+    - Provide the real app project and inspected build revision.
+    - Capture real iOS/Android screens under screenshots/source/.
+    - Run current platform checks and request human release approval.

@@ -113,6 +113,10 @@ additional locales, read [`../localization/SKILL.md`](../localization/SKILL.md)
 after the source-locale assets are approved. Run
 [`../release-check/SKILL.md`](../release-check/SKILL.md) over the final output
 before calling the package ready for human submission review.
+If the project and release evidence are available, run the read-only handoff
+described in
+[`references/release-handoff.md`](references/release-handoff.md). Never treat
+its output as an upload or submission result.
 
 ### 6. Verify platform rules and package outputs
 

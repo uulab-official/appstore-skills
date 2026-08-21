@@ -395,6 +395,12 @@ assets:
     status: review
     source: project sources, build identity, simulator captures, and release review
     checks: [facts-separated, build-identity, capture-fidelity, blocker-state]
+  - path: release-handoff.yml
+    kind: release-handoff-report
+    platform: shared
+    status: blocked
+    source: evidence-adapters.yml and release-report.md
+    checks: [dry-run, publish-disabled, blockers-recorded, next-actions]
   - path: metadata/store-copy.en-US.yml
     kind: store-copy
     platform: shared

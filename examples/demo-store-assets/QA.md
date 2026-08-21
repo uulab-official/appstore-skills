@@ -39,6 +39,8 @@
 - The evidence adapter map separates project facts, build identity, simulator
   captures, and release review; unavailable build and simulator evidence stays
   `blocked`.
+- The release handoff was exercised in dry-run mode; it reports blockers and
+  never runs a build, simulator, upload, or publish action.
 - Every manifest asset exists and is non-empty.
 
 ## Blocked or review-required
@@ -55,6 +57,8 @@
   available to verify those branches.
 - Build and simulator evidence adapters are blocked because this repository has
   no app project, build artifact, or real device capture.
+- The handoff remains `blocked` until build identity and real source captures
+  are supplied.
 - Store copy is a draft and has not passed product, policy, or platform field
   review.
 

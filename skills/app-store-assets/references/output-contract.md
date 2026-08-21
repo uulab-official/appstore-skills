@@ -72,6 +72,10 @@ separate project facts, build identity, real screen captures, and release
 approvals. Missing build or simulator evidence is a blocker for claims that
 depend on it.
 
+Optionally preserve the read-only handoff result as `release-handoff.yml`.
+Keep `mode: dry-run` and `publish_status: not-run`; a handoff report is a
+review aid, not a submission or upload record.
+
 ## Recommended layout
 
 ```text

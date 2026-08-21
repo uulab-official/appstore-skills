@@ -18,6 +18,7 @@ screen captures.
   execution-time documentation checks
 - a project/build/simulator/release evidence map that keeps missing real-app
   evidence blocked
+- a dry-run release handoff report with publishing permanently marked `not-run`
 - evidence-backed English store-copy draft
 - manifest, QA, and release-check output
 

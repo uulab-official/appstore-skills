@@ -124,7 +124,7 @@ guarantee store approval, or replace legal and accessibility review.
 
 ## Status
 
-The current public milestone is `v0.5.0` with operational
+The current public milestone is `v0.6.0` with operational
 validation tooling:
 
 - app icon generation workflow
@@ -144,6 +144,7 @@ validation tooling:
 - Apple, Google Play, Web, Amazon Appstore, and Samsung Galaxy Store adapter
   maps with execution-time checks
 - project, build, simulator, and release evidence adapter maps
+- safe dry-run release handoff reports with publish disabled
 
 The repository also includes deterministic, dependency-free checks for skill
 metadata and generated output manifests:
@@ -158,6 +159,10 @@ python scripts/validate_adapter_specs.py \
   skills/app-store-assets/references/platform-adapters.yml
 python scripts/validate_evidence_specs.py \
   skills/app-store-assets/references/evidence-adapters.yml
+python scripts/prepare_release_handoff.py \
+  --project-root ./my-app \
+  --output-root ./my-app/store-assets \
+  --format summary
 python -m unittest discover -s tests
 python scripts/validate_store_output.py ./store-assets
 python scripts/annotate_release_report.py ./store-assets/release-report.md

@@ -37,6 +37,11 @@ reviewable commits.
   documentation references
 - Project, build, simulator, and release-system evidence adapters
 
+### v0.6.0 — Safe release-system handoff
+
+- Optional dry-run handoff with build, simulator, and release evidence
+- Publish-disabled handoff reports and explicit blocker gates
+
 ### Operational tooling
 
 - Dependency-free Skill metadata validator
@@ -51,16 +56,15 @@ reviewable commits.
 
 ## Next
 
-### v0.6.0 — Safe release-system handoff
+### v0.7.0 — Approval-gated handoff
 
-- Optional dry-run integrations with build, simulator, and release systems
-- Additional platform profiles when a current official workflow is available
+- Optional human-approved submission handoff checks without automatic publishing
+- Build and simulator capture providers that remain opt-in and read-only
 
 ## Longer term
 
 - More localization and terminology tooling
 - Store-copy experiments with approval history
-- Optional submission handoff checks without automatic publishing
 
 ## Scope rule
 

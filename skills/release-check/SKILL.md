@@ -93,6 +93,12 @@ This emits blocker and warning annotations and appends a Step Summary when the
 runner provides `GITHUB_STEP_SUMMARY`; use `--fail-on-blockers` only when the
 workflow should gate on the report status.
 
+For a final read-only handoff, run
+`python scripts/prepare_release_handoff.py --project-root <app> --output-root <store-assets> --format summary`.
+Read [the handoff contract](../app-store-assets/references/release-handoff.md)
+before using it. It must remain a dry-run and must never be treated as a
+submission record.
+
 ## Non-goals
 
 - Do not upload or submit to App Store Connect or Play Console.

@@ -43,6 +43,10 @@ facts, build identity, real simulator/device captures, and release approvals.
 Do not make the demo fixture appear verified by filling a missing evidence
 source with a placeholder.
 
+Keep release handoff code read-only by default. Tests must demonstrate that it
+does not invoke build, simulator, upload, or publish commands, and that
+`publish_status` remains `not-run`.
+
 Release reports can be surfaced in pull requests with
 `annotate_release_report.py`; keep blocker and warning annotations factual and
 do not turn the demo fixture's intentional `blocked` status into a repository

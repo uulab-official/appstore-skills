@@ -1,0 +1,269 @@
+#!/usr/bin/env python3
+"""Prepare a read-only dry-run handoff from an app project to store assets."""
+
+from __future__ import annotations
+
+import argparse
+from datetime import datetime, timezone
+import json
+from pathlib import Path
+import subprocess
+import sys
+
+
+IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg", ".webp"}
+BUILD_SIGNAL_NAMES = (
+    "package.json",
+    "app.json",
+    "app.config.js",
+    "app.config.ts",
+    "eas.json",
+    "gradlew",
+    "build.gradle",
+    "build.gradle.kts",
+    "fastlane",
+    "ios",
+    "android",
+)
+REQUIRED_OUTPUT_FILES = (
+    "brand-context.yml",
+    "manifest.yml",
+    "QA.md",
+    "release-report.md",
+)
+
+
+def quote(value: str) -> str:
+    return json.dumps(value, ensure_ascii=False)
+
+
+def git_revision(project_root: Path) -> str:
+    result = subprocess.run(
+        ["git", "-C", str(project_root), "rev-parse", "HEAD"],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    revision = result.stdout.strip()
+    return revision if result.returncode == 0 and revision else "unavailable"
+
+
+def find_build_signals(project_root: Path) -> list[str]:
+    found: list[str] = []
+    for name in BUILD_SIGNAL_NAMES:
+        if (project_root / name).exists():
+            found.append(name)
+    found.extend(path.name for path in sorted(project_root.glob("*.xcodeproj")))
+    found.extend(path.name for path in sorted(project_root.glob("*.xcworkspace")))
+    return found
+
+
+def find_capture_files(project_root: Path, output_root: Path) -> list[str]:
+    candidates = (
+        output_root / "screenshots" / "source",
+        project_root / "screenshots" / "source",
+        project_root / "assets" / "screenshots",
+        project_root / "assets" / "screens",
+    )
+    captures: list[str] = []
+    seen: set[Path] = set()
+    for directory in candidates:
+        if not directory.is_dir():
+            continue
+        for path in sorted(directory.rglob("*")):
+            if path.is_file() and path.suffix.lower() in IMAGE_SUFFIXES and path not in seen:
+                seen.add(path)
+                captures.append(str(path))
+    return captures
+
+
+def first_existing(root: Path, candidates: tuple[str, ...]) -> str | None:
+    for relative in candidates:
+        if (root / relative).is_file():
+            return relative
+    return None
+
+
+def check(check_id: str, status: str, details: str) -> dict[str, str]:
+    return {"id": check_id, "status": status, "details": details}
+
+
+def prepare_handoff(
+    project_root: Path,
+    output_root: Path,
+    platforms: list[str],
+) -> dict[str, object]:
+    project_root = project_root.resolve()
+    output_root = output_root.resolve()
+    build_signals = find_build_signals(project_root) if project_root.is_dir() else []
+    captures = find_capture_files(project_root, output_root)
+    build_evidence = first_existing(
+        output_root,
+        ("evidence/build.yml", "evidence/build.json", "build-evidence.yml", "build.yml"),
+    )
+    checks: list[dict[str, str]] = []
+
+    if project_root.is_dir():
+        checks.append(check("project-root", "pass", str(project_root)))
+    else:
+        checks.append(check("project-root", "blocked", "project root does not exist"))
+
+    if build_signals:
+        checks.append(
+            check("build-config", "pass", "found: " + ", ".join(build_signals))
+        )
+    else:
+        checks.append(check("build-config", "blocked", "no supported build signal found"))
+
+    if build_evidence:
+        checks.append(check("build-identity", "pass", build_evidence))
+    else:
+        checks.append(
+            check(
+                "build-identity",
+                "blocked",
+                "no evidence/build.yml or equivalent build record found",
+            )
+        )
+
+    if captures:
+        checks.append(
+            check("simulator-captures", "pass", f"found {len(captures)} image capture(s)")
+        )
+    else:
+        checks.append(
+            check(
+                "simulator-captures",
+                "blocked",
+                "no real source capture found under screenshots/source or project capture folders",
+            )
+        )
+
+    missing_output = [
+        relative for relative in REQUIRED_OUTPUT_FILES if not (output_root / relative).is_file()
+    ]
+    if not missing_output:
+        checks.append(check("store-output", "pass", "required package files exist"))
+    else:
+        checks.append(check("store-output", "blocked", "missing: " + ", ".join(missing_output)))
+
+    release_report = output_root / "release-report.md"
+    if release_report.is_file():
+        checks.append(check("release-report", "pass", str(release_report)))
+    else:
+        checks.append(check("release-report", "blocked", "release-report.md is missing"))
+
+    blocked = any(item["status"] == "blocked" for item in checks)
+    next_actions: list[str] = []
+    if not build_evidence:
+        next_actions.append("Record the inspected build revision and artifact identity in evidence/build.yml.")
+    if not captures:
+        next_actions.append("Capture real iOS/Android screens and place source images under screenshots/source/.")
+    if missing_output:
+        next_actions.append("Complete the store package contract before handoff.")
+    if not next_actions:
+        next_actions.append("Run current platform checks and request human release approval.")
+
+    return {
+        "schema_version": 1,
+        "handoff": {
+            "mode": "dry-run",
+            "status": "blocked" if blocked else "ready_for_review",
+            "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
+            "project_root": str(project_root),
+            "output_root": str(output_root),
+            "source_revision": git_revision(project_root) if project_root.is_dir() else "unavailable",
+            "platforms": platforms,
+            "publish_status": "not-run",
+            "checks": checks,
+            "next_actions": next_actions,
+        },
+    }
+
+
+def render_yaml(report: dict[str, object]) -> str:
+    handoff = report["handoff"]
+    assert isinstance(handoff, dict)
+    lines = ["schema_version: 1", "handoff:"]
+    scalar_keys = (
+        "mode",
+        "status",
+        "generated_at",
+        "project_root",
+        "output_root",
+        "source_revision",
+        "publish_status",
+    )
+    for key in scalar_keys:
+        lines.append(f"  {key}: {quote(str(handoff[key]))}")
+    platforms = handoff["platforms"]
+    lines.append("  platforms:")
+    for platform in platforms:
+        lines.append(f"    - {quote(str(platform))}")
+    lines.append("  checks:")
+    for item in handoff["checks"]:
+        lines.append(f"    - id: {quote(item['id'])}")
+        lines.append(f"      status: {quote(item['status'])}")
+        lines.append(f"      details: {quote(item['details'])}")
+    lines.append("  next_actions:")
+    for action in handoff["next_actions"]:
+        lines.append(f"    - {quote(str(action))}")
+    return "\n".join(lines) + "\n"
+
+
+def render_summary(report: dict[str, object]) -> str:
+    handoff = report["handoff"]
+    assert isinstance(handoff, dict)
+    lines = [
+        f"Release handoff: {handoff['status']}",
+        f"Mode: {handoff['mode']}",
+        f"Publish: {handoff['publish_status']}",
+        f"Source revision: {handoff['source_revision']}",
+        "Checks:",
+    ]
+    for item in handoff["checks"]:
+        lines.append(f"- {item['status']}: {item['id']} — {item['details']}")
+    lines.append("Next actions:")
+    lines.extend(f"- {action}" for action in handoff["next_actions"])
+    return "\n".join(lines) + "\n"
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--project-root", type=Path, required=True)
+    parser.add_argument("--output-root", type=Path, required=True)
+    parser.add_argument("--platform", action="append", default=[])
+    parser.add_argument("--format", choices=("yaml", "summary"), default="yaml")
+    parser.add_argument("--output", type=Path)
+    parser.add_argument("--overwrite", action="store_true")
+    parser.add_argument("--fail-on-blocked", action="store_true")
+    args = parser.parse_args()
+
+    if not args.project_root.is_dir():
+        print(f"Project root does not exist: {args.project_root}", file=sys.stderr)
+        return 2
+    if not args.output_root.is_dir():
+        print(f"Output root does not exist: {args.output_root}", file=sys.stderr)
+        return 2
+
+    report = prepare_handoff(args.project_root, args.output_root, args.platform)
+    rendered = render_yaml(report) if args.format == "yaml" else render_summary(report)
+    if args.output:
+        if args.output.exists() and not args.overwrite:
+            print(f"Refusing to overwrite existing handoff: {args.output}", file=sys.stderr)
+            return 2
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        args.output.write_text(rendered, encoding="utf-8")
+        print(f"Wrote release handoff: {args.output}")
+    else:
+        print(rendered, end="")
+
+    handoff = report["handoff"]
+    assert isinstance(handoff, dict)
+    if args.fail_on_blocked and handoff["status"] == "blocked":
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

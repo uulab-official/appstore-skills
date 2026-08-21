@@ -87,6 +87,9 @@ changes.
 - Never overwrite a previous run silently.
 - Leave a concise delivery report that explains what was generated and what is
   still blocked.
+- If a release handoff is generated, confirm it is `dry-run`, keeps
+  `publish_status: not-run`, and reports missing build or simulator evidence
+  instead of hiding it.
 
 ## Skill acceptance criteria
 
