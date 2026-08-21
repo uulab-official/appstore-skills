@@ -26,6 +26,10 @@ generation, platform adaptation, and QA.
 The skills share a `brand-context.yml` contract so the icon, screenshots, and
 other store assets feel like one product.
 
+New here? Start with [`docs/getting-started.md`](docs/getting-started.md).
+Use [`docs/skill-map.md`](docs/skill-map.md) to choose the right workflow and
+[`docs/roadmap.md`](docs/roadmap.md) to see what is implemented next.
+
 ## Quick start
 
 Copy the skill folders into the skill directory used by your AI coding agent,
@@ -111,7 +115,7 @@ guarantee store approval, or replace legal and accessibility review.
 
 ## Status
 
-The current public milestone is `v0.3.0`:
+The current public milestone is `v0.3.0` with operational validation tooling:
 
 - app icon generation workflow
 - App Store and Google Play screenshot workflow
@@ -136,15 +140,8 @@ python scripts/validate_store_output.py ./store-assets
 The `Validate store output` GitHub Actions workflow can run the same package
 check manually against a repository-relative output directory.
 
-The next roadmap milestone focuses on operational maturity:
-
-- deterministic image and metadata validators
-- richer promotional and feature-graphic templates
-- release report integrations for CI and pull requests
-- more platform-specific adapters
-
-Later candidates include richer promotional assets, release checklists, and
-platform-specific automation where the target agent can safely support it.
+See [`docs/roadmap.md`](docs/roadmap.md) for completed milestones and the next
+operational automation scope.
 
 ## Contributing
 

@@ -1,0 +1,57 @@
+# Roadmap
+
+The roadmap describes repository scope, not an automatic promise of release
+tags or store submission support. Changes are developed on `main` in small,
+reviewable commits.
+
+## Completed
+
+### v0.1.0 — Core store assets
+
+- App icon workflow
+- App Store and Google Play screenshot workflow
+- Integrated asset orchestration
+- Shared brand context and output contract
+
+### v0.2.0 — Web and Google Play surfaces
+
+- Google Play-focused asset workflow
+- Favicon workflow with optional web integration
+- OG image workflow with optional metadata integration
+
+### v0.3.0 — Copy, locales, and release review
+
+- Evidence-backed store copy workflow
+- Localization workflow for copy and visual assets
+- Pre-submission release-check workflow
+
+### Operational tooling
+
+- Dependency-free Skill metadata validator
+- Dependency-free generated-output manifest validator
+- Unit tests for path and manifest safety checks
+- GitHub Actions validation on pushes and pull requests
+- Manual GitHub Actions workflow for repository-relative store output
+
+## Next
+
+### v0.4.0 — Asset and release automation
+
+- Deterministic image-dimension and metadata validation
+- Reusable promotional and feature-graphic templates
+- Release report annotations for pull requests
+- Additional platform-specific adapters
+
+## Longer term
+
+- More localization and terminology tooling
+- Store-copy experiments with approval history
+- Safe integrations with build, simulator, and release systems
+- Optional submission handoff checks without automatic publishing
+
+## Scope rule
+
+Keep generated assets factual, reversible, and separate from source projects.
+Verify unstable platform requirements at execution time and never turn a
+design draft into a submission claim without evidence and human review.
+

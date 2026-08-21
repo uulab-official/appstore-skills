@@ -53,9 +53,9 @@ store-assets/
 │   └── google-play/
 ├── promotional/
 ├── feature-graphic/
-├── og/
 ├── web-assets/
-│   └── favicon/
+│   ├── favicon/
+│   └── og/
 ├── metadata/
 │   └── store-copy.en-US.yml
 ├── locales/

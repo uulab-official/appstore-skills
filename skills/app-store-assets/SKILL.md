@@ -155,7 +155,9 @@ store-assets/
 │   └── google-play/
 ├── promotional/
 ├── feature-graphic/
-├── og/
+├── web-assets/
+│   ├── favicon/
+│   └── og/
 ├── metadata/
 └── QA.md
 ```

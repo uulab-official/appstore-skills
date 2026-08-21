@@ -33,10 +33,14 @@ Explain the user-facing problem, the affected skill(s), and how you validated
 the change. Include example prompts or output trees when they make behavior
 clear. Keep unrelated formatting changes out of the pull request.
 
+Documentation is part of the product. Update the relevant README or `docs/`
+page when adding a Skill, changing an output contract, changing a validation
+command, or moving a roadmap item. Keep examples runnable and avoid claiming
+that a platform requirement is permanent.
+
 ## Validation
 
 Run the repository checks that are available in your environment, including
 the skill validator described in the skill-creator guidance. If a validator
 cannot run because of a missing local dependency, report that explicitly and
 perform a manual frontmatter and file-structure check.
-
