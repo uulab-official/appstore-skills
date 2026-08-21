@@ -151,7 +151,7 @@ validation tooling:
 - reversible store-copy experiment records with approval history
 - diff-friendly reviewer handoff summaries with manifest and reviewer-assignment baselines
 - opt-in policy, accessibility, and privacy review adapters with pending-visible states
-- reviewer assignment records with reviewer scopes, evidence references, and chronological decision history
+- reviewer assignment records with reviewer scopes, adapter coverage, evidence references, and chronological decision history
 
 The repository also includes deterministic, dependency-free checks for skill
 metadata and generated output manifests:

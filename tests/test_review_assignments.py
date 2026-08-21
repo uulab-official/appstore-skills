@@ -40,6 +40,7 @@ review_assignment:
       required: true
       status: approved
       scope: [claims]
+      coverage: [policy-review]
       assigned_to: Product owner
       assigned_at: 2026-08-21T10:00:00Z
       decision: approved
@@ -77,6 +78,7 @@ review_assignment:
       required: true
       status: pending
       scope: []
+      coverage: [policy-review]
       assigned_to: ""
       assigned_at: ""
       decision: pending

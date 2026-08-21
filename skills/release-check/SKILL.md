@@ -115,6 +115,9 @@ Read [the review handoff contract](references/review-handoff.md). This summary
 does not replace `release-report.md` and never implies approval or submission.
 When a previous package is supplied, the handoff also compares reviewer
 assignment deltas; use `--previous-assignment-file` for an external baseline.
+When selecting review adapters, ensure reviewer `coverage` entries map each
+selected adapter to an owner; the generated matrix is informational and does
+not approve the adapter.
 When reviewer ownership or decision history must be explicit, start from
 [`references/review-assignment.yml`](references/review-assignment.yml), validate
 it with `scripts/validate_review_assignments.py`, and read

@@ -22,6 +22,10 @@ reference changes, and history-event count changes. Use
 `--previous-assignment-file` when the previous assignment record is stored
 outside the previous package root.
 
+When review adapters are selected with repeated `--adapter` flags, the handoff
+also renders an adapter coverage matrix from reviewer `coverage` entries. A
+missing owner is a visible warning and never an inferred pass.
+
 The generator never rewrites the source manifest or release report. It refuses
 to overwrite an existing summary unless `--overwrite` is explicit.
 

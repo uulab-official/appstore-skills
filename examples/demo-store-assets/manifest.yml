@@ -470,7 +470,7 @@ assets:
     platform: shared
     status: review
     source: release-report.md and human review owners
-    checks: [required-reviewers, review-scopes, evidence-references, decision-history, chronological-events, pending-visible]
+    checks: [required-reviewers, review-scopes, adapter-coverage, evidence-references, decision-history, chronological-events, pending-visible]
 assumptions:
   - The product and all visual assets are fictional review fixtures.
   - No real app UI or device captures are available.

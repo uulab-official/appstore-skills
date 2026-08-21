@@ -112,6 +112,15 @@ This is a read-only reviewer aid. It does not approve, submit, upload, publish, 
 - Baseline: `not-supplied`
 - No previous reviewer assignment baseline supplied.
 
+### Adapter coverage
+
+- Status: `covered`
+| adapter | status | reviewers |
+| --- | --- | --- |
+| policy-review | covered | product-owner (pending) |
+| accessibility-review | covered | native-locale-reviewer (pending) |
+| privacy-review | covered | privacy-reviewer (pending) |
+
 ## Blockers
 
 - 2 manifest asset(s) are blocked

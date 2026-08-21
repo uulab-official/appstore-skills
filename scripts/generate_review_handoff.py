@@ -148,6 +148,44 @@ def review_assignment_diff_data(
     }
 
 
+def review_assignment_coverage_data(
+    review_assignment: dict[str, object],
+    selected_adapters: list[str],
+) -> dict[str, object]:
+    if not selected_adapters:
+        return {"status": "not-checked", "rows": [], "details": "no review adapters selected"}
+    if review_assignment.get("status") in {"not-supplied", "invalid"}:
+        return {
+            "status": "unavailable",
+            "rows": [],
+            "details": "review assignment is not available for adapter coverage",
+        }
+    reviewers = review_assignment.get("reviewers", [])
+    if not isinstance(reviewers, list):
+        return {"status": "unavailable", "rows": [], "details": "reviewer rows are not available"}
+    rows: list[dict[str, object]] = []
+    for adapter_id in selected_adapters:
+        matches = [
+            {
+                "id": str(reviewer.get("id", "")),
+                "status": str(reviewer.get("status", "")),
+            }
+            for reviewer in reviewers
+            if isinstance(reviewer, dict) and adapter_id in reviewer.get("coverage", [])
+        ]
+        rows.append({
+            "adapter": adapter_id,
+            "status": "covered" if matches else "missing",
+            "reviewers": matches,
+        })
+    missing = [row["adapter"] for row in rows if row["status"] == "missing"]
+    return {
+        "status": "missing" if missing else "covered",
+        "rows": rows,
+        "details": f"missing coverage for: {', '.join(str(item) for item in missing)}" if missing else "all selected adapters have reviewer coverage",
+    }
+
+
 def build_summary(
     package_root: Path,
     previous_package_root: Path | None,
@@ -203,6 +241,7 @@ def build_summary(
         assignment_file=assignment_file,
         previous_assignment_file=previous_assignment_file,
     )
+    review_assignment_coverage = review_assignment_coverage_data(review_assignment, selected_adapters)
     if review_assignment["status"] == "invalid":
         blockers.append(f"review assignment is invalid: {review_assignment['details']}")
     elif review_assignment["status"] in {"pending", "in_review"}:
@@ -218,6 +257,10 @@ def build_summary(
         warnings.append(f"Reviewer assignment baseline is unavailable: {review_assignment_diff['details']}")
     elif review_assignment_diff.get("changes"):
         warnings.append(f"{review_assignment_diff['details']}; review the assignment delta before handoff.")
+    if review_assignment_coverage["status"] == "missing":
+        warnings.append(f"Reviewer adapter coverage is incomplete: {review_assignment_coverage['details']}.")
+    elif review_assignment_coverage["status"] == "unavailable":
+        warnings.append(f"Reviewer adapter coverage could not be checked: {review_assignment_coverage['details']}.")
 
     status_counts = Counter(record.get("status", "unknown") for record in current_records)
     review_statuses = sum(status_counts.get(status, 0) for status in ("review", "draft"))
@@ -250,6 +293,8 @@ def build_summary(
         next_actions.append("Assign and complete the required reviewer decisions in review-assignment.yml.")
     if review_assignment_diff.get("changes"):
         next_actions.append("Review the reviewer assignment delta against the supplied baseline.")
+    if review_assignment_coverage["status"] == "missing":
+        next_actions.append("Assign reviewer coverage for every selected review adapter.")
     if not next_actions:
         next_actions.append("Complete final human review; publish_status remains not-run.")
 
@@ -269,6 +314,7 @@ def build_summary(
         "review_adapters": review_adapters,
         "review_assignment": review_assignment,
         "review_assignment_diff": review_assignment_diff,
+        "review_assignment_coverage": review_assignment_coverage,
         "next_actions": next_actions,
         "baseline": previous_package_root.name if previous_package_root is not None else "not-supplied",
     }
@@ -383,6 +429,26 @@ def render_markdown(summary: dict[str, object]) -> str:
             ], ("change", "reviewer", "field", "before", "after")))
         else:
             lines.append("- No reviewer assignment changes detected against the supplied baseline.")
+    assignment_coverage = summary["review_assignment_coverage"]
+    assert isinstance(assignment_coverage, dict)
+    lines.extend(["", "### Adapter coverage", ""])
+    lines.append(f"- Status: `{assignment_coverage['status']}`")
+    if assignment_coverage["status"] in {"not-checked", "unavailable"}:
+        lines.append(f"- {assignment_coverage['details']}.")
+    else:
+        coverage_rows = assignment_coverage.get("rows", [])
+        assert isinstance(coverage_rows, list)
+        lines.extend(markdown_table([
+            {
+                "adapter": str(row.get("adapter", "")),
+                "status": str(row.get("status", "")),
+                "reviewers": ", ".join(
+                    f"{item.get('id', '')} ({item.get('status', '')})"
+                    for item in row.get("reviewers", [])
+                ) or "none",
+            }
+            for row in coverage_rows
+        ], ("adapter", "status", "reviewers")))
     for heading, key in (("Blockers", "blockers"), ("Warnings", "warnings")):
         lines.extend(["", f"## {heading}", ""])
         values = summary[key]

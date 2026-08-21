@@ -12,7 +12,7 @@ import re
 ALLOWED_ASSIGNMENT_STATUSES = {"pending", "in_review", "approved", "blocked"}
 ALLOWED_REVIEWER_STATUSES = {"pending", "in_review", "approved", "blocked", "not_applicable"}
 TERMINAL_REVIEWER_STATUSES = {"approved", "blocked", "not_applicable"}
-ASSIGNMENT_DIFF_FIELDS = ("role", "required", "scope", "status", "assigned_to", "decision", "evidence")
+ASSIGNMENT_DIFF_FIELDS = ("role", "required", "scope", "coverage", "status", "assigned_to", "decision", "evidence")
 TOP_FIELD_LINE = re.compile(r"^\s{2}([a-z][a-z0-9_-]*):\s*(.*?)\s*$")
 REVIEWER_LINE = re.compile(r"^\s{4}-\s+id:\s*(.*?)\s*$")
 HISTORY_LINE = re.compile(r"^\s{4}-\s+at:\s*(.*?)\s*$")
@@ -75,7 +75,7 @@ def parse_assignment(text: str) -> tuple[dict[str, str], list[dict[str, object]]
                 item_match = ITEM_FIELD_LINE.match(line)
                 if item_match:
                     key, value = item_match.groups()
-                    current_reviewer[key] = parse_list(value) if key in {"scope", "evidence"} else unquote(value)
+                    current_reviewer[key] = parse_list(value) if key in {"scope", "coverage", "evidence"} else unquote(value)
         elif section == "history":
             history_match = HISTORY_LINE.match(line)
             if history_match:
@@ -137,7 +137,7 @@ def validate(path: Path) -> list[str]:
         if reviewer_id in seen_ids:
             errors.append(f"{prefix}: duplicate id")
         seen_ids.add(reviewer_id)
-        for key in ("role", "required", "status", "scope", "assigned_to", "assigned_at", "decision", "decided_at", "evidence", "notes"):
+        for key in ("role", "required", "status", "scope", "coverage", "assigned_to", "assigned_at", "decision", "decided_at", "evidence", "notes"):
             if key not in reviewer:
                 errors.append(f"{prefix}.{key} is required")
         required = str(reviewer.get("required", ""))
@@ -157,6 +157,11 @@ def validate(path: Path) -> list[str]:
             errors.append(f"{prefix}.scope must be a non-empty list")
         elif len(set(str(item) for item in scope)) != len(scope):
             errors.append(f"{prefix}.scope must not contain duplicates")
+        coverage = reviewer.get("coverage", [])
+        if not isinstance(coverage, list) or not coverage or any(not str(item).strip() for item in coverage):
+            errors.append(f"{prefix}.coverage must be a non-empty list")
+        elif len(set(str(item) for item in coverage)) != len(coverage):
+            errors.append(f"{prefix}.coverage must not contain duplicates")
         evidence = reviewer.get("evidence", [])
         if not isinstance(evidence, list):
             errors.append(f"{prefix}.evidence must be a list")
@@ -213,6 +218,7 @@ def summarize(path: Path) -> dict[str, object]:
             "required": str(item.get("required", "")),
             "status": str(item.get("status", "")),
             "scope": [str(scope) for scope in item.get("scope", [])] if isinstance(item.get("scope", []), list) else [],
+            "coverage": [str(coverage) for coverage in item.get("coverage", [])] if isinstance(item.get("coverage", []), list) else [],
             "assigned_to": str(item.get("assigned_to", "")) or "not assigned",
             "decision": str(item.get("decision", "")),
             "evidence": [str(evidence) for evidence in item.get("evidence", [])] if isinstance(item.get("evidence", []), list) else [],

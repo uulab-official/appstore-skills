@@ -10,6 +10,7 @@ review_assignment:
       required: true
       status: pending
       scope: [product-claims, metadata, visual-assets]
+      coverage: [policy-review]
       assigned_to: ""
       assigned_at: ""
       decision: pending
@@ -21,6 +22,7 @@ review_assignment:
       required: true
       status: pending
       scope: [localized-store-copy, terminology, localized-layout]
+      coverage: [accessibility-review]
       assigned_to: ""
       assigned_at: ""
       decision: pending
@@ -32,6 +34,7 @@ review_assignment:
       required: true
       status: pending
       scope: [data-collection, disclosures, permissions]
+      coverage: [privacy-review]
       assigned_to: ""
       assigned_at: ""
       decision: pending

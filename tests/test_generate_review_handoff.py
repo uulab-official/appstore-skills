@@ -31,8 +31,23 @@ class GenerateReviewHandoffTests(unittest.TestCase):
         self.assertIn("product-claims, metadata, visual-assets", result.stdout)
         self.assertIn("evidence", result.stdout)
         self.assertIn("No previous reviewer assignment baseline supplied.", result.stdout)
+        self.assertIn("### Adapter coverage", result.stdout)
+        self.assertIn("Status: `not-checked`", result.stdout)
         self.assertIn("Reviewer assignment is pending", result.stdout)
         self.assertIn("publish_status` is permanently `not-run`", result.stdout)
+
+    def test_selected_adapters_report_coverage(self) -> None:
+        result = self.run_script(
+            "--package-root", str(DEMO),
+            "--adapter-file", str(ROOT / "skills/release-check/references/review-adapters.yml"),
+            "--adapter", "policy-review",
+            "--adapter", "accessibility-review",
+            "--adapter", "privacy-review",
+            "--format", "markdown",
+        )
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("policy-review | covered | product-owner (pending)", result.stdout)
 
     def test_previous_manifest_reports_added_removed_and_changed(self) -> None:
         with TemporaryDirectory() as directory:
@@ -119,6 +134,37 @@ class GenerateReviewHandoffTests(unittest.TestCase):
                 if item["reviewer"] == "product-owner"
             }
             self.assertEqual(changed_fields, {"status", "assigned_to"})
+
+    def test_missing_adapter_coverage_is_visible(self) -> None:
+        with TemporaryDirectory() as directory:
+            package = Path(directory) / "package"
+            package.mkdir()
+            (package / "manifest.yml").write_text(
+                "schema_version: 1\nassets:\n  - path: icon.png\n    status: review\n    kind: app-icon\n",
+                encoding="utf-8",
+            )
+            assignment = DEMO_ASSIGNMENT.read_text(encoding="utf-8").replace(
+                "coverage: [accessibility-review]",
+                "coverage: [locale-review]",
+                1,
+            )
+            (package / "review-assignment.yml").write_text(assignment, encoding="utf-8")
+
+            result = self.run_script(
+                "--package-root", str(package),
+                "--adapter-file", str(ROOT / "skills/release-check/references/review-adapters.yml"),
+                "--adapter", "policy-review",
+                "--adapter", "accessibility-review",
+                "--adapter", "privacy-review",
+                "--format", "json",
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            summary = json.loads(result.stdout)
+            coverage = summary["review_assignment_coverage"]
+            self.assertEqual(coverage["status"], "missing")
+            self.assertIn("accessibility-review", coverage["details"])
+            self.assertTrue(any("coverage is incomplete" in warning for warning in summary["warnings"]))
 
 
 if __name__ == "__main__":

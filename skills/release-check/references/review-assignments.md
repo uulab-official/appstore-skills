@@ -13,6 +13,12 @@ traceability links; the contract does not dereference or upload them. The
 validator accepts pending records with empty assignment and evidence fields so
 an unassigned package is visible rather than falsely marked complete.
 
+Each reviewer also declares non-empty `coverage` entries using the IDs from
+the selected review-adapter registry, for example `privacy-review`. The handoff
+generator renders a coverage matrix and warns when a selected adapter has no
+reviewer coverage. Coverage identifies ownership only; it does not make the
+adapter pass.
+
 Supported reviewer states are `pending`, `in_review`, `approved`, `blocked`,
 and `not_applicable`. An assignment can only be `approved` when every required
 reviewer is approved and no reviewer is blocked. History events require an
