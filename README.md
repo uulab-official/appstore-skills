@@ -133,6 +133,9 @@ python -m unittest discover -s tests
 python scripts/validate_store_output.py ./store-assets
 ```
 
+The `Validate store output` GitHub Actions workflow can run the same package
+check manually against a repository-relative output directory.
+
 The next roadmap milestone focuses on operational maturity:
 
 - deterministic image and metadata validators
