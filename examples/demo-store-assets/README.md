@@ -49,7 +49,7 @@ store API, publish a variant, or claim performance results.
 `review-handoff.md` is a generated triage aid. It compares manifest metadata
 when a previous package is supplied and labels the demo as `blocked`.
 
-The optional policy and accessibility adapters are registered in
+The optional policy, accessibility, and privacy adapters are registered in
 `review-adapters.yml`; their missing evidence is `pending`, never an automatic
 pass.
 

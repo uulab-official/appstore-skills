@@ -1,4 +1,4 @@
-# Policy and accessibility review adapters
+# Policy, accessibility, and privacy review adapters
 
 The optional review adapters make human review state explicit without making a
 legal, policy, accessibility, or store-approval decision. They are opt-in,
@@ -10,6 +10,8 @@ The registry contains:
   permissions, and platform policy questions
 - `accessibility-review` for contrast, text scaling, VoiceOver/TalkBack,
   touch targets, motion, and localized layout review
+- `privacy-review` for data collection, account behavior, permissions,
+  disclosure text, retention, and privacy manifest or questionnaire scope
 
 An adapter result is:
 
@@ -28,7 +30,8 @@ python scripts/inspect_review_adapters.py \
   --project-root ./my-app \
   --output-root ./store-assets \
   --adapter policy-review \
-  --adapter accessibility-review
+  --adapter accessibility-review \
+  --adapter privacy-review
 ```
 
 The default is informational. Use `--fail-on-pending` or

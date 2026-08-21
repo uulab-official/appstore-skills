@@ -181,6 +181,7 @@ python scripts/generate_review_handoff.py \
   --adapter-file ./skills/release-check/references/review-adapters.yml \
   --adapter policy-review \
   --adapter accessibility-review \
+  --adapter privacy-review \
   --output ./store-assets/review-handoff.md
 python scripts/validate_review_adapter_specs.py \
   skills/release-check/references/review-adapters.yml

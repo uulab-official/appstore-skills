@@ -46,11 +46,13 @@ class ReviewAdapterTests(unittest.TestCase):
                 "--output-root", str(output),
                 "--adapter", "policy-review",
                 "--adapter", "accessibility-review",
+                "--adapter", "privacy-review",
             )
 
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertIn("pending: policy-review", result.stdout)
             self.assertIn("pending: accessibility-review", result.stdout)
+            self.assertIn("pending: privacy-review", result.stdout)
 
     def test_passing_record_requires_reviewer_evidence(self) -> None:
         with TemporaryDirectory() as directory:

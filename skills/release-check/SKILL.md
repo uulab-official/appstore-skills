@@ -104,7 +104,7 @@ workflow intentionally requires the human decision. When build or source
 capture evidence files already exist, select the opt-in providers described in
 [`evidence-providers.yml`](../app-store-assets/references/evidence-providers.yml);
 they only inspect files and do not execute the app project.
-For optional policy and accessibility review, read
+For optional policy, accessibility, and privacy review, read
 [`references/review-adapters.md`](references/review-adapters.md) and select
 only the adapters that have a designated reviewer and evidence path.
 

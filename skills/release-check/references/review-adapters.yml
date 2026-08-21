@@ -26,3 +26,13 @@ adapters:
     proves: A designated reviewer recorded accessibility review scope and findings.
     side_effects: none
     required_checks: [file-exists, status, reviewer, timestamp, evidence]
+  - id: privacy-review
+    kind: privacy
+    status: blocked
+    enabled_by_default: false
+    evidence_path: evidence/privacy-review.yml
+    required_fields: [status, reviewer, scope, reviewed_at, evidence]
+    allowed_statuses: [pending, pass, block, not_applicable]
+    proves: A designated reviewer recorded data collection, disclosure, and privacy review scope.
+    side_effects: none
+    required_checks: [file-exists, status, reviewer, timestamp, evidence]

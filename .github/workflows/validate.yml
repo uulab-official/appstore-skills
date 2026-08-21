@@ -57,6 +57,7 @@ jobs:
           --adapter-file skills/release-check/references/review-adapters.yml
           --adapter policy-review
           --adapter accessibility-review
+          --adapter privacy-review
           --format markdown
       - run: >-
           python scripts/validate_review_adapter_specs.py
@@ -69,6 +70,7 @@ jobs:
           --output-root examples/demo-store-assets
           --adapter policy-review
           --adapter accessibility-review
+          --adapter privacy-review
       - run: >-
           python scripts/prepare_release_handoff.py
           --project-root .

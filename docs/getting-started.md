@@ -93,6 +93,7 @@ python scripts/generate_review_handoff.py \
   --adapter-file ./skills/release-check/references/review-adapters.yml \
   --adapter policy-review \
   --adapter accessibility-review \
+  --adapter privacy-review \
   --output ./store-assets/review-handoff.md
 python scripts/prepare_release_handoff.py \
   --project-root ./my-app \

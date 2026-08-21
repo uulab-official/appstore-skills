@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate opt-in, read-only policy and accessibility review adapters."""
+"""Validate opt-in, read-only policy, accessibility, and privacy review adapters."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ from pathlib import Path
 import re
 
 
-ALLOWED_KINDS = {"policy", "accessibility"}
+ALLOWED_KINDS = {"policy", "accessibility", "privacy"}
 ALLOWED_STATUSES = {"draft", "review", "verified", "blocked"}
 FIELD_LINE = re.compile(r"^\s{4}([a-z][a-z0-9_-]*):\s*(.*?)\s*$")
 SECTION_FIELD_LINE = re.compile(r"^\s{2}([a-z][a-z0-9_-]*):\s*(.*?)\s*$")
